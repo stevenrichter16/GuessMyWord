@@ -551,7 +551,9 @@ private struct AnimalQuestionEngine {
 
     func nextQuestion(transcript: [QAEntry]) -> String {
         let askedKeys = Set(transcript.compactMap { featureKey(for: $0.question) })
-        let candidates = currentCandidates(from: transcript)
+        // Allow a small amount of contradiction in the transcript so we don't drop the true animal
+        // after a single misclick or mistaken answer.
+        let candidates = tolerantCandidates(from: transcript)
 
         var bestFeature: AnimalFeature?
         var bestScore: Int = Int.max
@@ -586,7 +588,17 @@ private struct AnimalQuestionEngine {
 
     func makeGuess(transcript: [QAEntry]) -> LLMGuessResponse {
         let askedKeys = Set(transcript.compactMap { featureKey(for: $0.question) })
-        var candidates = currentCandidates(from: transcript)
+        var candidateScores = candidateScores(from: transcript)
+
+        guard let bestMismatch = candidateScores.first?.mismatches else {
+            let guess = dataset.animals.first ?? "unknown"
+            return LLMGuessResponse(guess: guess, confidence: 0.25, rationale: "Guess based on remaining candidates.")
+        }
+
+        let maxMismatch = bestMismatch + 1 // tolerate a single contradictory answer
+        var candidates = candidateScores
+            .filter { $0.mismatches <= maxMismatch }
+            .map { $0.animal }
 
         // Hard consistency guard: if can_fly was answered yes, drop all non-flyers.
         if let flyAnswer = transcript.first(where: { featureKey(for: $0.question) == "can_fly" })?.answer, flyAnswer == .yes {
@@ -660,21 +672,30 @@ private struct AnimalQuestionEngine {
         featureLookup[question.lowercased()]?.key
     }
 
-    private func currentCandidates(from transcript: [QAEntry]) -> [String] {
-        dataset.animals.filter { animal in
-            guard let facts = dataset.rows[animal] else { return false }
+    private func candidateScores(from transcript: [QAEntry]) -> [(animal: String, mismatches: Int)] {
+        dataset.animals.compactMap { animal in
+            guard let facts = dataset.rows[animal] else { return nil }
+            var mismatches = 0
             for entry in transcript {
                 guard let key = featureKey(for: entry.question), let value = facts[key] else { continue }
                 switch entry.answer {
                 case .yes:
-                    if value != 1 { return false }
+                    if value < 0.5 { mismatches += 1 }
                 case .no:
-                    if value != 0 { return false }
+                    if value > 0.5 { mismatches += 1 }
                 default:
                     continue
                 }
             }
-            return true
+            return (animal: animal, mismatches: mismatches)
         }
+        .sorted { $0.mismatches < $1.mismatches }
+    }
+
+    private func tolerantCandidates(from transcript: [QAEntry]) -> [String] {
+        let scores = candidateScores(from: transcript)
+        guard let best = scores.first?.mismatches else { return dataset.animals }
+        let maxMismatch = best + 1 // allow at most one contradiction compared to the leading candidates
+        return scores.filter { $0.mismatches <= maxMismatch }.map { $0.animal }
     }
 }
