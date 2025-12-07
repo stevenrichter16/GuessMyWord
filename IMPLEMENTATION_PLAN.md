@@ -58,3 +58,10 @@ A single-mode game where the user thinks of a common item/object/animal and the 
 ## Future (post-MVP)
 - Adaptive learning: when wrong, capture true item and ask the LLM for a distinguishing question to enrich a local hint list.
 - More domains toggled in settings; confidence meter visualization; lightweight analytics on success rate (privacy-respecting, local if possible).
+
+## Accuracy improvements to implement
+- Strengthen ask/guess prompts: forbid repeats, require high-information yes/no/maybe questions, enforce consistency with transcript, and pick guesses only from the canonical list.
+- Expand/clean canonical items and aliases; ensure broader coverage of common objects/animals to avoid impossible guesses.
+- Feed a longer transcript (or full history) to avoid contradictory questions and forgetting early answers.
+- Add light output validation/retry with tuned generation options (lower temperature) instead of silently falling back on malformed outputs.
+- In guess mode, require justification consistent with every QA pair and restrict to canonical items to reduce off-domain guesses.

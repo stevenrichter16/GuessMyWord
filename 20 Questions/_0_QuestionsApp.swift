@@ -1,32 +1,28 @@
-//
-//  _0_QuestionsApp.swift
-//  20 Questions
-//
-//  Created by Steven Richter on 11/11/25.
-//
-
 import SwiftUI
-import SwiftData
+#if canImport(FoundationModels)
+import FoundationModels
+#endif
 
 @main
 struct _0_QuestionsApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    init() {
+        logModelStatus()
+    }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(sharedModelContainer)
+    }
+
+    private func logModelStatus() {
+        #if canImport(FoundationModels)
+        if case .available = SystemLanguageModel.default.availability {
+            return
+        }
+        print("[LLM] FoundationModels present but on-device model is unavailable; using fallback stub.")
+        #else
+        print("[LLM] FoundationModels framework not available in this build (likely simulator SDK). Using fallback stub.")
+        #endif
     }
 }
