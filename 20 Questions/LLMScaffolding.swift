@@ -302,6 +302,10 @@ final class LLMScaffolding {
     }
 }
 
+private extension Collection {
+    var only: Element? { count == 1 ? first : nil }
+}
+
 /// Replace the implementation of `complete(prompt:)` with a call to the Foundation on-device model when available.
 final class FallbackLLMClient: LLMClient {
     func complete(prompt: String) async throws -> String {
@@ -540,7 +544,7 @@ private final class AnimalModelWrapper {
     }
 }
 
-private struct AnimalQuestionEngine {
+struct AnimalQuestionEngine {
     let dataset: AnimalDataset
     private let featureLookup: [String: AnimalFeature]
 
@@ -623,6 +627,12 @@ private struct AnimalQuestionEngine {
             } else {
                 candidates = dataset.animals
             }
+        }
+
+        // If only one candidate remains, guess it immediately.
+        if let sole = candidates.only {
+            let rationale = "Only one candidate fits all answered attributes."
+            return LLMGuessResponse(guess: sole, confidence: 1.0, rationale: rationale)
         }
 
         var featureValues: [String: Double] = [:]

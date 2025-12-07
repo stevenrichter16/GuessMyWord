@@ -3,13 +3,21 @@ import SwiftUI
 struct ContentView: View {
     private let llm: LLMScaffolding
     @State private var phase: GamePhase = .idle
-    @State private var transcript: [QAEntry] = []
-    @State private var currentQuestion: String = "Thinking of a question…"
-    @State private var hint: String = ""
-    @State private var guess: LLMGuessResponse?
-    @State private var isBusy = false
-    @State private var hasStarted = false
-    @State private var errorMessage: String?
+@State private var transcript: [QAEntry] = []
+@State private var currentQuestion: String = "Thinking of a question…"
+@State private var hint: String = ""
+@State private var guess: LLMGuessResponse?
+@State private var isBusy = false
+@State private var hasStarted = false
+@State private var errorMessage: String?
+@State private var simReport: SimulationReport?
+@State private var simRunning = false
+#if DEBUG
+@State private var transcriptExpanded = false
+@State private var expandedCandidates: Set<UUID> = []
+@State private var noisySimReport: SimulationReport?
+@State private var noisySimRunning = false
+#endif
 
     private let maxTurns = 20
     private let allowedCategories = LLMScaffolding.defaultCategories
@@ -33,6 +41,9 @@ struct ContentView: View {
                     if llm.isUsingFallback {
                         fallbackNotice
                     }
+                    #if DEBUG
+                    debugSimulator
+                    #endif
                 }
                 .padding()
             }
@@ -222,6 +233,236 @@ struct ContentView: View {
         .cornerRadius(10)
     }
 
+    #if DEBUG
+    private var debugSimulator: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Developer Tools")
+                        .font(.headline)
+                    Text("Run one offline simulation to spot-check accuracy.")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+                Button {
+                    Task { await runSimulation() }
+                } label: {
+                    if simRunning {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                    } else {
+                        Text("Run 1 Simulation")
+                            .font(.footnote.weight(.semibold))
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(simRunning)
+            }
+
+            if let simReport {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Accuracy: \(simReport.correct)/\(simReport.totalRuns) (\(Int(simReport.accuracy * 100))%)")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+
+                    if let run = simReport.lastRun {
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack {
+                                Label("Target", systemImage: "flag.fill")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundColor(.secondary)
+                                Text(run.target)
+                                    .font(.subheadline.weight(.semibold))
+                            }
+                            HStack {
+                                Label("Guess", systemImage: "checkmark.seal.fill")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundColor(.secondary)
+                                Text(run.guess)
+                                    .font(.subheadline.weight(.semibold))
+                                Text(run.wasCorrect ? "Correct" : "Incorrect")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundColor(run.wasCorrect ? .green : .red)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background((run.wasCorrect ? Color.green.opacity(0.15) : Color.red.opacity(0.15)))
+                                    .cornerRadius(8)
+                            }
+
+                            Divider()
+                            DisclosureGroup(isExpanded: $transcriptExpanded) {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    ForEach(run.steps, id: \.entry.id) { step in
+                                        VStack(alignment: .leading, spacing: 6) {
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text("#\(step.entry.turn) \(step.entry.question)")
+                                                    .font(.subheadline.weight(.semibold))
+                                                Text("Answer: \(step.entry.answer.displayLabel)")
+                                                    .font(.caption)
+                                                    .foregroundColor(.secondary)
+                                            }
+                                            if !step.candidates.isEmpty {
+                                                Button {
+                                                    if expandedCandidates.contains(step.entry.id) {
+                                                        expandedCandidates.remove(step.entry.id)
+                                                    } else {
+                                                        expandedCandidates.insert(step.entry.id)
+                                                    }
+                                                } label: {
+                                                    Text(expandedCandidates.contains(step.entry.id) ? "Hide Candidates" : "Show Candidates (\(step.candidates.count))")
+                                                        .font(.caption.weight(.semibold))
+                                                }
+                                                .buttonStyle(.bordered)
+                                                if expandedCandidates.contains(step.entry.id) {
+                                                    Text(step.candidates.joined(separator: ", "))
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                        .padding(.top, 2)
+                                                }
+                                            }
+                                        }
+                                        .padding(8)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.systemBackground))
+                                        .cornerRadius(8)
+                                        .shadow(color: Color.black.opacity(0.03), radius: 2, x: 0, y: 1)
+                                    }
+                                }
+                            } label: {
+                                Text("Transcript")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .padding()
+                        .background(Color(.tertiarySystemBackground))
+                        .cornerRadius(12)
+                    }
+                }
+            }
+
+            Divider()
+
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Noise Test")
+                        .font(.headline)
+                    Text("5 simulations with 2 contradictory answers each.")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+                Button {
+                    Task { await runNoisySimulation() }
+                } label: {
+                    if noisySimRunning {
+                        ProgressView().progressViewStyle(.circular)
+                    } else {
+                        Text("Run 5 Noisy Sims")
+                            .font(.footnote.weight(.semibold))
+                    }
+                }
+                .buttonStyle(.bordered)
+                .disabled(noisySimRunning)
+            }
+
+            if let noisySimReport {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Accuracy: \(noisySimReport.correct)/\(noisySimReport.totalRuns) (\(Int(noisySimReport.accuracy * 100))%)")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                    ForEach(Array(noisySimReport.runs.enumerated()), id: \.offset) { index, run in
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack {
+                                Text("Run \(index + 1)")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                Text(run.wasCorrect ? "Correct" : "Incorrect")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundColor(run.wasCorrect ? .green : .red)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background((run.wasCorrect ? Color.green.opacity(0.15) : Color.red.opacity(0.15)))
+                                    .cornerRadius(8)
+                            }
+                            HStack {
+                                Label("Target", systemImage: "flag.fill")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundColor(.secondary)
+                                Text(run.target)
+                                    .font(.subheadline.weight(.semibold))
+                                Spacer()
+                                Label("Guess", systemImage: "checkmark.seal.fill")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundColor(.secondary)
+                                Text(run.guess)
+                                    .font(.subheadline.weight(.semibold))
+                            }
+                            if !run.flippedTurns.isEmpty {
+                                Text("Contradicted turns: \(run.flippedTurns.map(String.init).joined(separator: ", "))")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            DisclosureGroup("Transcript", isExpanded: $transcriptExpanded) {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    ForEach(run.steps, id: \.entry.id) { step in
+                                        let isFlipped = run.flippedTurns.contains(step.entry.turn)
+                                        let isAligned = !run.wasCorrect && alignedWithGuess(step: step, guess: run.guess)
+                                        VStack(alignment: .leading, spacing: 6) {
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text("#\(step.entry.turn) \(step.entry.question)")
+                                                    .font(.subheadline.weight(.semibold))
+                                                Text("Answer: \(step.entry.answer.displayLabel)")
+                                                    .font(.caption.weight(isFlipped ? .bold : .regular))
+                                                    .foregroundColor(isFlipped ? .red : (isAligned ? .green : .secondary))
+                                            }
+                                            if !step.candidates.isEmpty {
+                                                Button {
+                                                    if expandedCandidates.contains(step.entry.id) {
+                                                        expandedCandidates.remove(step.entry.id)
+                                                    } else {
+                                                        expandedCandidates.insert(step.entry.id)
+                                                    }
+                                                } label: {
+                                                    Text(expandedCandidates.contains(step.entry.id) ? "Hide Candidates" : "Show Candidates (\(step.candidates.count))")
+                                                        .font(.caption.weight(.semibold))
+                                                }
+                                                .buttonStyle(.bordered)
+                                                if expandedCandidates.contains(step.entry.id) {
+                                                    Text(step.candidates.joined(separator: ", "))
+                                                        .font(.caption)
+                                                        .foregroundColor(.secondary)
+                                                        .padding(.top, 2)
+                                                }
+                                            }
+                                        }
+                                        .padding(8)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color(.systemBackground))
+                                        .cornerRadius(8)
+                                        .shadow(color: Color.black.opacity(0.03), radius: 2, x: 0, y: 1)
+                                    }
+                                }
+                            }
+                            .font(.caption.weight(.semibold))
+                            .foregroundColor(.secondary)
+                        }
+                        .padding()
+                        .background(Color(.tertiarySystemBackground))
+                        .cornerRadius(12)
+                    }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(12)
+    }
+    #endif
+
     private var currentTurn: Int {
         max(transcript.count + (phase == .guessing ? 1 : 0), 1)
     }
@@ -300,4 +541,39 @@ struct ContentView: View {
             isBusy = false
         }
     }
+
+    #if DEBUG
+    private func runSimulation() async {
+        await MainActor.run { simRunning = true }
+        let simulator = GameSimulator(llm: LLMScaffolding(), maxTurns: maxTurns)
+        let report = await simulator.runSimulations(1)
+        await MainActor.run {
+            simReport = report
+            simRunning = false
+        }
+    }
+
+    private func runNoisySimulation() async {
+        await MainActor.run { noisySimRunning = true }
+        let simulator = GameSimulator(llm: LLMScaffolding(), maxTurns: maxTurns)
+        let report = await simulator.runSimulationsWithContradictions(5, contradictions: 2)
+        await MainActor.run {
+            noisySimReport = report
+            noisySimRunning = false
+        }
+    }
+
+    private func alignedWithGuess(step: SimulationStep, guess: String) -> Bool {
+        guard let dataset = LLMScaffolding.animalDataset else { return false }
+        let engine = AnimalQuestionEngine(dataset: dataset)
+        guard let key = engine.featureKey(for: step.entry.question) else { return false }
+        guard let facts = dataset.rows.first(where: { $0.key.lowercased() == guess.lowercased() })?.value,
+              let value = facts[key] else { return false }
+        switch step.entry.answer {
+        case .yes: return value == 1
+        case .no: return value == 0
+        default: return false
+        }
+    }
+    #endif
 }
