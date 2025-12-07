@@ -240,6 +240,7 @@ struct ContentView: View {
         guard !isBusy, phase == .asking else { return }
         let turn = transcript.count + 1
         let entry = QAEntry(turn: turn, question: currentQuestion, answer: answer)
+        LLMLog.log("A: \(answer.displayLabel) (Q: \(currentQuestion))")
         transcript.append(entry)
         if turn >= maxTurns {
             Task { await requestGuess() }

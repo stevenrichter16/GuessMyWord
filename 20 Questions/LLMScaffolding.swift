@@ -58,7 +58,7 @@ struct LLMGuessResponse: Codable {
     let rationale: String
 }
 
-private enum LLMLog {
+enum LLMLog {
     private static let enabled = true
     static func log(_ message: String) {
         guard enabled else { return }
@@ -189,6 +189,7 @@ final class LLMScaffolding {
     func nextQuestion(context: PromptContext) async -> LLMAskResponse {
         if let engine = animalEngine {
             let question = engine.nextQuestion(transcript: context.transcript)
+            LLMLog.log("Q: \(question)")
             return LLMAskResponse(question: question)
         }
 
@@ -198,7 +199,9 @@ final class LLMScaffolding {
         if client is FallbackLLMClient {
             let index = (context.turn - 1) % fallbackQuestions.count
             LLMLog.log("nextQuestion using fallback question index=\(index)")
-            return LLMAskResponse(question: fallbackQuestions[index])
+            let q = fallbackQuestions[index]
+            LLMLog.log("Q: \(q)")
+            return LLMAskResponse(question: q)
         }
 
         let prompt = PromptBuilder.askPrompt(context: context)
@@ -206,6 +209,7 @@ final class LLMScaffolding {
             let raw = try await client.complete(prompt: prompt)
             if let parsed: LLMAskResponse = try decode(jsonLike: raw) {
                 LLMLog.log(String(format: "nextQuestion success in %.2fs", Date().timeIntervalSince(callStart)))
+                LLMLog.log("Q: \(parsed.question)")
                 return parsed
             }
         } catch {
@@ -213,12 +217,16 @@ final class LLMScaffolding {
         }
         let index = (context.turn - 1) % fallbackQuestions.count
         LLMLog.log("nextQuestion falling back to canned question index=\(index)")
-        return LLMAskResponse(question: fallbackQuestions[index])
+        let q = fallbackQuestions[index]
+        LLMLog.log("Q: \(q)")
+        return LLMAskResponse(question: q)
     }
 
     func makeGuess(context: PromptContext) async -> LLMGuessResponse {
         if let engine = animalEngine {
-            return engine.makeGuess(transcript: context.transcript)
+            let guess = engine.makeGuess(transcript: context.transcript)
+            LLMLog.log("Guess: \(guess.guess) (\(Int(guess.confidence * 100))%) \(guess.rationale)")
+            return guess
         }
 
         // If we're still using the stub client, return a rotating fallback guess instead of the hardcoded toaster JSON.
@@ -228,7 +236,9 @@ final class LLMScaffolding {
             let confidence = min(0.9, 0.4 + Double(context.turn) * 0.05)
             let rationale = "Fallback guess while stub client is active."
             LLMLog.log("makeGuess using fallback guess idx=\(idx)")
-            return LLMGuessResponse(guess: guess, confidence: confidence, rationale: rationale)
+            let response = LLMGuessResponse(guess: guess, confidence: confidence, rationale: rationale)
+            LLMLog.log("Guess: \(response.guess) (\(Int(response.confidence * 100))%) \(response.rationale)")
+            return response
         }
 
         let prompt = PromptBuilder.guessPrompt(context: context)
@@ -238,11 +248,13 @@ final class LLMScaffolding {
             let raw = try await client.complete(prompt: prompt)
             if let parsed: LLMGuessResponse = try decode(jsonLike: raw) {
                 LLMLog.log(String(format: "makeGuess success in %.2fs", Date().timeIntervalSince(callStart)))
-                return LLMGuessResponse(
+                let response = LLMGuessResponse(
                     guess: parsed.guess,
                     confidence: clamp(parsed.confidence, min: 0, max: 1),
                     rationale: parsed.rationale
                 )
+                LLMLog.log("Guess: \(response.guess) (\(Int(response.confidence * 100))%) \(response.rationale)")
+                return response
             }
         } catch {
             LLMLog.log("makeGuess error: \(error)")
@@ -252,7 +264,9 @@ final class LLMScaffolding {
         let confidence = min(0.9, 0.4 + Double(context.turn) * 0.05)
         let rationale = "Placeholder guess based on the fallback engine. Plug in the real LLM for smarter results."
         LLMLog.log("makeGuess falling back to canned idx=\(idx)")
-        return LLMGuessResponse(guess: guess, confidence: confidence, rationale: rationale)
+        let response = LLMGuessResponse(guess: guess, confidence: confidence, rationale: rationale)
+        LLMLog.log("Guess: \(response.guess) (\(Int(response.confidence * 100))%) \(response.rationale)")
+        return response
     }
 
     func buildAskPrompt(context: PromptContext) -> String {
@@ -555,7 +569,8 @@ private struct AnimalQuestionEngine {
                 }
             }
             let total = yes + no
-            if total == 0 { continue }
+            // Skip attributes that cannot split the remaining candidates (all yes or all no).
+            if total == 0 || yes == 0 || no == 0 { continue }
             let splitScore = abs(yes - no)
             if splitScore < bestScore {
                 bestScore = splitScore
@@ -571,26 +586,70 @@ private struct AnimalQuestionEngine {
 
     func makeGuess(transcript: [QAEntry]) -> LLMGuessResponse {
         let askedKeys = Set(transcript.compactMap { featureKey(for: $0.question) })
-        let candidates = currentCandidates(from: transcript)
+        var candidates = currentCandidates(from: transcript)
+
+        // Hard consistency guard: if can_fly was answered yes, drop all non-flyers.
+        if let flyAnswer = transcript.first(where: { featureKey(for: $0.question) == "can_fly" })?.answer, flyAnswer == .yes {
+            let flyers = candidates.filter { dataset.rows[$0]?["can_fly"] == 1 }
+            if !flyers.isEmpty {
+                candidates = flyers
+            }
+            // Additional guard: if it flies and has fur/hair, restrict to flying mammals (bat).
+            if let furAnswer = transcript.first(where: { featureKey(for: $0.question) == "has_fur_or_hair" })?.answer, furAnswer == .yes {
+                let furryFlyers = candidates.filter { dataset.rows[$0]?["has_fur_or_hair"] == 1 }
+                if !furryFlyers.isEmpty {
+                    candidates = furryFlyers
+                }
+            }
+        }
+
+        // If contradictions emptied the candidate list, fall back to all animals, or at least all flyers if can_fly was yes.
+        if candidates.isEmpty {
+            if let flyAnswer = transcript.first(where: { featureKey(for: $0.question) == "can_fly" })?.answer, flyAnswer == .yes {
+                let flyers = dataset.animals.filter { dataset.rows[$0]?["can_fly"] == 1 }
+                candidates = flyers.isEmpty ? dataset.animals : flyers
+            } else {
+                candidates = dataset.animals
+            }
+        }
 
         var featureValues: [String: Double] = [:]
         for feature in dataset.features {
-            if let ans = transcript.last(where: { featureKey(for: $0.question) == feature.key })?.answer {
-                switch ans {
-                case .yes: featureValues[feature.key] = 1
-                case .no: featureValues[feature.key] = 0
-                default: featureValues[feature.key] = 0
-                }
-            } else {
+            let ans = transcript.last(where: { featureKey(for: $0.question) == feature.key })?.answer
+            switch ans {
+            case .some(.yes):
+                featureValues[feature.key] = 1
+            case .some(.no):
                 featureValues[feature.key] = 0
+            default:
+                // Unknown/not sure/unanswered: use neutral 0.5 so we don't force a no.
+                featureValues[feature.key] = 0.5
             }
         }
 
         if let prediction = AnimalModelWrapper.shared.predict(features: featureValues, featureOrder: dataset.featureOrder) {
             let top = prediction.label.isEmpty ? (candidates.first ?? "unknown") : prediction.label
-            let confidence = prediction.probabilities[top] ?? 0.0
+            // Enforce candidate filtering: choose the top-probability label within remaining candidates.
+            let candidateProbs = candidates.compactMap { name -> (String, Double)? in
+                guard let p = prediction.probabilities[name] else { return nil }
+                return (name, p)
+            }
+            // Log top candidates and their probabilities
+            let sorted = candidateProbs.sorted { $0.1 > $1.1 }
+            let preview = sorted.prefix(5).map { "\($0.0): \(String(format: "%.2f", $0.1))" }.joined(separator: ", ")
+            if !preview.isEmpty {
+                LLMLog.log("Candidate scores: \(preview)")
+            }
+
+            let filtered = sorted.first
+            let chosen = filtered?.0 ?? (candidates.contains(top) ? top : candidates.first ?? top)
+            var confidence = filtered?.1 ?? (prediction.probabilities[chosen] ?? 0.0)
+            // If all probabilities are zero/missing, fall back to a uniform-ish confidence.
+            if confidence == 0, !candidates.isEmpty {
+                confidence = 1.0 / Double(candidates.count)
+            }
             let rationale = "Core ML decision tree based on answered attributes (\(askedKeys.count) answered)."
-            return LLMGuessResponse(guess: top, confidence: confidence, rationale: rationale)
+            return LLMGuessResponse(guess: chosen, confidence: confidence, rationale: rationale)
         }
 
         let guess = candidates.first ?? "unknown"
