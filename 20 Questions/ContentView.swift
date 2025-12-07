@@ -11,7 +11,7 @@ struct ContentView: View {
     @State private var hasStarted = false
     @State private var errorMessage: String?
 
-    private let maxTurns = 10
+    private let maxTurns = 20
     private let allowedCategories = LLMScaffolding.defaultCategories
     private let canonicalItems = LLMScaffolding.defaultCanonicalItems
 
@@ -36,7 +36,7 @@ struct ContentView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Guess My Word")
+            .navigationTitle("Guess My Animal")
             .task {
                 guard !hasStarted else { return }
                 hasStarted = true
@@ -55,12 +55,12 @@ struct ContentView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Think of a common item from these categories:")
+            Text("Think of an animal from our list (\(canonicalItems.count) total):")
                 .font(.headline)
-            Text(allowedCategories.joined(separator: " • "))
+            Text("Common mammals, birds, reptiles, amphibians, fish, insects and more.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
-            Text("The AI will ask up to \(maxTurns) yes/no/maybe questions, then make one guess.")
+            Text("The AI will ask up to \(maxTurns) yes/no/maybe questions, then make one guess based on the animal attributes.")
                 .font(.footnote)
                 .foregroundColor(.secondary)
         }

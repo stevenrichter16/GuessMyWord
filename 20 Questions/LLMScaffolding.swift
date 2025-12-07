@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import CoreML
 #if canImport(FoundationModels)
 import FoundationModels
 #endif
@@ -109,55 +110,88 @@ protocol LLMClient {
 
 /// Replace `FallbackLLMClient` with your Foundation model client (e.g., using `FoundationModels`).
 final class LLMScaffolding {
-    static let defaultCategories = [
-        "kitchen items",
-        "office items",
-        "common animals",
-        "tools",
-        "fruits and vegetables",
-        "toys",
-        "electronics",
-        "everyday carry"
-    ]
+    /// The animal dataset and feature metadata parsed from animals_20q.csv
+    static let animalDataset = AnimalDataset.loadFromBundle()
 
-    static let kitchenItems = ["toaster", "microwave", "blender", "frying pan", "pot", "spatula", "plate", "bowl", "cup", "mug", "cutting board", "kettle"]
-    static let officeItems = ["laptop", "keyboard", "mouse", "monitor", "pen", "pencil", "notebook", "stapler", "tape dispenser", "scissors", "sticky notes", "desk lamp"]
-    static let animalItems = ["cat", "dog", "horse", "cow", "chicken", "duck", "frog", "rabbit", "goldfish", "parrot"]
-    static let toolItems = ["hammer", "screwdriver", "wrench", "pliers", "drill", "hand saw", "tape measure", "level", "paintbrush"]
-    static let produceItems = ["apple", "banana", "orange", "carrot", "broccoli", "potato", "onion", "garlic", "bread loaf", "egg", "cheese"]
-    static let toyItems = ["teddy bear", "soccer ball", "yo-yo", "kite", "doll", "puzzle", "toy car", "building blocks"]
-    static let electronicItems = ["phone", "tablet", "remote control", "headphones", "flashlight", "camera", "smartwatch", "bluetooth speaker"]
-    static let edcItems = ["backpack", "umbrella", "water bottle", "wallet", "sunglasses", "keychain"]
+    static let defaultCategories = ["animals"]
 
     static let defaultCanonicalItems: [String] = {
-        kitchenItems + officeItems + animalItems + toolItems + produceItems + toyItems + electronicItems + edcItems
+        if let dataset = animalDataset { return dataset.animals }
+        return []
     }()
 
     private let fallbackQuestions = [
-        "Is it electronic?",
-        "Is it used in the kitchen?",
-        "Is it an animal?",
-        "Can it fit in a backpack?",
-        "Is it mostly made of metal?",
-        "Is it something you might find at an office?",
-        "Is it used for eating or drinking?",
-        "Does it require electricity to work?",
-        "Is it alive?",
-        "Is it bigger than a microwave?"
+        // These map directly to the feature keys in animals_20q.csv
+        "Is it a mammal?",
+        "Is it commonly kept as a household pet?",
+        "Is it mostly found in the wild (not usually living with humans)?",
+        "Is it larger than an average adult human?",
+        "Does it mainly eat meat?",
+        "Does it mainly eat plants?",
+        "Is it in the dog family (a type of canine)?",
+        "Is it in the cat family (a type of feline)?",
+        "Does it have obvious stripes on its body?",
+        "Does it have a noticeably long neck compared to most animals?",
+        "Is it a marsupial (carries its young in a pouch)?",
+        "Does it mainly eat bamboo?",
+        "Is it native to Australia?",
+        "Does it spend most of its time in trees?",
+        "Can it naturally fly?",
+        "Does it live mostly in water?",
+        "Is it a bird?",
+        "Is it a reptile (like a snake, lizard, crocodile or turtle)?",
+        "Does it have fur or hair?",
+        "Does it have hooves instead of paws or claws?",
+        "Has it been domesticated by humans (kept or bred by people)? Set this to 1 only for species that are fully domesticated; leave it 0 for wild species that are merely kept as pets or in captivity.",
+        "Is it mostly active at night?",
+        "Is it an amphibian (like a frog, toad or salamander)?",
+        "Is it a fish?",
+        "Does it usually lay eggs?",
+        "Does it have a tail?",
+        "Does it have noticeable spots on its body?",
+        "Does it have horns or antlers?",
+        "Does it have a hard shell covering part of its body?",
+        "Does it have fins or flippers instead of legs?",
+        "Does it eat both plants and animals?",
+        "Does it eat insects as a major part of its diet?",
+        "Does it often eat animals that are already dead (scavenge)?",
+        "Is it a predator that hunts other animals?",
+        "Is it mainly found in forests or jungles?",
+        "Is it mainly found in open grasslands or savannas?",
+        "Is it adapted to live in the desert or very dry areas?",
+        "Is it typically found in cold or icy climates?",
+        "Is it commonly found on farms as livestock or poultry?",
+        "Does it usually live in groups, herds, packs or flocks?",
+        "Does it migrate long distances during certain seasons?",
+        "Does it hibernate or sleep for long periods in winter?",
+        "Is it venomous (can inject venom through fangs, stingers, etc.)?",
+        "Is it commonly used by humans for work or transport (like riding or carrying loads)?"
     ]
 
     private let client: LLMClient
     private let decoder = JSONDecoder()
+    private let animalEngine: AnimalQuestionEngine?
 
     init(client: LLMClient = DefaultLLMClient.make()) {
         self.client = client
+        if let dataset = LLMScaffolding.animalDataset {
+            animalEngine = AnimalQuestionEngine(dataset: dataset)
+        } else {
+            animalEngine = nil
+        }
     }
 
     var isUsingFallback: Bool {
-        client is FallbackLLMClient
+        if animalEngine != nil { return false }
+        return client is FallbackLLMClient
     }
 
     func nextQuestion(context: PromptContext) async -> LLMAskResponse {
+        if let engine = animalEngine {
+            let question = engine.nextQuestion(transcript: context.transcript)
+            return LLMAskResponse(question: question)
+        }
+
         let callStart = Date()
         LLMLog.log("nextQuestion start turn=\(context.turn) transcript=\(context.transcript.count) promptChars=\(PromptBuilder.askPrompt(context: context).count)")
         // If we're still using the stub client, rotate through canned questions so the UI advances.
@@ -183,6 +217,10 @@ final class LLMScaffolding {
     }
 
     func makeGuess(context: PromptContext) async -> LLMGuessResponse {
+        if let engine = animalEngine {
+            return engine.makeGuess(transcript: context.transcript)
+        }
+
         // If we're still using the stub client, return a rotating fallback guess instead of the hardcoded toaster JSON.
         if client is FallbackLLMClient {
             let idx = max(0, min(context.canonicalItems.count - 1, (context.turn * 3) % context.canonicalItems.count))
@@ -254,9 +292,9 @@ final class LLMScaffolding {
 final class FallbackLLMClient: LLMClient {
     func complete(prompt: String) async throws -> String {
         if prompt.contains("\"guess\"") {
-            return #"{"guess":"toaster","confidence":0.61,"rationale":"Common small kitchen appliance."}"#
+            return #"{"guess":"dog","confidence":0.42,"rationale":"Common, high-prior animal guess."}"#
         } else {
-            return #"{"question":"Is it electronic?"}"#
+            return #"{"question":"Is it a mammal?"}"#
         }
     }
 }
@@ -320,3 +358,264 @@ final class FoundationModelClient: LLMClient {
     }
 }
 #endif
+
+// MARK: - Animal dataset + Core ML integration
+
+public struct AnimalFeature {
+    let key: String
+    let question: String
+}
+
+struct AnimalDataset {
+    let features: [AnimalFeature]
+    let featureOrder: [String]
+    let animals: [String]
+    let rows: [String: [String: Double]]
+
+    static let featureQuestions: [String: String] = [
+        "is_mammal": "Is it a mammal?",
+        "is_pet": "Is it commonly kept as a household pet?",
+        "is_wild": "Is it mostly found in the wild (not usually living with humans)?",
+        "is_large": "Is it larger than an average adult human?",
+        "is_carnivore": "Does it mainly eat meat?",
+        "is_herbivore": "Does it mainly eat plants?",
+        "is_canine": "Is it in the dog family (a type of canine)?",
+        "is_feline": "Is it in the cat family (a type of feline)?",
+        "has_stripes": "Does it have obvious stripes on its body?",
+        "has_long_neck": "Does it have a noticeably long neck compared to most animals?",
+        "is_marsupial": "Is it a marsupial (carries its young in a pouch)?",
+        "eats_mostly_bamboo": "Does it mainly eat bamboo?",
+        "native_to_australia": "Is it native to Australia?",
+        "lives_in_trees": "Does it spend most of its time in trees?",
+        "can_fly": "Can it naturally fly?",
+        "lives_in_water": "Does it live mostly in water?",
+        "is_bird": "Is it a bird?",
+        "is_reptile": "Is it a reptile (like a snake, lizard, crocodile or turtle)?",
+        "has_fur_or_hair": "Does it have fur or hair?",
+        "has_hooves": "Does it have hooves instead of paws or claws?",
+        "is_domesticated": "Has it been domesticated by humans (kept or bred by people)? Set this to 1 only for species that are fully domesticated; leave it 0 for wild species that are merely kept as pets or in captivity.",
+        "is_nocturnal": "Is it mostly active at night?",
+        "is_amphibian": "Is it an amphibian (like a frog, toad or salamander)?",
+        "is_fish": "Is it a fish?",
+        "lays_eggs": "Does it usually lay eggs?",
+        "has_tail": "Does it have a tail?",
+        "has_spots": "Does it have noticeable spots on its body?",
+        "has_horns_or_antlers": "Does it have horns or antlers?",
+        "has_shell": "Does it have a hard shell covering part of its body?",
+        "has_fins_or_flippers": "Does it have fins or flippers instead of legs?",
+        "is_omnivore": "Does it eat both plants and animals?",
+        "eats_insects": "Does it eat insects as a major part of its diet?",
+        "is_scavenger": "Does it often eat animals that are already dead (scavenge)?",
+        "is_predator": "Is it a predator that hunts other animals?",
+        "lives_in_forest_or_jungle": "Is it mainly found in forests or jungles?",
+        "lives_in_grassland_or_savanna": "Is it mainly found in open grasslands or savannas?",
+        "lives_in_desert": "Is it adapted to live in the desert or very dry areas?",
+        "lives_in_cold_climate": "Is it typically found in cold or icy climates?",
+        "lives_on_farm": "Is it commonly found on farms as livestock or poultry?",
+        "lives_in_groups": "Does it usually live in groups, herds, packs or flocks?",
+        "migrates_seasonally": "Does it migrate long distances during certain seasons?",
+        "hibernates": "Does it hibernate or sleep for long periods in winter?",
+        "is_venomous": "Is it venomous (can inject venom through fangs, stingers, etc.)?",
+        "used_for_work_or_transport": "Is it commonly used by humans for work or transport (like riding or carrying loads)?"
+    ]
+
+    static func loadFromBundle() -> AnimalDataset? {
+        let bundle = Bundle.main
+        let possibleURLs = [
+            bundle.url(forResource: "animals_20q", withExtension: "csv"),
+            Bundle(for: LLMScaffolding.self).url(forResource: "animals_20q", withExtension: "csv"),
+            URL(fileURLWithPath: "animals_20q.csv", relativeTo: URL(fileURLWithPath: #file).deletingLastPathComponent())
+        ].compactMap { $0 }
+
+        guard let url = possibleURLs.first(where: { FileManager.default.fileExists(atPath: $0.path) }) else {
+            print("[AnimalDataset] animals_20q.csv not found in bundle or adjacent to code.")
+            return nil
+        }
+
+        do {
+            let raw = try String(contentsOf: url)
+            let lines = raw.split(whereSeparator: \.isNewline).map(String.init).filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+            guard let headerLine = lines.first else { return nil }
+            let headers = headerLine.split(separator: ",").map(String.init)
+            guard headers.first == "Animal" else {
+                print("[AnimalDataset] First column must be Animal")
+                return nil
+            }
+            let featureOrder = Array(headers.dropFirst())
+
+            let features: [AnimalFeature] = featureOrder.map { key in
+                let q = featureQuestions[key] ?? key
+                return AnimalFeature(key: key, question: q)
+            }
+
+            var rows: [String: [String: Double]] = [:]
+            var animals: [String] = []
+            for line in lines.dropFirst() {
+                let cols = line.split(separator: ",").map(String.init)
+                guard cols.count == headers.count else { continue }
+                let name = cols[0]
+                animals.append(name)
+                var values: [String: Double] = [:]
+                for (idx, key) in featureOrder.enumerated() {
+                    values[key] = Double(cols[idx + 1]) ?? 0
+                }
+                rows[name] = values
+            }
+
+            return AnimalDataset(features: features, featureOrder: featureOrder, animals: animals, rows: rows)
+        } catch {
+            print("[AnimalDataset] Failed to read animals_20q.csv: \(error)")
+            return nil
+        }
+    }
+
+    func answer(for animal: String, featureKey: String) -> Answer? {
+        guard let values = rows[animal], let val = values[featureKey] else { return nil }
+        if val == 1 { return .yes }
+        if val == 0 { return .no }
+        return .maybe
+    }
+}
+
+private final class AnimalModelWrapper {
+    static let shared = AnimalModelWrapper()
+
+    private(set) var model: MLModel?
+
+    private init() {
+        let config = MLModelConfiguration()
+        let bundle = Bundle.main
+        let candidates = [
+            bundle.url(forResource: "Animal20Q", withExtension: "mlmodelc"),
+            bundle.url(forResource: "Animal20Q", withExtension: "mlmodel"),
+            Bundle(for: LLMScaffolding.self).url(forResource: "Animal20Q", withExtension: "mlmodelc"),
+            Bundle(for: LLMScaffolding.self).url(forResource: "Animal20Q", withExtension: "mlmodel")
+        ].compactMap { $0 }
+
+        for url in candidates {
+            if let loaded = try? MLModel(contentsOf: url, configuration: config) {
+                model = loaded
+                return
+            }
+        }
+        print("[AnimalModelWrapper] Could not load Animal20Q.mlmodel from bundle.")
+    }
+
+    func predict(features: [String: Double], featureOrder: [String]) -> (label: String, probabilities: [String: Double])? {
+        guard let model else { return nil }
+        let dict = Dictionary(uniqueKeysWithValues: featureOrder.map { key in
+            (key, MLFeatureValue(double: features[key] ?? 0))
+        })
+        guard let provider = try? MLDictionaryFeatureProvider(dictionary: dict),
+              let output = try? model.prediction(from: provider) else {
+            return nil
+        }
+
+        let label = output.featureValue(for: "classLabel")?.stringValue
+            ?? output.featureValue(for: "label")?.stringValue
+            ?? ""
+
+        var probs: [String: Double] = [:]
+        if let dict = output.featureValue(for: "classProbability")?.dictionaryValue as? [String: NSNumber] {
+            probs = dict.mapValues { $0.doubleValue }
+        } else if let dict = output.featureValue(for: "classScores")?.dictionaryValue as? [String: NSNumber] {
+            probs = dict.mapValues { $0.doubleValue }
+        }
+
+        return (label: label, probabilities: probs)
+    }
+}
+
+private struct AnimalQuestionEngine {
+    let dataset: AnimalDataset
+    private let featureLookup: [String: AnimalFeature]
+
+    init(dataset: AnimalDataset) {
+        self.dataset = dataset
+        self.featureLookup = Dictionary(uniqueKeysWithValues: dataset.features.map { ($0.question.lowercased(), $0) })
+    }
+
+    func nextQuestion(transcript: [QAEntry]) -> String {
+        let askedKeys = Set(transcript.compactMap { featureKey(for: $0.question) })
+        let candidates = currentCandidates(from: transcript)
+
+        var bestFeature: AnimalFeature?
+        var bestScore: Int = Int.max
+
+        for feature in dataset.features where !askedKeys.contains(feature.key) {
+            var yes = 0
+            var no = 0
+            for animal in candidates {
+                if let ans = dataset.answer(for: animal, featureKey: feature.key) {
+                    switch ans {
+                    case .yes: yes += 1
+                    case .no: no += 1
+                    default: break
+                    }
+                }
+            }
+            let total = yes + no
+            if total == 0 { continue }
+            let splitScore = abs(yes - no)
+            if splitScore < bestScore {
+                bestScore = splitScore
+                bestFeature = feature
+            }
+        }
+
+        if let feature = bestFeature {
+            return feature.question
+        }
+        return dataset.features.first(where: { !askedKeys.contains($0.key) })?.question ?? "Out of questions."
+    }
+
+    func makeGuess(transcript: [QAEntry]) -> LLMGuessResponse {
+        let askedKeys = Set(transcript.compactMap { featureKey(for: $0.question) })
+        let candidates = currentCandidates(from: transcript)
+
+        var featureValues: [String: Double] = [:]
+        for feature in dataset.features {
+            if let ans = transcript.last(where: { featureKey(for: $0.question) == feature.key })?.answer {
+                switch ans {
+                case .yes: featureValues[feature.key] = 1
+                case .no: featureValues[feature.key] = 0
+                default: featureValues[feature.key] = 0
+                }
+            } else {
+                featureValues[feature.key] = 0
+            }
+        }
+
+        if let prediction = AnimalModelWrapper.shared.predict(features: featureValues, featureOrder: dataset.featureOrder) {
+            let top = prediction.label.isEmpty ? (candidates.first ?? "unknown") : prediction.label
+            let confidence = prediction.probabilities[top] ?? 0.0
+            let rationale = "Core ML decision tree based on answered attributes (\(askedKeys.count) answered)."
+            return LLMGuessResponse(guess: top, confidence: confidence, rationale: rationale)
+        }
+
+        let guess = candidates.first ?? "unknown"
+        return LLMGuessResponse(guess: guess, confidence: 0.25, rationale: "Guess based on remaining candidates.")
+    }
+
+    func featureKey(for question: String) -> String? {
+        featureLookup[question.lowercased()]?.key
+    }
+
+    private func currentCandidates(from transcript: [QAEntry]) -> [String] {
+        dataset.animals.filter { animal in
+            guard let facts = dataset.rows[animal] else { return false }
+            for entry in transcript {
+                guard let key = featureKey(for: entry.question), let value = facts[key] else { continue }
+                switch entry.answer {
+                case .yes:
+                    if value != 1 { return false }
+                case .no:
+                    if value != 0 { return false }
+                default:
+                    continue
+                }
+            }
+            return true
+        }
+    }
+}

@@ -1,10 +1,6 @@
 #if DEBUG
 import Foundation
 
-#if canImport(_0_Questions)
-@testable import _0_Questions
-#endif
-
 struct SimulationReport {
     let totalRuns: Int
     let correct: Int
@@ -35,7 +31,7 @@ struct GameSimulator {
     }
 
     private func playSingle(target: String) async -> Bool {
-        let facts = ItemFacts(item: target)
+        let facts = AnimalFacts(animal: target)
         var transcript: [QAEntry] = []
         var turn = 1
         var currentQuestion = await llm.nextQuestion(context: context(turn: turn, transcript: transcript, hint: nil))
@@ -64,47 +60,8 @@ struct GameSimulator {
         )
     }
 
-    private func autoAnswer(to question: String, facts: ItemFacts) -> Answer {
-        let text = question.lowercased()
-
-        if text.contains("electronic") || text.contains("electric") || text.contains("battery") || text.contains("plug") {
-            return facts.isElectronic ? .yes : .no
-        }
-        if text.contains("animal") || text.contains("pet") {
-            return facts.isAnimal ? .yes : .no
-        }
-        if text.contains("food") || text.contains("eat") || text.contains("edible") {
-            return facts.isFood ? .yes : .no
-        }
-        if text.contains("kitchen") {
-            return facts.usedInKitchen ? .yes : .no
-        }
-        if text.contains("office") || text.contains("desk") {
-            return facts.usedInOffice ? .yes : .no
-        }
-        if text.contains("tool") || text.contains("repair") || text.contains("build") {
-            return facts.isTool ? .yes : .no
-        }
-        if text.contains("toy") || text.contains("play") {
-            return facts.isToy ? .yes : .no
-        }
-        if text.contains("backpack") || text.contains("pocket") || text.contains("carry") {
-            return facts.fitsInBackpack ? .yes : .no
-        }
-        if text.contains("alive") || text.contains("living") {
-            return facts.isAnimal ? .yes : .no
-        }
-        if text.contains("metal") {
-            return facts.mostlyMetal ? .yes : .no
-        }
-        if text.contains("bigger than a microwave") || text.contains("bigger than microwave") || text.contains("larger than a microwave") {
-            return facts.biggerThanMicrowave ? .yes : .no
-        }
-        if text.contains("water") {
-            return facts.livesInWater ? .yes : .no
-        }
-
-        return .notSure
+    private func autoAnswer(to question: String, facts: AnimalFacts) -> Answer {
+        return facts.answer(for: question)
     }
 
     private func matches(_ guess: String, target: String) -> Bool {
@@ -117,46 +74,25 @@ struct GameSimulator {
     }
 }
 
-struct ItemFacts {
-    let item: String
-    let isElectronic: Bool
-    let isAnimal: Bool
-    let isFood: Bool
-    let isTool: Bool
-    let isToy: Bool
-    let usedInKitchen: Bool
-    let usedInOffice: Bool
-    var fitsInBackpack: Bool
-    let biggerThanMicrowave: Bool
-    let mostlyMetal: Bool
-    let livesInWater: Bool
+struct AnimalFacts {
+    private let dataset = LLMScaffolding.animalDataset
+    private let animal: String
 
-    init(item: String) {
-        let lower = item.lowercased()
-        self.item = item
+    init(animal: String) {
+        self.animal = animal
+    }
 
-        let kitchen = Set(LLMScaffolding.kitchenItems.map { $0.lowercased() })
-        let office = Set(LLMScaffolding.officeItems.map { $0.lowercased() })
-        let animals = Set(LLMScaffolding.animalItems.map { $0.lowercased() })
-        let tools = Set(LLMScaffolding.toolItems.map { $0.lowercased() })
-        let produce = Set(LLMScaffolding.produceItems.map { $0.lowercased() })
-        let toys = Set(LLMScaffolding.toyItems.map { $0.lowercased() })
-        let electronics = Set(LLMScaffolding.electronicItems.map { $0.lowercased() })
-        let edc = Set(LLMScaffolding.edcItems.map { $0.lowercased() })
+    func answer(for question: String) -> Answer {
+        guard
+            let dataset,
+            let key = dataset.features.first(where: { $0.question.lowercased() == question.lowercased() })?.key,
+            let values = dataset.rows[animal],
+            let value = values[key]
+        else { return .notSure }
 
-        isElectronic = electronics.contains(lower) || ["microwave", "blender", "kettle", "drill", "desk lamp"].contains(lower)
-        isAnimal = animals.contains(lower)
-        isFood = produce.contains(lower)
-        isTool = tools.contains(lower)
-        isToy = toys.contains(lower)
-        usedInKitchen = kitchen.contains(lower) || isFood
-        usedInOffice = office.contains(lower)
-        fitsInBackpack = !(["microwave", "horse", "cow"].contains(lower)) && !["desk", "monitor"].contains(lower) && !["bicycle"].contains(lower)
-        biggerThanMicrowave = ["horse", "cow", "desk"].contains(lower)
-        mostlyMetal = isTool || ["knife", "fork", "spoon", "scissors", "kettle", "flashlight"].contains(lower)
-        livesInWater = ["goldfish", "fish", "duck", "frog"].contains(lower)
-
-        if edc.contains(lower) { fitsInBackpack = true }
+        if value == 1 { return .yes }
+        if value == 0 { return .no }
+        return .notSure
     }
 }
 #endif
