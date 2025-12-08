@@ -545,12 +545,46 @@ private final class AnimalModelWrapper {
 }
 
 struct AnimalQuestionEngine {
+    struct AnswerIndex {
+        let yes: Set<String>
+        let no: Set<String>
+        let unknown: Set<String>
+    }
+
+    struct QuestionScore {
+        let feature: AnimalFeature
+        let infoGain: Double
+        let yesCount: Int
+        let noCount: Int
+        let unknownCount: Int
+    }
+
     let dataset: AnimalDataset
     private let featureLookup: [String: AnimalFeature]
+    private let featureAnswerIndex: [String: AnswerIndex]
 
     init(dataset: AnimalDataset) {
         self.dataset = dataset
         self.featureLookup = Dictionary(uniqueKeysWithValues: dataset.features.map { ($0.question.lowercased(), $0) })
+        var index: [String: AnswerIndex] = [:]
+        for feature in dataset.features {
+            var yes = Set<String>()
+            var no = Set<String>()
+            var unknown = Set<String>()
+            for animal in dataset.animals {
+                if let ans = dataset.answer(for: animal, featureKey: feature.key) {
+                    switch ans {
+                    case .yes: yes.insert(animal)
+                    case .no: no.insert(animal)
+                    default: unknown.insert(animal)
+                    }
+                } else {
+                    unknown.insert(animal)
+                }
+            }
+            index[feature.key] = AnswerIndex(yes: yes, no: no, unknown: unknown)
+        }
+        self.featureAnswerIndex = index
     }
 
     func nextQuestion(transcript: [QAEntry]) -> String {
@@ -558,29 +592,25 @@ struct AnimalQuestionEngine {
         // Allow a small amount of contradiction in the transcript so we don't drop the true animal
         // after a single misclick or mistaken answer.
         let candidates = tolerantCandidates(from: transcript)
+        let candidateSet = Set(candidates)
 
         var bestFeature: AnimalFeature?
         var bestScore: Int = Int.max
+        var bestSpecificity: Double = -Double.infinity
 
         for feature in dataset.features where !askedKeys.contains(feature.key) {
-            var yes = 0
-            var no = 0
-            for animal in candidates {
-                if let ans = dataset.answer(for: animal, featureKey: feature.key) {
-                    switch ans {
-                    case .yes: yes += 1
-                    case .no: no += 1
-                    default: break
-                    }
-                }
-            }
+            let counts = counts(for: feature.key, candidates: candidates, candidateSet: candidateSet)
+            let yes = counts.yes
+            let no = counts.no
             let total = yes + no
             // Skip attributes that cannot split the remaining candidates (all yes or all no).
             if total == 0 || yes == 0 || no == 0 { continue }
             let splitScore = abs(yes - no)
-            if splitScore < bestScore {
+            let specificity = variance(of: [Double(yes), Double(no), Double(counts.unknown)])
+            if splitScore < bestScore || (splitScore == bestScore && specificity > bestSpecificity) {
                 bestScore = splitScore
                 bestFeature = feature
+                bestSpecificity = specificity
             }
         }
 
@@ -592,42 +622,7 @@ struct AnimalQuestionEngine {
 
     func makeGuess(transcript: [QAEntry]) -> LLMGuessResponse {
         let askedKeys = Set(transcript.compactMap { featureKey(for: $0.question) })
-        var candidateScores = candidateScores(from: transcript)
-
-        guard let bestMismatch = candidateScores.first?.mismatches else {
-            let guess = dataset.animals.first ?? "unknown"
-            return LLMGuessResponse(guess: guess, confidence: 0.25, rationale: "Guess based on remaining candidates.")
-        }
-
-        let maxMismatch = bestMismatch + 1 // tolerate a single contradictory answer
-        var candidates = candidateScores
-            .filter { $0.mismatches <= maxMismatch }
-            .map { $0.animal }
-
-        // Hard consistency guard: if can_fly was answered yes, drop all non-flyers.
-        if let flyAnswer = transcript.first(where: { featureKey(for: $0.question) == "can_fly" })?.answer, flyAnswer == .yes {
-            let flyers = candidates.filter { dataset.rows[$0]?["can_fly"] == 1 }
-            if !flyers.isEmpty {
-                candidates = flyers
-            }
-            // Additional guard: if it flies and has fur/hair, restrict to flying mammals (bat).
-            if let furAnswer = transcript.first(where: { featureKey(for: $0.question) == "has_fur_or_hair" })?.answer, furAnswer == .yes {
-                let furryFlyers = candidates.filter { dataset.rows[$0]?["has_fur_or_hair"] == 1 }
-                if !furryFlyers.isEmpty {
-                    candidates = furryFlyers
-                }
-            }
-        }
-
-        // If contradictions emptied the candidate list, fall back to all animals, or at least all flyers if can_fly was yes.
-        if candidates.isEmpty {
-            if let flyAnswer = transcript.first(where: { featureKey(for: $0.question) == "can_fly" })?.answer, flyAnswer == .yes {
-                let flyers = dataset.animals.filter { dataset.rows[$0]?["can_fly"] == 1 }
-                candidates = flyers.isEmpty ? dataset.animals : flyers
-            } else {
-                candidates = dataset.animals
-            }
-        }
+        var candidates = candidatePool(from: transcript)
 
         // If only one candidate remains, guess it immediately.
         if let sole = candidates.only {
@@ -702,10 +697,83 @@ struct AnimalQuestionEngine {
         .sorted { $0.mismatches < $1.mismatches }
     }
 
-    private func tolerantCandidates(from transcript: [QAEntry]) -> [String] {
+    private func candidatePool(from transcript: [QAEntry]) -> [String] {
         let scores = candidateScores(from: transcript)
         guard let best = scores.first?.mismatches else { return dataset.animals }
         let maxMismatch = best + 1 // allow at most one contradiction compared to the leading candidates
-        return scores.filter { $0.mismatches <= maxMismatch }.map { $0.animal }
+        var candidates = scores.filter { $0.mismatches <= maxMismatch }.map { $0.animal }
+
+        // Hard constraints first: drop non-flyers (and then non-furry flyers if applicable).
+        if let flyAnswer = transcript.first(where: { featureKey(for: $0.question) == "can_fly" })?.answer, flyAnswer == .yes {
+            let flyers = candidates.filter { dataset.rows[$0]?["can_fly"] == 1 }
+            if !flyers.isEmpty { candidates = flyers }
+            if let furAnswer = transcript.first(where: { featureKey(for: $0.question) == "has_fur_or_hair" })?.answer, furAnswer == .yes {
+                let furryFlyers = candidates.filter { dataset.rows[$0]?["has_fur_or_hair"] == 1 }
+                if !furryFlyers.isEmpty { candidates = furryFlyers }
+            }
+        }
+
+        // If contradictions emptied the candidate list, fall back to all animals (or flyers if required).
+        if candidates.isEmpty {
+            if let flyAnswer = transcript.first(where: { featureKey(for: $0.question) == "can_fly" })?.answer, flyAnswer == .yes {
+                let flyers = dataset.animals.filter { dataset.rows[$0]?["can_fly"] == 1 }
+                candidates = flyers.isEmpty ? dataset.animals : flyers
+            } else {
+                candidates = dataset.animals
+            }
+        }
+
+        return candidates
+    }
+
+    private func tolerantCandidates(from transcript: [QAEntry]) -> [String] {
+        candidatePool(from: transcript)
+    }
+
+    /// Score each unasked question by expected information gain over the remaining candidates.
+    func scoreQuestions(transcript: [QAEntry]) -> [QuestionScore] {
+        let askedKeys = Set(transcript.compactMap { featureKey(for: $0.question) })
+        let candidates = tolerantCandidates(from: transcript)
+        let candidateSet = Set(candidates)
+        let total = Double(candidates.count)
+        guard total > 0 else { return [] }
+        let baseEntropy = total <= 1 ? 0 : log2(total)
+
+        var scores: [QuestionScore] = []
+        for feature in dataset.features where !askedKeys.contains(feature.key) {
+            let counts = counts(for: feature.key, candidates: candidates, candidateSet: candidateSet)
+            let yes = counts.yes
+            let no = counts.no
+            let unknown = counts.unknown
+
+            let branches = [yes, no, unknown]
+            let expectedEntropy = branches.reduce(0.0) { partial, count in
+                if count == 0 { return partial }
+                let p = Double(count) / total
+                let branchEntropy = count <= 1 ? 0 : log2(Double(count))
+                return partial + p * branchEntropy
+            }
+
+            let gain = max(0, baseEntropy - expectedEntropy)
+            scores.append(QuestionScore(feature: feature, infoGain: gain, yesCount: yes, noCount: no, unknownCount: unknown))
+        }
+
+        return scores.sorted { $0.infoGain > $1.infoGain }
+    }
+
+    private func counts(for featureKey: String, candidates: [String], candidateSet: Set<String>? = nil) -> (yes: Int, no: Int, unknown: Int) {
+        guard let idx = featureAnswerIndex[featureKey] else { return (0, 0, 0) }
+        let candidatesSet = candidateSet ?? Set(candidates)
+        let yes = idx.yes.reduce(0) { $0 + (candidatesSet.contains($1) ? 1 : 0) }
+        let no = idx.no.reduce(0) { $0 + (candidatesSet.contains($1) ? 1 : 0) }
+        let unknown = idx.unknown.reduce(0) { $0 + (candidatesSet.contains($1) ? 1 : 0) }
+        return (yes, no, unknown)
+    }
+
+    private func variance(of values: [Double]) -> Double {
+        guard !values.isEmpty else { return 0 }
+        let mean = values.reduce(0, +) / Double(values.count)
+        let variance = values.reduce(0) { $0 + pow($1 - mean, 2) } / Double(values.count)
+        return variance
     }
 }
