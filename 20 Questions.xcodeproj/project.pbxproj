@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C3E39AC22F90A1B4006C8721 /* 20 Questions/animals_ann.json in Resources */ = {isa = PBXBuildFile; fileRef = C3E39AC12F90A1B4006C8721 /* 20 Questions/animals_ann.json */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		09E291D82EC42E2400296F4F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		09E291C52EC42E2100296F4F /* 20 Questions.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "20 Questions.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		09E291D72EC42E2400296F4F /* 20 QuestionsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "20 QuestionsTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		09E291E12EC42E2400296F4F /* 20 QuestionsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "20 QuestionsUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3E39AC12F90A1B4006C8721 /* 20 Questions/animals_ann.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "20 Questions/animals_ann.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -79,6 +84,7 @@
 				09E291DA2EC42E2400296F4F /* 20 QuestionsTests */,
 				09E291E42EC42E2400296F4F /* 20 QuestionsUITests */,
 				09E291C62EC42E2100296F4F /* Products */,
+				C3E39AC12F90A1B4006C8721 /* 20 Questions/animals_ann.json */,
 			);
 			sourceTree = "<group>";
 		};
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3E39AC22F90A1B4006C8721 /* 20 Questions/animals_ann.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

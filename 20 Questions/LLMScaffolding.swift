@@ -5,6 +5,75 @@ import CoreML
 import FoundationModels
 #endif
 
+// ANN config models for the local weights matrix.
+typealias AnimalId = String
+typealias QuestionId = String
+
+struct AnimalsANNConfig: Codable {
+    let version: Int
+    let answerWeights: [String: Int]
+    let animals: [AnimalDef]
+    let questions: [QuestionDef]
+    let weights: [AnimalId: [QuestionId: Int]]
+}
+
+struct AnimalDef: Codable {
+    let id: AnimalId
+    let name: String
+}
+
+struct QuestionDef: Codable {
+    let id: QuestionId
+    let text: String
+}
+
+final class ANNDataStore {
+    let config: AnimalsANNConfig
+    private(set) var weights: [AnimalId: [QuestionId: Int]]
+
+    init(config: AnimalsANNConfig) {
+        self.config = config
+        self.weights = config.weights
+    }
+
+    convenience init?(resourceName: String = "animals_ann",
+                      bundle: Bundle = .main) {
+        let possible = [
+            bundle.url(forResource: resourceName, withExtension: "json"),
+            Bundle(for: LLMScaffolding.self).url(forResource: resourceName, withExtension: "json")
+        ].compactMap { $0 }
+
+        guard let url = possible.first else {
+            print("ANNDataStore: could not find \(resourceName).json in bundle")
+            return nil
+        }
+        do {
+            let data = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            let config = try decoder.decode(AnimalsANNConfig.self, from: data)
+            self.init(config: config)
+        } catch {
+            print("ANNDataStore: failed to load/parse JSON:", error)
+            return nil
+        }
+    }
+
+    func weight(for animalId: AnimalId, questionId: QuestionId) -> Int {
+        weights[animalId]?[questionId] ?? 0
+    }
+
+    func setWeight(_ newValue: Int, for animalId: AnimalId, questionId: QuestionId) {
+        var perAnimal = weights[animalId] ?? [:]
+        perAnimal[questionId] = newValue
+        weights[animalId] = perAnimal
+    }
+
+    func addToWeight(_ delta: Int, for animalId: AnimalId, questionId: QuestionId) {
+        let current = weight(for: animalId, questionId: questionId)
+        setWeight(current + delta, for: animalId, questionId: questionId)
+    }
+}
+
 enum GamePhase: Equatable {
     case idle
     case asking
@@ -112,11 +181,14 @@ protocol LLMClient {
 final class LLMScaffolding {
     /// The animal dataset and feature metadata parsed from animals_20q.csv
     static let animalDataset = AnimalDataset.loadFromBundle()
+    /// ANN weights/config seeded from animals_ann.json (patent-inspired ANN path).
+    static let annStore = ANNDataStore(resourceName: "animals_ann")
 
     static let defaultCategories = ["animals"]
 
     static let defaultCanonicalItems: [String] = {
         if let dataset = animalDataset { return dataset.animals }
+        if let ann = annStore { return ann.config.animals.map { $0.name } }
         return []
     }()
 
