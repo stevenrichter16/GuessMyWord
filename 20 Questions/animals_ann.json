@@ -583,6 +583,42 @@
     {
       "id": "used_for_work_or_transport",
       "text": "Is it commonly used by humans for work or transport (like riding or carrying loads)?"
+    },
+    {
+      "id": "has_hump",
+      "text": "Does it have a hump on its back?"
+    },
+    {
+      "id": "has_webbed_feet",
+      "text": "Does it have webbed feet?"
+    },
+    {
+      "id": "has_armored_plates",
+      "text": "Does it have hard, armored plates on its body?"
+    },
+    {
+      "id": "has_quills",
+      "text": "Does it have sharp quills or spines?"
+    },
+    {
+      "id": "has_mane",
+      "text": "Does it have a noticeable mane around its neck?"
+    },
+    {
+      "id": "has_tusks",
+      "text": "Does it have visible tusks?"
+    },
+    {
+      "id": "has_trunk",
+      "text": "Does it have a trunk?"
+    },
+    {
+      "id": "has_gills",
+      "text": "Does it breathe through gills as an adult?"
+    },
+    {
+      "id": "has_short_legs",
+      "text": "Does it have short legs compared to its body length?"
     }
   ],
   "weights": {
@@ -630,7 +666,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": 10
+      "used_for_work_or_transport": 10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "cat": {
       "is_mammal": 10,
@@ -676,7 +721,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "elephant": {
       "is_mammal": 10,
@@ -722,7 +776,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": 10
+      "used_for_work_or_transport": 10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": 10,
+      "has_trunk": 10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "lion": {
       "is_mammal": 10,
@@ -768,7 +831,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": 10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "tiger": {
       "is_mammal": 10,
@@ -814,7 +886,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "giraffe": {
       "is_mammal": 10,
@@ -860,7 +941,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "zebra": {
       "is_mammal": 10,
@@ -906,7 +996,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": 10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "kangaroo": {
       "is_mammal": 10,
@@ -952,7 +1051,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "panda": {
       "is_mammal": 10,
@@ -998,7 +1106,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "koala": {
       "is_mammal": 10,
@@ -1044,7 +1161,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "bear": {
       "is_mammal": 10,
@@ -1090,7 +1216,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "wolf": {
       "is_mammal": 10,
@@ -1136,7 +1271,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "fox": {
       "is_mammal": 10,
@@ -1182,7 +1326,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "deer": {
       "is_mammal": 10,
@@ -1228,7 +1381,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "rabbit": {
       "is_mammal": 10,
@@ -1274,7 +1436,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "squirrel": {
       "is_mammal": 10,
@@ -1320,7 +1491,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "hippopotamus": {
       "is_mammal": 10,
@@ -1366,7 +1546,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": 10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "rhinoceros": {
       "is_mammal": 10,
@@ -1412,7 +1601,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "cheetah": {
       "is_mammal": 10,
@@ -1458,7 +1656,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "leopard": {
       "is_mammal": 10,
@@ -1504,7 +1711,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "monkey": {
       "is_mammal": 10,
@@ -1550,7 +1766,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "gorilla": {
       "is_mammal": 10,
@@ -1596,7 +1821,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "chimpanzee": {
       "is_mammal": 10,
@@ -1642,7 +1876,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "orangutan": {
       "is_mammal": 10,
@@ -1688,7 +1931,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "baboon": {
       "is_mammal": 10,
@@ -1734,7 +1986,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "bat": {
       "is_mammal": 10,
@@ -1780,7 +2041,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "dolphin": {
       "is_mammal": 10,
@@ -1826,7 +2096,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "whale": {
       "is_mammal": 10,
@@ -1872,7 +2151,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "shark": {
       "is_mammal": -10,
@@ -1918,7 +2206,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": 10,
+      "has_short_legs": -10
     },
     "octopus": {
       "is_mammal": -10,
@@ -1964,7 +2261,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": 10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": 10,
+      "has_short_legs": -10
     },
     "squid": {
       "is_mammal": -10,
@@ -2010,7 +2316,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": 10,
+      "has_short_legs": -10
     },
     "seal": {
       "is_mammal": 10,
@@ -2056,7 +2371,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "walrus": {
       "is_mammal": 10,
@@ -2102,7 +2426,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": 10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "otter": {
       "is_mammal": 10,
@@ -2148,7 +2481,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "raccoon": {
       "is_mammal": 10,
@@ -2194,7 +2536,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "skunk": {
       "is_mammal": 10,
@@ -2240,7 +2591,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "moose": {
       "is_mammal": 10,
@@ -2286,7 +2646,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "bison": {
       "is_mammal": 10,
@@ -2332,7 +2701,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": 10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "camel": {
       "is_mammal": 10,
@@ -2378,7 +2756,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": 10
+      "used_for_work_or_transport": 10,
+      "has_hump": 10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "llama": {
       "is_mammal": 10,
@@ -2424,7 +2811,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": 10
+      "used_for_work_or_transport": 10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "alpaca": {
       "is_mammal": 10,
@@ -2470,7 +2866,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "donkey": {
       "is_mammal": 10,
@@ -2516,7 +2921,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": 10
+      "used_for_work_or_transport": 10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": 10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "horse": {
       "is_mammal": 10,
@@ -2562,7 +2976,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": 10
+      "used_for_work_or_transport": 10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": 10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "cow": {
       "is_mammal": 10,
@@ -2608,7 +3031,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": 10
+      "used_for_work_or_transport": 10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "sheep": {
       "is_mammal": 10,
@@ -2654,7 +3086,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "goat": {
       "is_mammal": 10,
@@ -2700,7 +3141,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": 10
+      "used_for_work_or_transport": 10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "pig": {
       "is_mammal": 10,
@@ -2746,7 +3196,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "chicken": {
       "is_mammal": -10,
@@ -2792,7 +3251,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "duck": {
       "is_mammal": -10,
@@ -2838,7 +3306,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "goose": {
       "is_mammal": -10,
@@ -2884,7 +3361,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "turkey": {
       "is_mammal": -10,
@@ -2930,7 +3416,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "eagle": {
       "is_mammal": -10,
@@ -2976,7 +3471,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "owl": {
       "is_mammal": -10,
@@ -3022,7 +3526,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "hawk": {
       "is_mammal": -10,
@@ -3068,7 +3581,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "falcon": {
       "is_mammal": -10,
@@ -3114,7 +3636,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "parrot": {
       "is_mammal": -10,
@@ -3160,7 +3691,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "flamingo": {
       "is_mammal": -10,
@@ -3206,7 +3746,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "pelican": {
       "is_mammal": -10,
@@ -3252,7 +3801,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "penguin": {
       "is_mammal": -10,
@@ -3298,7 +3856,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "swan": {
       "is_mammal": -10,
@@ -3344,7 +3911,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "crow": {
       "is_mammal": -10,
@@ -3390,7 +3966,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "pigeon": {
       "is_mammal": -10,
@@ -3436,7 +4021,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "sparrow": {
       "is_mammal": -10,
@@ -3482,7 +4076,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "hummingbird": {
       "is_mammal": -10,
@@ -3528,7 +4131,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "turtle": {
       "is_mammal": -10,
@@ -3574,7 +4186,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "tortoise": {
       "is_mammal": -10,
@@ -3620,7 +4241,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "frog": {
       "is_mammal": -10,
@@ -3666,7 +4296,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "toad": {
       "is_mammal": -10,
@@ -3712,7 +4351,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "snake": {
       "is_mammal": -10,
@@ -3758,7 +4406,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": 10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "lizard": {
       "is_mammal": -10,
@@ -3804,7 +4461,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "crocodile": {
       "is_mammal": -10,
@@ -3850,7 +4516,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": 10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "alligator": {
       "is_mammal": -10,
@@ -3896,7 +4571,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": 10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "salamander": {
       "is_mammal": -10,
@@ -3942,7 +4626,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "newt": {
       "is_mammal": -10,
@@ -3988,7 +4681,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "ant": {
       "is_mammal": -10,
@@ -4034,7 +4736,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "bee": {
       "is_mammal": -10,
@@ -4080,7 +4791,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": 10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "wasp": {
       "is_mammal": -10,
@@ -4126,7 +4846,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": 10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "butterfly": {
       "is_mammal": -10,
@@ -4172,7 +4901,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "moth": {
       "is_mammal": -10,
@@ -4218,7 +4956,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "beetle": {
       "is_mammal": -10,
@@ -4264,7 +5011,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "crab": {
       "is_mammal": -10,
@@ -4310,7 +5066,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": 10,
+      "has_short_legs": -10
     },
     "lobster": {
       "is_mammal": -10,
@@ -4356,7 +5121,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": 10,
+      "has_short_legs": -10
     },
     "shrimp": {
       "is_mammal": -10,
@@ -4402,7 +5176,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": 10,
+      "has_short_legs": -10
     },
     "jellyfish": {
       "is_mammal": -10,
@@ -4448,7 +5231,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": 10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "starfish": {
       "is_mammal": -10,
@@ -4494,7 +5286,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "seahorse": {
       "is_mammal": -10,
@@ -4540,7 +5341,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": 10,
+      "has_short_legs": -10
     },
     "clownfish": {
       "is_mammal": -10,
@@ -4586,7 +5396,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": 10,
+      "has_short_legs": -10
     },
     "tuna": {
       "is_mammal": -10,
@@ -4632,7 +5451,16 @@
       "migrates_seasonally": 10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": 10,
+      "has_short_legs": -10
     },
     "goldfish": {
       "is_mammal": -10,
@@ -4678,7 +5506,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": 10,
+      "has_short_legs": -10
     },
     "carp": {
       "is_mammal": -10,
@@ -4724,7 +5561,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": 10,
+      "has_short_legs": -10
     },
     "hyena": {
       "is_mammal": 10,
@@ -4770,7 +5616,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "meerkat": {
       "is_mammal": 10,
@@ -4816,7 +5671,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "lemur": {
       "is_mammal": 10,
@@ -4862,7 +5726,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "porcupine": {
       "is_mammal": 10,
@@ -4908,7 +5781,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": 10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "hedgehog": {
       "is_mammal": 10,
@@ -4954,7 +5836,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": 10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     },
     "hamster": {
       "is_mammal": 10,
@@ -5000,7 +5891,16 @@
       "migrates_seasonally": -10,
       "hibernates": 10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "guinea_pig": {
       "is_mammal": 10,
@@ -5046,7 +5946,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "chinchilla": {
       "is_mammal": 10,
@@ -5092,7 +6001,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "platypus": {
       "is_mammal": 10,
@@ -5138,7 +6056,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": 10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": 10,
+      "has_armored_plates": -10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": -10
     },
     "armadillo": {
       "is_mammal": 10,
@@ -5184,7 +6111,16 @@
       "migrates_seasonally": -10,
       "hibernates": -10,
       "is_venomous": -10,
-      "used_for_work_or_transport": -10
+      "used_for_work_or_transport": -10,
+      "has_hump": -10,
+      "has_webbed_feet": -10,
+      "has_armored_plates": 10,
+      "has_quills": -10,
+      "has_mane": -10,
+      "has_tusks": -10,
+      "has_trunk": -10,
+      "has_gills": -10,
+      "has_short_legs": 10
     }
   }
 }

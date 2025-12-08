@@ -506,7 +506,16 @@ struct AnimalDataset {
         "migrates_seasonally": "Does it migrate long distances during certain seasons?",
         "hibernates": "Does it hibernate or sleep for long periods in winter?",
         "is_venomous": "Is it venomous (can inject venom through fangs, stingers, etc.)?",
-        "used_for_work_or_transport": "Is it commonly used by humans for work or transport (like riding or carrying loads)?"
+        "used_for_work_or_transport": "Is it commonly used by humans for work or transport (like riding or carrying loads)?",
+        "has_hump": "Does it have a hump on its back?",
+        "has_webbed_feet": "Does it have webbed feet?",
+        "has_armored_plates": "Does it have hard, armored plates on its body?",
+        "has_quills": "Does it have sharp quills or spines?",
+        "has_mane": "Does it have a noticeable mane around its neck?",
+        "has_tusks": "Does it have visible tusks?",
+        "has_trunk": "Does it have a trunk?",
+        "has_gills": "Does it breathe through gills as an adult?",
+        "has_short_legs": "Does it have short legs compared to its body length?"
     ]
 
     static func loadFromBundle() -> AnimalDataset? {
