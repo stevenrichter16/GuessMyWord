@@ -24,12 +24,13 @@ struct SimulationStep {
 }
 
 struct GameSimulator {
-    private let llm: LLMScaffolding
     private let maxTurns: Int
+    private let annStore: ANNDataStore?
+    private let topKForQuestionSelection = 8
 
-    init(llm: LLMScaffolding = LLMScaffolding(), maxTurns: Int = 10) {
-        self.llm = llm
+    init(maxTurns: Int = 20) {
         self.maxTurns = maxTurns
+        self.annStore = LLMScaffolding.annStore
     }
 
     func runSimulations(_ runs: Int = 20) async -> SimulationReport {
@@ -73,12 +74,14 @@ struct GameSimulator {
         var transcript: [QAEntry] = []
         var steps: [SimulationStep] = []
         var turn = 1
-        var currentQuestion = await llm.nextQuestion(context: context(turn: turn, transcript: transcript, hint: nil))
         let plannedContradictions = Set((1...maxTurns).shuffled().prefix(contradictions))
         var appliedContradictions: [Int] = []
 
-        while true {
-            var answer = autoAnswer(to: currentQuestion.question, facts: facts)
+        var annSession = ANNSession(store: annStore, topK: topKForQuestionSelection)
+
+        while turn <= maxTurns {
+            guard let nextQ = annSession.nextQuestion() else { break }
+            var answer = autoAnswer(to: nextQ.text, facts: facts)
             if plannedContradictions.contains(turn) {
                 switch answer {
                 case .yes:
@@ -91,50 +94,17 @@ struct GameSimulator {
                     break
                 }
             }
-            let entry = QAEntry(turn: turn, question: currentQuestion.question, answer: answer)
-            let snapshot = SimulationStep(entry: entry, candidates: candidates(for: transcript))
+            let entry = QAEntry(turn: turn, question: nextQ.text, answer: answer)
+            let snapshot = SimulationStep(entry: entry, candidates: annSession.currentCandidates())
             transcript.append(entry)
             steps.append(snapshot)
-
-            if turn >= maxTurns { break }
+            annSession.recordAnswer(questionId: nextQ.id, answer: answer)
             turn += 1
-            currentQuestion = await llm.nextQuestion(context: context(turn: turn, transcript: transcript, hint: nil))
         }
 
-        let guess = await llm.makeGuess(context: context(turn: turn + 1, transcript: transcript, hint: nil))
-        let success = matches(guess.guess, target: target)
-        return SimulationRun(target: target, transcript: transcript, steps: steps, guess: guess.guess, wasCorrect: success, flippedTurns: appliedContradictions.sorted())
-    }
-
-    private func candidates(for transcript: [QAEntry]) -> [String] {
-        guard let dataset = LLMScaffolding.animalDataset else { return [] }
-        let engine = AnimalQuestionEngine(dataset: dataset)
-        return dataset.animals.filter { animal in
-            guard let facts = dataset.rows[animal] else { return false }
-            for entry in transcript {
-                guard let key = engine.featureKey(for: entry.question), let value = facts[key] else { continue }
-                switch entry.answer {
-                case .yes:
-                    if value != 1 { return false }
-                case .no:
-                    if value != 0 { return false }
-                default:
-                    continue
-                }
-            }
-            return true
-        }
-    }
-
-    private func context(turn: Int, transcript: [QAEntry], hint: String?) -> PromptContext {
-        PromptContext(
-            turn: turn,
-            maxTurns: maxTurns,
-            transcript: transcript,
-            allowedCategories: LLMScaffolding.defaultCategories,
-            canonicalItems: LLMScaffolding.defaultCanonicalItems,
-            hint: hint
-        )
+        let guessName = annSession.bestGuess() ?? "unknown"
+        let success = matches(guessName, target: target)
+        return SimulationRun(target: target, transcript: transcript, steps: steps, guess: guessName, wasCorrect: success, flippedTurns: appliedContradictions.sorted())
     }
 
     private func autoAnswer(to question: String, facts: AnimalFacts) -> Answer {
@@ -170,6 +140,117 @@ struct AnimalFacts {
         if value == 1 { return .yes }
         if value == 0 { return .no }
         return .notSure
+    }
+}
+
+private struct ANNSession {
+    private let annStore: ANNDataStore?
+    private let allAnimals: [Animal]
+    private let allQuestions: [Question]
+    private let topK: Int
+    private var answers: [QuestionId: Answer] = [:]
+    private var asked: Set<QuestionId> = []
+    private var rankedAnimals: [Animal]
+
+    init(store: ANNDataStore?, topK: Int) {
+        self.annStore = store
+        self.allAnimals = store?.config.animals.map { Animal(id: $0.id, name: $0.name) } ?? []
+        self.allQuestions = store?.config.questions.map { Question(id: $0.id, text: $0.text) } ?? []
+        self.topK = topK
+        self.rankedAnimals = allAnimals
+    }
+
+    mutating func recordAnswer(questionId: QuestionId, answer: Answer) {
+        answers[questionId] = answer
+        asked.insert(questionId)
+        rerankAnimals()
+    }
+
+    func currentCandidates() -> [String] {
+        Array(rankedAnimals.prefix(topK)).map { $0.name }
+    }
+
+    func bestGuess() -> String? {
+        rankedAnimals.first?.name
+    }
+
+    mutating func nextQuestion() -> Question? {
+        let topAnimals = Array(rankedAnimals.prefix(topK))
+        if topAnimals.count <= 1 { return nil }
+
+        var bestQuestion: Question?
+        var bestEntropy: Double = -Double.infinity
+        var bestCoverage: Double = -Double.infinity
+
+        for q in allQuestions where !asked.contains(q.id) {
+            var yes = 0
+            var no = 0
+            for animal in topAnimals {
+                let w = weight(for: animal.id, qid: q.id)
+                if w > 0 { yes += 1 }
+                else if w < 0 { no += 1 }
+            }
+            let unknown = max(0, topAnimals.count - (yes + no))
+            let coverage = Double(yes + no) / Double(max(1, topAnimals.count))
+            if (yes + no) < 2 || coverage < 0.1 { continue }
+            let ent = entropy([yes, no, unknown])
+            if ent > bestEntropy || (ent == bestEntropy && coverage > bestCoverage) {
+                bestEntropy = ent
+                bestCoverage = coverage
+                bestQuestion = q
+            }
+        }
+        return bestQuestion
+    }
+
+    private mutating func rerankAnimals() {
+        guard let store = annStore else { return }
+        var scores: [AnimalId: Int] = [:]
+        for animal in allAnimals { scores[animal.id] = 0 }
+
+        for (qid, ans) in answers {
+            if let key = answerWeightKey(for: ans),
+               let answerWeight = store.config.answerWeights[key],
+               answerWeight != 0 {
+                let delta = abs(answerWeight)
+                for animal in allAnimals {
+                    let cell = weight(for: animal.id, qid: qid)
+                    guard cell != 0 else { continue }
+                    let agree = (answerWeight > 0 && cell > 0) || (answerWeight < 0 && cell < 0)
+                    scores[animal.id, default: 0] += agree ? delta : -delta
+                }
+            } else if ans == .maybe || ans == .notSure {
+                // Weak nudge
+                for animal in allAnimals {
+                    let cell = weight(for: animal.id, qid: qid)
+                    if cell > 0 { scores[animal.id, default: 0] += 1 }
+                    else if cell < 0 { scores[animal.id, default: 0] -= 1 }
+                }
+            }
+        }
+        rankedAnimals = allAnimals.sorted { (scores[$0.id] ?? 0) > (scores[$1.id] ?? 0) }
+    }
+
+    private func weight(for animal: AnimalId, qid: QuestionId) -> Int {
+        annStore?.weights[animal]?[qid] ?? 0
+    }
+
+    private func answerWeightKey(for answer: Answer) -> String? {
+        switch answer {
+        case .yes: return "YES"
+        case .no: return "NO"
+        case .maybe, .notSure: return "UNKNOWN"
+        }
+    }
+
+    private func entropy(_ counts: [Int]) -> Double {
+        let total = counts.reduce(0, +)
+        guard total > 0 else { return 0 }
+        return counts.reduce(0.0) { acc, c in
+            guard c > 0 else { return acc }
+            let p = Double(c) / Double(total)
+            return acc - p * log2(p)
+        }
     }
 }
 #endif

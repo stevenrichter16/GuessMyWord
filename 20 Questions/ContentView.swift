@@ -259,6 +259,13 @@ final class ANNGameViewModel: ObservableObject {
 struct ContentView: View {
     @StateObject private var viewModel = ANNGameViewModel()!
     @Environment(\.colorScheme) private var colorScheme
+#if DEBUG
+    @State private var simReport: SimulationReport?
+    @State private var simRunning = false
+    @State private var noisySimReport: SimulationReport?
+    @State private var noisySimRunning = false
+    @State private var expandedRunIDs: Set<String> = []
+#endif
 
     var body: some View {
         NavigationStack {
@@ -266,27 +273,32 @@ struct ContentView: View {
                 backgroundGradient
                     .ignoresSafeArea()
 
-                VStack(spacing: 20) {
-                    header
-                    progressBar
+                ScrollView {
+                    VStack(spacing: 20) {
+                        header
+                        progressBar
 
-                    Group {
-                        if let question = viewModel.currentQuestion, !viewModel.isFinished {
-                            questionCard(question)
-                            answerButtons
-                        } else if let guess = viewModel.currentGuess {
-                            guessCard(guess)
-                        } else {
-                            fallbackCard
+                        Group {
+                            if let question = viewModel.currentQuestion, !viewModel.isFinished {
+                                questionCard(question)
+                                answerButtons
+                            } else if let guess = viewModel.currentGuess {
+                                guessCard(guess)
+                            } else {
+                                fallbackCard
+                            }
                         }
-                    }
-                    .animation(.spring(response: 0.35, dampingFraction: 0.8), value: viewModel.currentQuestion?.id)
-                    .animation(.spring(response: 0.35, dampingFraction: 0.8), value: viewModel.currentGuess?.id)
+                        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: viewModel.currentQuestion?.id)
+                        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: viewModel.currentGuess?.id)
 
-                    debugStrip
-                    Spacer()
+                        debugStrip
+#if DEBUG
+                        debugSimulator
+#endif
+                        Spacer(minLength: 20)
+                    }
+                    .padding()
                 }
-                .padding()
             }
             .navigationTitle("20 Questions: Animals")
         }
@@ -470,6 +482,125 @@ struct ContentView: View {
             )
         }
     }
+
+#if DEBUG
+    private var debugSimulator: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Developer Tools")
+                .font(.headline)
+            HStack(spacing: 12) {
+                Button {
+                    Task { await runSims(contradictions: 0) }
+                } label: {
+                    Label("Run 10 sims", systemImage: "play.fill")
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(simRunning || noisySimRunning)
+
+                Button {
+                    Task { await runSims(contradictions: 2) }
+                } label: {
+                    Label("Run noisy sims", systemImage: "waveform.path.ecg")
+                }
+                .buttonStyle(.bordered)
+                .disabled(simRunning || noisySimRunning)
+            }
+            if simRunning || noisySimRunning {
+                HStack {
+                    ProgressView()
+                    Text("Simulating...")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+            }
+            if let sim = simReport {
+                Text("Clean sims: \(sim.correct)/\(sim.totalRuns) correct (\(Int(sim.accuracy * 100))%).")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                runList(sim, label: "Recent clean runs", keyPrefix: "clean")
+            }
+            if let sim = noisySimReport {
+                Text("Noisy sims: \(sim.correct)/\(sim.totalRuns) correct (\(Int(sim.accuracy * 100))%).")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                runList(sim, label: "Recent noisy runs", keyPrefix: "noisy")
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(cardFill.opacity(0.9))
+                .shadow(color: shadowColor, radius: 6, x: 0, y: 4)
+        )
+    }
+
+    private func runSims(contradictions: Int) async {
+        if contradictions > 0 { noisySimRunning = true } else { simRunning = true }
+        let simulator = GameSimulator(maxTurns: 10)
+        let report: SimulationReport
+        if contradictions > 0 {
+            report = await simulator.runSimulationsWithContradictions(10, contradictions: contradictions)
+            noisySimReport = report
+        } else {
+            report = await simulator.runSimulations(10)
+            simReport = report
+        }
+        simRunning = false
+        noisySimRunning = false
+    }
+
+    @ViewBuilder
+    private func runList(_ report: SimulationReport, label: String, keyPrefix: String) -> some View {
+        let runs = Array(report.runs.prefix(10).enumerated())
+        if runs.isEmpty {
+            EmptyView()
+        } else {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(label)
+                    .font(.subheadline.weight(.semibold))
+                ForEach(runs, id: \.offset) { idx, run in
+                    let runId = "\(keyPrefix)-\(idx)"
+                    let isExpanded = expandedRunIDs.contains(runId)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text("#\(idx + 1) \(run.target) -> \(run.guess) \(run.wasCorrect ? "[correct]" : "[wrong]")")
+                                .font(.caption)
+                            Spacer()
+                            Button {
+                                if isExpanded { expandedRunIDs.remove(runId) } else { expandedRunIDs.insert(runId) }
+                            } label: {
+                                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                                    .font(.headline)
+                                    .padding(8)
+                                    .background(Circle().fill(colorScheme == .dark ? Color.white.opacity(0.12) : Color.black.opacity(0.08)))
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        if isExpanded {
+                            ForEach(run.transcript) { entry in
+                                HStack(alignment: .top) {
+                                    Text("Q\(entry.turn)")
+                                        .font(.caption2.weight(.bold))
+                                        .foregroundColor(.secondary)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(entry.question)
+                                            .font(.caption)
+                                        Text("Answer: \(entry.answer.displayLabel)")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(6)
+                    .background(RoundedRectangle(cornerRadius: 8).fill(cardFill.opacity(0.8)))
+                }
+            }
+        }
+    }
+#endif
 }
 
 private struct AnswerButton: View {
