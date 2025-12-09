@@ -3,7 +3,8 @@
   "answerWeights": {
     "YES": 4,
     "NO": -4,
-    "UNKNOWN": 0
+    "UNKNOWN": 0,
+    "SOMETIMES": 1
   },
   "animals": [
     {
@@ -663,6 +664,10 @@
     {
       "id": "can_sting",
       "text": "Can it sting you?"
+    },
+    {
+      "id": "is_insect",
+      "text": "Is it an insect?"
     }
   ],
   "weights": {
@@ -730,7 +735,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": 10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "cat": {
       "is_mammal": 10,
@@ -796,7 +802,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": 10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "elephant": {
       "is_mammal": 10,
@@ -862,7 +869,8 @@
       "is_bigger_than_sofa": 10,
       "has_whiskers": -10,
       "has_short_fur": 10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "lion": {
       "is_mammal": 10,
@@ -928,7 +936,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": 10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "tiger": {
       "is_mammal": 10,
@@ -994,7 +1003,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": 10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "giraffe": {
       "is_mammal": 10,
@@ -1060,7 +1070,8 @@
       "is_bigger_than_sofa": 10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "zebra": {
       "is_mammal": 10,
@@ -1126,7 +1137,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "kangaroo": {
       "is_mammal": 10,
@@ -1192,7 +1204,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "panda": {
       "is_mammal": 10,
@@ -1258,7 +1271,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "koala": {
       "is_mammal": 10,
@@ -1324,7 +1338,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "bear": {
       "is_mammal": 10,
@@ -1390,7 +1405,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "wolf": {
       "is_mammal": 10,
@@ -1456,7 +1472,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": 10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "fox": {
       "is_mammal": 10,
@@ -1522,7 +1539,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": 10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "deer": {
       "is_mammal": 10,
@@ -1588,7 +1606,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "rabbit": {
       "is_mammal": 10,
@@ -1654,7 +1673,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "squirrel": {
       "is_mammal": 10,
@@ -1720,7 +1740,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "hippopotamus": {
       "is_mammal": 10,
@@ -1786,7 +1807,8 @@
       "is_bigger_than_sofa": 10,
       "has_whiskers": -10,
       "has_short_fur": 10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "rhinoceros": {
       "is_mammal": 10,
@@ -1852,7 +1874,8 @@
       "is_bigger_than_sofa": 10,
       "has_whiskers": -10,
       "has_short_fur": 10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "cheetah": {
       "is_mammal": 10,
@@ -1918,7 +1941,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": 10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "leopard": {
       "is_mammal": 10,
@@ -1984,7 +2008,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": 10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "monkey": {
       "is_mammal": 10,
@@ -2050,7 +2075,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "gorilla": {
       "is_mammal": 10,
@@ -2116,7 +2142,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "chimpanzee": {
       "is_mammal": 10,
@@ -2182,7 +2209,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "orangutan": {
       "is_mammal": 10,
@@ -2248,7 +2276,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "baboon": {
       "is_mammal": 10,
@@ -2314,7 +2343,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "bat": {
       "is_mammal": 10,
@@ -2380,7 +2410,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "dolphin": {
       "is_mammal": 10,
@@ -2446,7 +2477,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": 10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "whale": {
       "is_mammal": 10,
@@ -2512,7 +2544,8 @@
       "is_bigger_than_sofa": 10,
       "has_whiskers": -10,
       "has_short_fur": 10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "shark": {
       "is_mammal": -10,
@@ -2578,7 +2611,8 @@
       "is_bigger_than_sofa": 10,
       "has_whiskers": -10,
       "has_short_fur": 10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "octopus": {
       "is_mammal": -10,
@@ -2644,7 +2678,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "squid": {
       "is_mammal": -10,
@@ -2710,7 +2745,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "seal": {
       "is_mammal": 10,
@@ -2776,7 +2812,8 @@
       "is_bigger_than_sofa": 10,
       "has_whiskers": 10,
       "has_short_fur": 10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "walrus": {
       "is_mammal": 10,
@@ -2842,7 +2879,8 @@
       "is_bigger_than_sofa": 10,
       "has_whiskers": 10,
       "has_short_fur": 10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "otter": {
       "is_mammal": 10,
@@ -2908,7 +2946,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": 10,
       "has_short_fur": 10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "raccoon": {
       "is_mammal": 10,
@@ -2974,7 +3013,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": 10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "skunk": {
       "is_mammal": 10,
@@ -3040,7 +3080,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "moose": {
       "is_mammal": 10,
@@ -3106,7 +3147,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "bison": {
       "is_mammal": 10,
@@ -3172,7 +3214,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": 10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "camel": {
       "is_mammal": 10,
@@ -3238,7 +3281,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "llama": {
       "is_mammal": 10,
@@ -3304,7 +3348,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "alpaca": {
       "is_mammal": 10,
@@ -3370,7 +3415,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "donkey": {
       "is_mammal": 10,
@@ -3436,7 +3482,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "horse": {
       "is_mammal": 10,
@@ -3502,7 +3549,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "cow": {
       "is_mammal": 10,
@@ -3568,7 +3616,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "sheep": {
       "is_mammal": 10,
@@ -3634,7 +3683,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "goat": {
       "is_mammal": 10,
@@ -3700,7 +3750,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "pig": {
       "is_mammal": 10,
@@ -3766,7 +3817,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": 10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "chicken": {
       "is_mammal": -10,
@@ -3832,7 +3884,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "duck": {
       "is_mammal": -10,
@@ -3898,7 +3951,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "goose": {
       "is_mammal": -10,
@@ -3964,7 +4018,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "turkey": {
       "is_mammal": -10,
@@ -4030,7 +4085,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "eagle": {
       "is_mammal": -10,
@@ -4096,7 +4152,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "owl": {
       "is_mammal": -10,
@@ -4162,7 +4219,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "hawk": {
       "is_mammal": -10,
@@ -4228,7 +4286,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "falcon": {
       "is_mammal": -10,
@@ -4294,7 +4353,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "parrot": {
       "is_mammal": -10,
@@ -4360,7 +4420,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "flamingo": {
       "is_mammal": -10,
@@ -4426,7 +4487,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "pelican": {
       "is_mammal": -10,
@@ -4492,7 +4554,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "penguin": {
       "is_mammal": -10,
@@ -4558,7 +4621,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "swan": {
       "is_mammal": -10,
@@ -4624,7 +4688,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "crow": {
       "is_mammal": -10,
@@ -4690,7 +4755,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "pigeon": {
       "is_mammal": -10,
@@ -4756,7 +4822,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "sparrow": {
       "is_mammal": -10,
@@ -4822,7 +4889,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "hummingbird": {
       "is_mammal": -10,
@@ -4888,7 +4956,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "turtle": {
       "is_mammal": -10,
@@ -4954,7 +5023,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "tortoise": {
       "is_mammal": -10,
@@ -5020,7 +5090,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "frog": {
       "is_mammal": -10,
@@ -5086,7 +5157,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "toad": {
       "is_mammal": -10,
@@ -5152,7 +5224,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "snake": {
       "is_mammal": -10,
@@ -5218,7 +5291,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "lizard": {
       "is_mammal": -10,
@@ -5284,7 +5358,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "crocodile": {
       "is_mammal": -10,
@@ -5350,7 +5425,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "alligator": {
       "is_mammal": -10,
@@ -5416,7 +5492,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "salamander": {
       "is_mammal": -10,
@@ -5482,7 +5559,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "newt": {
       "is_mammal": -10,
@@ -5548,7 +5626,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "ant": {
       "is_mammal": -10,
@@ -5614,7 +5693,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": 10
     },
     "bee": {
       "is_mammal": -10,
@@ -5676,11 +5756,12 @@
       "rolls_into_ball": -10,
       "has_long_ears": -10,
       "is_flightless": -10,
-      "is_brightly_colored": -10,
+      "is_brightly_colored": 10,
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": 10
+      "can_sting": 10,
+      "is_insect": 10
     },
     "wasp": {
       "is_mammal": -10,
@@ -5746,7 +5827,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": 10
+      "can_sting": 10,
+      "is_insect": 10
     },
     "butterfly": {
       "is_mammal": -10,
@@ -5812,7 +5894,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": 10
     },
     "moth": {
       "is_mammal": -10,
@@ -5878,7 +5961,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": 10
     },
     "beetle": {
       "is_mammal": -10,
@@ -5944,7 +6028,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": 10
     },
     "crab": {
       "is_mammal": -10,
@@ -6010,7 +6095,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "lobster": {
       "is_mammal": -10,
@@ -6076,7 +6162,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "shrimp": {
       "is_mammal": -10,
@@ -6142,7 +6229,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "jellyfish": {
       "is_mammal": -10,
@@ -6208,7 +6296,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": 10
+      "can_sting": 10,
+      "is_insect": -10
     },
     "starfish": {
       "is_mammal": -10,
@@ -6274,7 +6363,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "seahorse": {
       "is_mammal": -10,
@@ -6340,7 +6430,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "clownfish": {
       "is_mammal": -10,
@@ -6406,7 +6497,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "tuna": {
       "is_mammal": -10,
@@ -6472,7 +6564,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "goldfish": {
       "is_mammal": -10,
@@ -6538,7 +6631,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "carp": {
       "is_mammal": -10,
@@ -6604,7 +6698,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "hyena": {
       "is_mammal": 10,
@@ -6670,7 +6765,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "meerkat": {
       "is_mammal": 10,
@@ -6736,7 +6832,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "lemur": {
       "is_mammal": 10,
@@ -6802,7 +6899,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "porcupine": {
       "is_mammal": 10,
@@ -6868,7 +6966,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "hedgehog": {
       "is_mammal": 10,
@@ -6934,7 +7033,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "hamster": {
       "is_mammal": 10,
@@ -7000,7 +7100,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "guinea_pig": {
       "is_mammal": 10,
@@ -7066,7 +7167,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "chinchilla": {
       "is_mammal": 10,
@@ -7132,7 +7234,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "platypus": {
       "is_mammal": 10,
@@ -7198,7 +7301,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     },
     "armadillo": {
       "is_mammal": 10,
@@ -7264,7 +7368,8 @@
       "is_bigger_than_sofa": -10,
       "has_whiskers": -10,
       "has_short_fur": -10,
-      "can_sting": -10
+      "can_sting": -10,
+      "is_insect": -10
     }
   }
 }

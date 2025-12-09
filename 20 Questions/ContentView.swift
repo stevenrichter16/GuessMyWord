@@ -16,6 +16,7 @@ final class ANNGameViewModel: ObservableObject {
     @Published var isFinished: Bool = false
     @Published var debugRemainingNames: [String] = []
     @Published var statusMessage: String?
+    @Published var lastGuessWasWrong: Bool = false
 
     private let annStore: ANNDataStore
     private let allAnimals: [Animal]
@@ -54,6 +55,7 @@ final class ANNGameViewModel: ObservableObject {
         currentQuestion = nil
         currentGuess = nil
         isFinished = false
+        lastGuessWasWrong = false
         debugRemainingNames = remainingAnimals.map(\.name)
         runStep()
     }
@@ -64,16 +66,28 @@ final class ANNGameViewModel: ObservableObject {
     }
 
     var maxTurnCount: Int { maxQuestions }
+    var topCandidateNames: [String] {
+        remainingAnimals.map { $0.name }
+    }
 
     func finalizeGame(correct: Bool) {
         guard let guessed = currentGuess else { return }
         if correct {
             learnFromGame(correctAnimalId: guessed.id)
             statusMessage = "Updated weights for \(guessed.name)."
+            lastGuessWasWrong = false
         } else {
             statusMessage = "No weight changes applied."
+            lastGuessWasWrong = true
         }
         isFinished = true
+    }
+
+    func topCandidatesIfWrong() -> [String]? {
+        guard let guessName = currentGuess?.name else { return nil }
+        let filtered = topCandidateNames.filter { $0 != guessName }
+        let slice = filtered.prefix(5)
+        return slice.isEmpty ? nil : Array(slice)
     }
 
     private func runStep() {
@@ -279,14 +293,14 @@ struct ContentView: View {
                         progressBar
 
                         Group {
-                            if let question = viewModel.currentQuestion, !viewModel.isFinished {
-                                questionCard(question)
-                                answerButtons
-                            } else if let guess = viewModel.currentGuess {
-                                guessCard(guess)
-                            } else {
-                                fallbackCard
-                            }
+                if let question = viewModel.currentQuestion, !viewModel.isFinished {
+                    questionCard(question)
+                    answerButtons
+                } else if let guess = viewModel.currentGuess {
+                    guessCard(guess)
+                } else {
+                    fallbackCard
+                }
                         }
                         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: viewModel.currentQuestion?.id)
                         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: viewModel.currentGuess?.id)
@@ -295,6 +309,7 @@ struct ContentView: View {
 #if DEBUG
                         debugSimulator
 #endif
+                        restartButton
                         Spacer(minLength: 20)
                     }
                     .padding()
@@ -413,6 +428,24 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
+
+            if viewModel.isFinished, viewModel.lastGuessWasWrong, let candidates = viewModel.topCandidatesIfWrong(), !candidates.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Is it one of these?")
+                        .font(.headline)
+                    ForEach(candidates, id: \.self) { name in
+                        Text("- \(name)")
+                            .font(.subheadline)
+                    }
+                }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(cardFill.opacity(0.9))
+                        .shadow(color: shadowColor, radius: 6, x: 0, y: 3)
+                )
+            }
         }
         .padding()
         .frame(maxWidth: .infinity)
@@ -457,6 +490,16 @@ struct ContentView: View {
             RoundedRectangle(cornerRadius: 12)
                 .fill(cardFill.opacity(0.9))
         )
+    }
+
+    private var restartButton: some View {
+        Button {
+            viewModel.restart()
+        } label: {
+            Text("Restart")
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
     }
 
     private var cardFill: Color {
@@ -537,7 +580,7 @@ struct ContentView: View {
 
     private func runSims(contradictions: Int) async {
         if contradictions > 0 { noisySimRunning = true } else { simRunning = true }
-        let simulator = GameSimulator(maxTurns: 10)
+        let simulator = GameSimulator(maxTurns: 20)
         let report: SimulationReport
         if contradictions > 0 {
             report = await simulator.runSimulationsWithContradictions(10, contradictions: contradictions)

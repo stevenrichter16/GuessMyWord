@@ -526,7 +526,8 @@ struct AnimalDataset {
         "is_bigger_than_sofa": "Is it bigger than a sofa?",
         "has_whiskers": "Does it have whiskers?",
         "has_short_fur": "Does it have short fur?",
-        "can_sting": "Can it sting you?"
+        "can_sting": "Can it sting you?",
+        "is_insect": "Is it an insect?"
     ]
 
     static func loadFromBundle() -> AnimalDataset? {
