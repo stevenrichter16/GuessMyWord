@@ -115,7 +115,11 @@ final class ANNGameViewModel: ObservableObject {
         for (qId, answer) in answers {
             guard let key = answerWeightKey(for: answer),
                   let answerWeight = annStore.config.answerWeights[key],
-                  answerWeight != 0 else { continue }
+                  answerWeight != 0 else {
+                // Handle weak evidence for unknown: use small magnitude in the direction of the cell sign.
+                applyUnknownNudge(for: qId, to: &scores, answer: answer)
+                continue
+            }
 
             let deltaMagnitude = abs(answerWeight)
 
@@ -145,48 +149,91 @@ final class ANNGameViewModel: ObservableObject {
         debugRemainingNames = remainingAnimals.map(\.name)
     }
 
+    private func applyUnknownNudge(for qId: QuestionId, to scores: inout [AnimalId: Int], answer: Answer) {
+        guard answer == .maybe || answer == .notSure else { return }
+        let weakDelta = 1
+        for animal in allAnimals {
+            let cellWeight = annStore.weight(for: animal.id, questionId: qId)
+            if cellWeight > 0 {
+                scores[animal.id, default: 0] += weakDelta
+            } else if cellWeight < 0 {
+                scores[animal.id, default: 0] -= weakDelta
+            }
+        }
+    }
+
     private func chooseNextQuestion() -> Question? {
         let topAnimals = remainingAnimals
         let n = topAnimals.count
         guard n > 1 else { return nil }
 
+        // Build signature of already asked questions to avoid near-duplicate splits.
+        var seenSignatures: Set<String> = []
+        for qId in askedQuestions {
+            let sig = splitSignature(questionId: qId, animals: topAnimals)
+            if !sig.isEmpty { seenSignatures.insert(sig) }
+        }
+
         var bestQuestion: Question?
-        var bestMargin: Int?
+        var bestEntropy: Double = -Double.infinity
+        var bestCoverage: Double = -Double.infinity
 
         for q in allQuestions {
             if askedQuestions.contains(q.id) { continue }
 
             var yesCount = 0
             var noCount = 0
-            var usedCount = 0
 
             for animal in topAnimals {
                 let w = annStore.weight(for: animal.id, questionId: q.id)
                 if w > 0 {
                     yesCount += 1
-                    usedCount += 1
                 } else if w < 0 {
                     noCount += 1
-                    usedCount += 1
                 }
             }
 
-            if usedCount < 2 { continue }
+            let unknownCount = max(0, n - (yesCount + noCount))
+            let entropyVal = entropy([yesCount, noCount, unknownCount])
+            let coverage = Double(yesCount + noCount) / Double(n)
+            // Require at least two non-zero responses and some coverage
+            if (yesCount + noCount) < 2 || coverage < 0.1 { continue }
 
-            let margin = abs(yesCount - noCount)
+            // Repeat blocker: skip if signature matches a prior asked question.
+            let sig = splitSignature(questionId: q.id, animals: topAnimals)
+            if seenSignatures.contains(sig) { continue }
 
-            if let best = bestMargin {
-                if margin < best {
-                    bestMargin = margin
-                    bestQuestion = q
-                }
-            } else {
-                bestMargin = margin
+            if entropyVal > bestEntropy || (entropyVal == bestEntropy && coverage > bestCoverage) {
+                bestEntropy = entropyVal
+                bestCoverage = coverage
                 bestQuestion = q
             }
         }
 
         return bestQuestion
+    }
+
+    private func entropy(_ counts: [Int]) -> Double {
+        let total = counts.reduce(0, +)
+        guard total > 0 else { return 0 }
+        return counts.reduce(0.0) { acc, count in
+            guard count > 0 else { return acc }
+            let p = Double(count) / Double(total)
+            return acc - p * log2(p)
+        }
+    }
+
+    private func splitSignature(questionId: QuestionId, animals: [Animal]) -> String {
+        var yes: [String] = []
+        var no: [String] = []
+        for animal in animals {
+            let w = annStore.weight(for: animal.id, questionId: questionId)
+            if w > 0 { yes.append(animal.id) }
+            else if w < 0 { no.append(animal.id) }
+        }
+        yes.sort()
+        no.sort()
+        return "Y:\(yes.joined(separator: ","));N:\(no.joined(separator: ","))"
     }
 
     private func learnFromGame(correctAnimalId: AnimalId) {

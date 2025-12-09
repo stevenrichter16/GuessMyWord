@@ -619,6 +619,50 @@
     {
       "id": "has_short_legs",
       "text": "Does it have short legs compared to its body length?"
+    },
+    {
+      "id": "is_tiny",
+      "text": "Is it very small (can fit in one hand)?"
+    },
+    {
+      "id": "is_medium_sized",
+      "text": "Is it roughly dog/cat sized?"
+    },
+    {
+      "id": "has_wingspan_wide",
+      "text": "Does it have a very wide wingspan for its body?"
+    },
+    {
+      "id": "rolls_into_ball",
+      "text": "Does it roll up into a tight ball for defense?"
+    },
+    {
+      "id": "has_long_ears",
+      "text": "Does it have noticeably long ears for its body?"
+    },
+    {
+      "id": "is_flightless",
+      "text": "Does it have wings but cannot fly (flightless)?"
+    },
+    {
+      "id": "is_brightly_colored",
+      "text": "Is it brightly or vividly colored?"
+    },
+    {
+      "id": "is_bigger_than_sofa",
+      "text": "Is it bigger than a sofa?"
+    },
+    {
+      "id": "has_whiskers",
+      "text": "Does it have whiskers?"
+    },
+    {
+      "id": "has_short_fur",
+      "text": "Does it have short fur?"
+    },
+    {
+      "id": "can_sting",
+      "text": "Can it sting you?"
     }
   ],
   "weights": {
@@ -675,7 +719,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": 10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "cat": {
       "is_mammal": 10,
@@ -730,7 +785,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": 10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "elephant": {
       "is_mammal": 10,
@@ -785,7 +851,18 @@
       "has_tusks": 10,
       "has_trunk": 10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": 10,
+      "has_whiskers": -10,
+      "has_short_fur": 10,
+      "can_sting": -10
     },
     "lion": {
       "is_mammal": 10,
@@ -840,7 +917,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": 10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "tiger": {
       "is_mammal": 10,
@@ -895,7 +983,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": 10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "giraffe": {
       "is_mammal": 10,
@@ -950,7 +1049,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": 10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "zebra": {
       "is_mammal": 10,
@@ -1005,7 +1115,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "kangaroo": {
       "is_mammal": 10,
@@ -1060,7 +1181,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "panda": {
       "is_mammal": 10,
@@ -1115,7 +1247,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "koala": {
       "is_mammal": 10,
@@ -1170,7 +1313,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "bear": {
       "is_mammal": 10,
@@ -1225,7 +1379,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "wolf": {
       "is_mammal": 10,
@@ -1280,7 +1445,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": 10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "fox": {
       "is_mammal": 10,
@@ -1335,7 +1511,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": 10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": 10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "deer": {
       "is_mammal": 10,
@@ -1390,7 +1577,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "rabbit": {
       "is_mammal": 10,
@@ -1445,7 +1643,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": 10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "squirrel": {
       "is_mammal": 10,
@@ -1500,7 +1709,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "hippopotamus": {
       "is_mammal": 10,
@@ -1555,7 +1775,18 @@
       "has_tusks": 10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": 10,
+      "has_whiskers": -10,
+      "has_short_fur": 10,
+      "can_sting": -10
     },
     "rhinoceros": {
       "is_mammal": 10,
@@ -1610,7 +1841,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": 10,
+      "has_whiskers": -10,
+      "has_short_fur": 10,
+      "can_sting": -10
     },
     "cheetah": {
       "is_mammal": 10,
@@ -1665,7 +1907,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": 10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "leopard": {
       "is_mammal": 10,
@@ -1720,7 +1973,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": 10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "monkey": {
       "is_mammal": 10,
@@ -1775,7 +2039,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "gorilla": {
       "is_mammal": 10,
@@ -1830,7 +2105,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "chimpanzee": {
       "is_mammal": 10,
@@ -1885,7 +2171,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "orangutan": {
       "is_mammal": 10,
@@ -1940,7 +2237,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "baboon": {
       "is_mammal": 10,
@@ -1995,7 +2303,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "bat": {
       "is_mammal": 10,
@@ -2050,7 +2369,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": 10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "dolphin": {
       "is_mammal": 10,
@@ -2105,7 +2435,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": 10,
+      "can_sting": -10
     },
     "whale": {
       "is_mammal": 10,
@@ -2160,7 +2501,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": 10,
+      "has_whiskers": -10,
+      "has_short_fur": 10,
+      "can_sting": -10
     },
     "shark": {
       "is_mammal": -10,
@@ -2215,7 +2567,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": 10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": 10,
+      "has_whiskers": -10,
+      "has_short_fur": 10,
+      "can_sting": -10
     },
     "octopus": {
       "is_mammal": -10,
@@ -2270,7 +2633,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": 10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "squid": {
       "is_mammal": -10,
@@ -2325,7 +2699,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": 10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "seal": {
       "is_mammal": 10,
@@ -2380,7 +2765,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": 10,
+      "has_whiskers": 10,
+      "has_short_fur": 10,
+      "can_sting": -10
     },
     "walrus": {
       "is_mammal": 10,
@@ -2435,7 +2831,18 @@
       "has_tusks": 10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": 10,
+      "has_whiskers": 10,
+      "has_short_fur": 10,
+      "can_sting": -10
     },
     "otter": {
       "is_mammal": 10,
@@ -2490,7 +2897,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": 10,
+      "has_short_fur": 10,
+      "can_sting": -10
     },
     "raccoon": {
       "is_mammal": 10,
@@ -2545,7 +2963,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": 10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "skunk": {
       "is_mammal": 10,
@@ -2600,7 +3029,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "moose": {
       "is_mammal": 10,
@@ -2655,7 +3095,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "bison": {
       "is_mammal": 10,
@@ -2710,7 +3161,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": 10,
+      "can_sting": -10
     },
     "camel": {
       "is_mammal": 10,
@@ -2765,7 +3227,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "llama": {
       "is_mammal": 10,
@@ -2820,7 +3293,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": 10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "alpaca": {
       "is_mammal": 10,
@@ -2875,7 +3359,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": 10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "donkey": {
       "is_mammal": 10,
@@ -2930,7 +3425,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": 10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "horse": {
       "is_mammal": 10,
@@ -2985,7 +3491,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "cow": {
       "is_mammal": 10,
@@ -3040,7 +3557,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "sheep": {
       "is_mammal": 10,
@@ -3095,7 +3623,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "goat": {
       "is_mammal": 10,
@@ -3150,7 +3689,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "pig": {
       "is_mammal": 10,
@@ -3205,7 +3755,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": 10,
+      "can_sting": -10
     },
     "chicken": {
       "is_mammal": -10,
@@ -3260,7 +3821,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "duck": {
       "is_mammal": -10,
@@ -3315,7 +3887,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "goose": {
       "is_mammal": -10,
@@ -3370,7 +3953,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": 10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "turkey": {
       "is_mammal": -10,
@@ -3425,7 +4019,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": 10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "eagle": {
       "is_mammal": -10,
@@ -3480,7 +4085,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": 10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "owl": {
       "is_mammal": -10,
@@ -3535,7 +4151,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": 10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "hawk": {
       "is_mammal": -10,
@@ -3590,7 +4217,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": 10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "falcon": {
       "is_mammal": -10,
@@ -3645,7 +4283,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": 10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "parrot": {
       "is_mammal": -10,
@@ -3700,7 +4349,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": 10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "flamingo": {
       "is_mammal": -10,
@@ -3755,7 +4415,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": 10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": 10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "pelican": {
       "is_mammal": -10,
@@ -3810,7 +4481,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": 10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "penguin": {
       "is_mammal": -10,
@@ -3865,7 +4547,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": 10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "swan": {
       "is_mammal": -10,
@@ -3920,7 +4613,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": 10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "crow": {
       "is_mammal": -10,
@@ -3975,7 +4679,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": 10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "pigeon": {
       "is_mammal": -10,
@@ -4030,7 +4745,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": 10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "sparrow": {
       "is_mammal": -10,
@@ -4085,7 +4811,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "hummingbird": {
       "is_mammal": -10,
@@ -4140,7 +4877,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": 10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "turtle": {
       "is_mammal": -10,
@@ -4195,7 +4943,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "tortoise": {
       "is_mammal": -10,
@@ -4250,7 +5009,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "frog": {
       "is_mammal": -10,
@@ -4305,7 +5075,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "toad": {
       "is_mammal": -10,
@@ -4360,7 +5141,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "snake": {
       "is_mammal": -10,
@@ -4415,7 +5207,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "lizard": {
       "is_mammal": -10,
@@ -4470,7 +5273,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "crocodile": {
       "is_mammal": -10,
@@ -4525,7 +5339,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "alligator": {
       "is_mammal": -10,
@@ -4580,7 +5405,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "salamander": {
       "is_mammal": -10,
@@ -4635,7 +5471,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "newt": {
       "is_mammal": -10,
@@ -4690,7 +5537,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "ant": {
       "is_mammal": -10,
@@ -4745,7 +5603,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": 10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "bee": {
       "is_mammal": -10,
@@ -4800,7 +5669,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": 10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": 10
     },
     "wasp": {
       "is_mammal": -10,
@@ -4855,7 +5735,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": 10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": 10
     },
     "butterfly": {
       "is_mammal": -10,
@@ -4910,7 +5801,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": 10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": 10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "moth": {
       "is_mammal": -10,
@@ -4965,7 +5867,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": 10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "beetle": {
       "is_mammal": -10,
@@ -5020,7 +5933,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": 10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "crab": {
       "is_mammal": -10,
@@ -5075,7 +5999,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": 10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "lobster": {
       "is_mammal": -10,
@@ -5130,7 +6065,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": 10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "shrimp": {
       "is_mammal": -10,
@@ -5185,7 +6131,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": 10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": 10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "jellyfish": {
       "is_mammal": -10,
@@ -5240,7 +6197,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": 10
     },
     "starfish": {
       "is_mammal": -10,
@@ -5295,7 +6263,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "seahorse": {
       "is_mammal": -10,
@@ -5350,7 +6329,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": 10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": 10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "clownfish": {
       "is_mammal": -10,
@@ -5405,7 +6395,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": 10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": 10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "tuna": {
       "is_mammal": -10,
@@ -5460,7 +6461,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": 10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "goldfish": {
       "is_mammal": -10,
@@ -5515,7 +6527,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": 10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": 10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": 10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "carp": {
       "is_mammal": -10,
@@ -5570,7 +6593,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": 10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "hyena": {
       "is_mammal": 10,
@@ -5625,7 +6659,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "meerkat": {
       "is_mammal": 10,
@@ -5680,7 +6725,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "lemur": {
       "is_mammal": 10,
@@ -5735,7 +6791,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "porcupine": {
       "is_mammal": 10,
@@ -5790,7 +6857,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "hedgehog": {
       "is_mammal": 10,
@@ -5845,7 +6923,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": 10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": 10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "hamster": {
       "is_mammal": 10,
@@ -5900,7 +6989,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": 10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "guinea_pig": {
       "is_mammal": 10,
@@ -5955,7 +7055,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": 10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "chinchilla": {
       "is_mammal": 10,
@@ -6010,7 +7121,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": 10,
+      "is_medium_sized": 10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "platypus": {
       "is_mammal": 10,
@@ -6065,7 +7187,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": -10
+      "has_short_legs": -10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": -10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     },
     "armadillo": {
       "is_mammal": 10,
@@ -6120,7 +7253,18 @@
       "has_tusks": -10,
       "has_trunk": -10,
       "has_gills": -10,
-      "has_short_legs": 10
+      "has_short_legs": 10,
+      "is_tiny": -10,
+      "is_medium_sized": -10,
+      "has_wingspan_wide": -10,
+      "rolls_into_ball": 10,
+      "has_long_ears": -10,
+      "is_flightless": -10,
+      "is_brightly_colored": -10,
+      "is_bigger_than_sofa": -10,
+      "has_whiskers": -10,
+      "has_short_fur": -10,
+      "can_sting": -10
     }
   }
 }

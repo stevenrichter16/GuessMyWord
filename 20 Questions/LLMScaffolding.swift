@@ -515,7 +515,18 @@ struct AnimalDataset {
         "has_tusks": "Does it have visible tusks?",
         "has_trunk": "Does it have a trunk?",
         "has_gills": "Does it breathe through gills as an adult?",
-        "has_short_legs": "Does it have short legs compared to its body length?"
+        "has_short_legs": "Does it have short legs compared to its body length?",
+        "is_tiny": "Is it very small (can fit in one hand)?",
+        "is_medium_sized": "Is it roughly dog/cat sized?",
+        "has_wingspan_wide": "Does it have a very wide wingspan for its body?",
+        "rolls_into_ball": "Does it roll up into a tight ball for defense?",
+        "has_long_ears": "Does it have noticeably long ears for its body?",
+        "is_flightless": "Does it have wings but cannot fly (flightless)?",
+        "is_brightly_colored": "Is it brightly or vividly colored?",
+        "is_bigger_than_sofa": "Is it bigger than a sofa?",
+        "has_whiskers": "Does it have whiskers?",
+        "has_short_fur": "Does it have short fur?",
+        "can_sting": "Can it sting you?"
     ]
 
     static func loadFromBundle() -> AnimalDataset? {
