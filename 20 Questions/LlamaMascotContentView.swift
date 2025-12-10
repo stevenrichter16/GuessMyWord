@@ -188,7 +188,8 @@ struct LlamaMascotContentView: View {
     }
 
     private var progressBar: some View {
-        let fraction = max(0, min(1, Double(viewModel.currentTurn - 1) / Double(viewModel.maxTurnCount)))
+        let currentStep = min(viewModel.currentTurn, viewModel.maxTurnCount)
+        let fraction = max(0, min(1, Double(currentStep) / Double(viewModel.maxTurnCount)))
         let track = Color.primary.opacity(colorScheme == .dark ? 0.25 : 0.08)
         let active = LinearGradient(
             colors: [.orange, .pink, .purple],
@@ -204,14 +205,17 @@ struct LlamaMascotContentView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            ZStack(alignment: .leading) {
-                Capsule()
-                    .fill(track)
-                    .frame(height: 10)
-                Capsule()
-                    .fill(active)
-                    .frame(width: max(24, fraction * UIScreen.main.bounds.width * 0.6), height: 10)
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(track)
+                        .frame(height: 10)
+                    Capsule()
+                        .fill(active)
+                        .frame(width: max(24, fraction * proxy.size.width), height: 10)
+                }
             }
+            .frame(height: 10)
         }
         .padding()
         .background(

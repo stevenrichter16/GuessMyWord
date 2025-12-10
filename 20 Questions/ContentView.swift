@@ -28,6 +28,10 @@ final class ANNGameViewModel: ObservableObject {
 
     private let maxQuestions = 20
     private let topKForQuestionSelection = 8
+    private let questionImportance: [QuestionId: Int] = [
+        // Reliability-heavy signal: if true, should swing the ranking harder.
+        "is_venomous": 3
+    ]
 
     init?(annStore: ANNDataStore? = LLMScaffolding.annStore ?? ANNDataStore()) {
         guard let store = annStore else { return nil }
@@ -135,7 +139,7 @@ final class ANNGameViewModel: ObservableObject {
                 continue
             }
 
-            let deltaMagnitude = abs(answerWeight)
+            let deltaMagnitude = abs(answerWeight) * importance(for: qId)
 
             for animal in allAnimals {
                 let cellWeight = annStore.weight(for: animal.id, questionId: qId)
@@ -227,6 +231,10 @@ final class ANNGameViewModel: ObservableObject {
         return bestQuestion
     }
 
+    private func importance(for questionId: QuestionId) -> Int {
+        questionImportance[questionId] ?? 1
+    }
+
     private func entropy(_ counts: [Int]) -> Double {
         let total = counts.reduce(0, +)
         guard total > 0 else { return 0 }
@@ -257,7 +265,7 @@ final class ANNGameViewModel: ObservableObject {
                   delta != 0 else { continue }
 
             if answer == .maybe || answer == .notSure { continue }
-            annStore.addToWeight(delta, for: correctAnimalId, questionId: qId)
+            annStore.addToWeight(delta * importance(for: qId), for: correctAnimalId, questionId: qId)
         }
     }
 
@@ -341,7 +349,8 @@ struct ContentView: View {
     }
 
     private var progressBar: some View {
-        let fraction = max(0, min(1, Double(viewModel.currentTurn - 1) / Double(viewModel.maxTurnCount)))
+        let currentStep = min(viewModel.currentTurn, viewModel.maxTurnCount)
+        let fraction = max(0, min(1, Double(currentStep) / Double(viewModel.maxTurnCount)))
         let track = Color.primary.opacity(colorScheme == .dark ? 0.25 : 0.08)
         let active = colorScheme == .dark
             ? LinearGradient(colors: [.cyan, .purple], startPoint: .leading, endPoint: .trailing)
@@ -355,14 +364,17 @@ struct ContentView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            ZStack(alignment: .leading) {
-                Capsule()
-                    .fill(track)
-                    .frame(height: 10)
-                Capsule()
-                    .fill(active)
-                    .frame(width: max(24, fraction * UIScreen.main.bounds.width * 0.6), height: 10)
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(track)
+                        .frame(height: 10)
+                    Capsule()
+                        .fill(active)
+                        .frame(width: max(24, fraction * proxy.size.width), height: 10)
+                }
             }
+            .frame(height: 10)
         }
         .padding()
         .background(
