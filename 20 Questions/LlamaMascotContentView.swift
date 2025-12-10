@@ -34,14 +34,16 @@ struct LlamaMascotContentView: View {
                                 .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
 
-                        debugStrip
-                        restartButton
+                        //debugStrip
+                        if shouldShowRestartButton {
+                            restartButton
+                        }
                         Spacer(minLength: 20)
                     }
                     .padding()
                 }
             }
-            .navigationTitle("20 Questions: Animals")
+            //.navigationTitle("20 Questions: Animals")
         }
     }
 
@@ -66,19 +68,19 @@ struct LlamaMascotContentView: View {
 
             // Llama mascot
             llamaMascot
-                .offset(y: -20) // Overlap with bubble slightly
+                .offset(y: 0) // Overlap with bubble slightly
         }
     }
 
     private var dialogueBubble: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 2) {
             if let question = viewModel.currentQuestion, !viewModel.isFinished {
                 // Question mode
                 Text("Question \(viewModel.currentTurn)")
                     .font(.caption.weight(.semibold))
                     .foregroundColor(.secondary)
                 Text(question.text)
-                    .font(.title3.weight(.semibold))
+                    .font(.title.weight(.semibold))
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             } else if let guess = viewModel.currentGuess {
@@ -120,7 +122,9 @@ struct LlamaMascotContentView: View {
             }
         }
         .padding(.horizontal, 20)
-        .padding(.vertical, 56)
+        // Balance top/bottom space by compensating for the bubble pointer (16pt tall).
+        .padding(.top, 28)
+        .padding(.bottom, 44)
         .frame(maxWidth: .infinity)
         .background(
             BubbleShape()
@@ -170,19 +174,17 @@ struct LlamaMascotContentView: View {
     // MARK: - Header & Progress
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text("Think of an animal")
-                    .font(.largeTitle.bold())
-                Spacer()
-                Text("🦙")
-                    .font(.largeTitle)
-            }
+        VStack(alignment: .center, spacing: 4) {
+     
+            Text("Think of an animal")
+                .font(.largeTitle.bold())
+                    
+            
             Text("Larry the Llama will try to guess it!")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var progressBar: some View {
@@ -248,19 +250,19 @@ struct LlamaMascotContentView: View {
                         viewModel.finalizeGame(correct: false)
                     }
                 }
-            }
-
-            Button {
-                viewModel.restart()
-            } label: {
-                HStack {
-                    Image(systemName: "arrow.counterclockwise")
-                    Text("Play Again")
+            } else {
+                Button {
+                    viewModel.restart()
+                } label: {
+                    HStack {
+                        Image(systemName: "arrow.counterclockwise")
+                        Text("Play Again")
+                    }
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: .infinity)
+                .buttonStyle(.borderedProminent)
+                .tint(.purple)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.purple)
         }
         .padding(.horizontal, 4)
     }
@@ -291,11 +293,15 @@ struct LlamaMascotContentView: View {
         } label: {
             HStack {
                 Image(systemName: "arrow.counterclockwise")
-                Text("Start Over")
+                Text("Restart")
             }
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(.bordered)
+    }
+
+    private var shouldShowRestartButton: Bool {
+        viewModel.currentGuess == nil && !viewModel.isFinished
     }
 
     // MARK: - Styling

@@ -317,7 +317,9 @@ struct ContentView: View {
 #if DEBUG
                         debugSimulator
 #endif
-                        restartButton
+                        if shouldShowRestartButton {
+                            restartButton
+                        }
                         Spacer(minLength: 20)
                     }
                     .padding()
@@ -380,8 +382,9 @@ struct ContentView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 12)
         }
+        .padding(.top, 16)
+        .padding(.bottom, 24) // add a bit more bottom padding to balance the pointer height
         .padding(.horizontal, 18)
-        .padding(.vertical, 16)
         .frame(maxWidth: .infinity)
         .background(
             DialogueBubbleShape(pointerHeight: 12, cornerRadius: 18)
@@ -421,23 +424,25 @@ struct ContentView: View {
                     .foregroundColor(.secondary)
             }
 
-            HStack(spacing: 12) {
-                AnswerButton(title: "Correct", color: .green, scheme: colorScheme) {
-                    viewModel.finalizeGame(correct: true)
-                    withAnimation { showConfetti() }
+            if !viewModel.isFinished {
+                HStack(spacing: 12) {
+                    AnswerButton(title: "Correct", color: .green, scheme: colorScheme) {
+                        viewModel.finalizeGame(correct: true)
+                        withAnimation { showConfetti() }
+                    }
+                    AnswerButton(title: "Wrong", color: .orange, scheme: colorScheme) {
+                        viewModel.finalizeGame(correct: false)
+                    }
                 }
-                AnswerButton(title: "Wrong", color: .orange, scheme: colorScheme) {
-                    viewModel.finalizeGame(correct: false)
+            } else {
+                Button {
+                    viewModel.restart()
+                } label: {
+                    Text("Play again")
+                        .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(.borderedProminent)
             }
-
-            Button {
-                viewModel.restart()
-            } label: {
-                Text("Play again")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
 
             if viewModel.isFinished, viewModel.lastGuessWasWrong, let candidates = viewModel.topCandidatesIfWrong(), !candidates.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
@@ -511,6 +516,10 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(.borderedProminent)
+    }
+
+    private var shouldShowRestartButton: Bool {
+        viewModel.currentGuess == nil && !viewModel.isFinished
     }
 
     private var cardFill: Color {
