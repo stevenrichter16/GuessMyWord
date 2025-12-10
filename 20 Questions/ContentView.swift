@@ -94,7 +94,7 @@ final class ANNGameViewModel: ObservableObject {
         if remainingAnimals.count == 1 {
             currentGuess = remainingAnimals.first
             currentQuestion = nil
-            isFinished = true
+            isFinished = false
             return
         }
 
@@ -103,7 +103,7 @@ final class ANNGameViewModel: ObservableObject {
                 currentGuess = best
             }
             currentQuestion = nil
-            isFinished = true
+            isFinished = false
             return
         }
 
@@ -116,7 +116,7 @@ final class ANNGameViewModel: ObservableObject {
                 currentGuess = best
             }
             currentQuestion = nil
-            isFinished = true
+            isFinished = currentGuess == nil
         }
     }
 
@@ -271,7 +271,7 @@ final class ANNGameViewModel: ObservableObject {
 }
 
 struct ContentView: View {
-    @StateObject private var viewModel = ANNGameViewModel()!
+    @StateObject private var viewModel: ANNGameViewModel
     @Environment(\.colorScheme) private var colorScheme
 #if DEBUG
     @State private var simReport: SimulationReport?
@@ -280,12 +280,18 @@ struct ContentView: View {
     @State private var noisySimRunning = false
     @State private var expandedRunIDs: Set<String> = []
 #endif
+    @State private var confettiParticles: [ConfettiParticle] = []
+
+    init(viewModel: ANNGameViewModel? = ANNGameViewModel()) {
+        _viewModel = StateObject(wrappedValue: viewModel ?? ANNGameViewModel()!)
+    }
 
     var body: some View {
         NavigationStack {
             ZStack {
                 backgroundGradient
                     .ignoresSafeArea()
+                    .overlay(parallaxLayer)
 
                 ScrollView {
                     VStack(spacing: 20) {
@@ -293,14 +299,16 @@ struct ContentView: View {
                         progressBar
 
                         Group {
-                if let question = viewModel.currentQuestion, !viewModel.isFinished {
-                    questionCard(question)
-                    answerButtons
-                } else if let guess = viewModel.currentGuess {
-                    guessCard(guess)
-                } else {
-                    fallbackCard
-                }
+                            if let question = viewModel.currentQuestion, !viewModel.isFinished {
+                                questionCard(question)
+                                    .id(question.id)
+                                    .transition(questionTransition)
+                                answerButtons
+                            } else if let guess = viewModel.currentGuess {
+                                guessCard(guess)
+                            } else {
+                                fallbackCard
+                            }
                         }
                         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: viewModel.currentQuestion?.id)
                         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: viewModel.currentGuess?.id)
@@ -363,19 +371,20 @@ struct ContentView: View {
     }
 
     private func questionCard(_ question: Question) -> some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 10) {
             Text("Question \(viewModel.currentTurn)")
-                .font(.headline)
+                .font(.caption.weight(.semibold))
                 .foregroundColor(.secondary)
             Text(question.text)
-                .font(.title2.weight(.semibold))
+                .font(.title3.weight(.semibold))
                 .multilineTextAlignment(.center)
-                .padding(.horizontal)
+                .padding(.horizontal, 12)
         }
-        .padding()
+        .padding(.horizontal, 18)
+        .padding(.vertical, 16)
         .frame(maxWidth: .infinity)
         .background(
-            RoundedRectangle(cornerRadius: 20)
+            DialogueBubbleShape(pointerHeight: 12, cornerRadius: 18)
                 .fill(cardFill)
                 .shadow(color: shadowColor, radius: 12, x: 0, y: 8)
         )
@@ -415,6 +424,7 @@ struct ContentView: View {
             HStack(spacing: 12) {
                 AnswerButton(title: "Correct", color: .green, scheme: colorScheme) {
                     viewModel.finalizeGame(correct: true)
+                    withAnimation { showConfetti() }
                 }
                 AnswerButton(title: "Wrong", color: .orange, scheme: colorScheme) {
                     viewModel.finalizeGame(correct: false)
@@ -454,6 +464,7 @@ struct ContentView: View {
                 .fill(cardFill)
                 .shadow(color: shadowColor, radius: 14, x: 0, y: 8)
         )
+        .overlay(confettiLayer)
     }
 
     private var fallbackCard: some View {
@@ -524,6 +535,39 @@ struct ContentView: View {
                 endPoint: .bottomTrailing
             )
         }
+    }
+
+    private var parallaxLayer: some View {
+        GeometryReader { geo in
+            let width = geo.size.width
+            let height = geo.size.height
+            ZStack {
+                floatingCircle(x: width * 0.2, y: height * 0.3, size: 140, color: .blue.opacity(0.08), speed: 18)
+                floatingCircle(x: width * 0.8, y: height * 0.4, size: 180, color: .pink.opacity(0.08), speed: 22)
+                floatingCircle(x: width * 0.6, y: height * 0.75, size: 120, color: .orange.opacity(0.08), speed: 16)
+            }
+        }
+        .allowsHitTesting(false)
+    }
+
+    private func floatingCircle(x: CGFloat, y: CGFloat, size: CGFloat, color: Color, speed: Double) -> some View {
+        let animation = Animation.easeInOut(duration: speed).repeatForever(autoreverses: true)
+        return Circle()
+            .fill(color)
+            .frame(width: size, height: size)
+            .position(x: x, y: y)
+            .offset(y: size * 0.05)
+            .onAppear {
+                withAnimation(animation) {}
+            }
+            .animation(animation, value: UUID())
+    }
+
+    private var questionTransition: AnyTransition {
+        AnyTransition.modifier(
+            active: SlideFadeBlur(progress: 0),
+            identity: SlideFadeBlur(progress: 1)
+        )
     }
 
 #if DEBUG
@@ -651,7 +695,6 @@ private struct AnswerButton: View {
     let color: Color
     let scheme: ColorScheme
     let action: () -> Void
-    @State private var isPressed = false
 
     var body: some View {
         Button(action: action) {
@@ -665,16 +708,11 @@ private struct AnswerButton: View {
                 )
         }
         .buttonStyle(.plain)
-        .scaleEffect(isPressed ? 0.95 : 1.0)
-        .animation(.spring(response: 0.25, dampingFraction: 0.7), value: isPressed)
         .overlay(
             RoundedRectangle(cornerRadius: 14)
                 .stroke(color.opacity(scheme == .dark ? 0.6 : 0.4), lineWidth: 1)
         )
         .shadow(color: color.opacity(0.35), radius: 8, x: 0, y: 5)
-        .onLongPressGesture(minimumDuration: 0, pressing: { pressing in
-            isPressed = pressing
-        }, perform: {})
     }
 
     private var buttonBackground: LinearGradient {
@@ -691,4 +729,100 @@ private struct AnswerButton: View {
             endPoint: .bottomTrailing
         )
     }
+}
+
+private struct SlideFadeBlur: ViewModifier {
+    let progress: CGFloat
+    func body(content: Content) -> some View {
+        content
+            .opacity(Double(progress))
+            .offset(y: (1 - progress) * 16)
+            .blur(radius: (1 - progress) * 6)
+    }
+}
+
+extension ContentView {
+    private func showConfetti() {
+        let newParticles: [ConfettiParticle] = (0..<8).map { _ in
+            ConfettiParticle(
+                x: CGFloat.random(in: -40...40),
+                size: CGFloat.random(in: 6...12),
+                delay: Double.random(in: 0...0.2),
+                hue: Double.random(in: 0...1)
+            )
+        }
+        confettiParticles = newParticles
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            confettiParticles = []
+        }
+    }
+
+    private var confettiLayer: some View {
+        ZStack {
+            ForEach(confettiParticles) { particle in
+                Circle()
+                    .fill(Color(hue: particle.hue, saturation: 0.7, brightness: 1.0).opacity(0.8))
+                    .frame(width: particle.size, height: particle.size)
+                    .offset(x: particle.x)
+                    .modifier(ConfettiRise(delay: particle.delay))
+            }
+        }
+        .allowsHitTesting(false)
+    }
+}
+
+private struct ConfettiRise: ViewModifier {
+    let delay: Double
+    @State private var animate = false
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(animate ? 0 : 1)
+            .offset(y: animate ? -120 : 0)
+            .scaleEffect(animate ? 1.2 : 1.0)
+            .animation(.easeOut(duration: 0.9).delay(delay), value: animate)
+            .onAppear { animate = true }
+    }
+}
+
+/// Speech bubble with a pointer centered at the bottom.
+private struct DialogueBubbleShape: Shape {
+    var pointerHeight: CGFloat = 12
+    var cornerRadius: CGFloat = 18
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let pointerWidth: CGFloat = 26
+        let mainRect = CGRect(
+            x: rect.minX,
+            y: rect.minY,
+            width: rect.width,
+            height: rect.height - pointerHeight
+        )
+
+        path.addRoundedRect(in: mainRect, cornerSize: CGSize(width: cornerRadius, height: cornerRadius))
+
+        let pointer = Path { p in
+            let centerX = rect.midX
+            let topY = mainRect.maxY
+            let bottomY = rect.maxY
+            p.move(to: CGPoint(x: centerX - pointerWidth / 2, y: topY))
+            p.addLine(to: CGPoint(x: centerX, y: bottomY))
+            p.addLine(to: CGPoint(x: centerX + pointerWidth / 2, y: topY))
+            p.closeSubpath()
+        }
+
+        path.addPath(pointer)
+        return path
+    }
+}
+
+#Preview("Main Game - Light") {
+    ContentView()
+        .preferredColorScheme(.light)
+}
+
+#Preview("Main Game - Dark") {
+    ContentView()
+        .preferredColorScheme(.dark)
 }

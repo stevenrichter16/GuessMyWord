@@ -5,13 +5,20 @@ import FoundationModels
 
 @main
 struct _0_QuestionsApp: App {
+    /// Set to true to use the Llama mascot UI variation
+    private let useLlamaMascotUI = true
+
     init() {
         logModelStatus()
     }
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if useLlamaMascotUI {
+                LlamaMascotContentView()
+            } else {
+                ContentView()
+            }
         }
     }
 

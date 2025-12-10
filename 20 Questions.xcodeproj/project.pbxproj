@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C3E39AC22F90A1B4006C8721 /* 20 Questions/animals_ann.json in Resources */ = {isa = PBXBuildFile; fileRef = C3E39AC12F90A1B4006C8721 /* 20 Questions/animals_ann.json */; };
+		D4E5E5102FEA93D1009B8290 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = D4E5E5112FEA93D1009B8290 /* Lottie */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4E5E5102FEA93D1009B8290 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +120,7 @@
 			);
 			name = "20 Questions";
 			packageProductDependencies = (
+				D4E5E5112FEA93D1009B8290 /* Lottie */,
 			);
 			productName = "20 Questions";
 			productReference = 09E291C52EC42E2100296F4F /* 20 Questions.app */;
@@ -201,6 +204,9 @@
 			);
 			mainGroup = 09E291BC2EC42E2100296F4F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D4E5E5122FEA93D1009B8290 /* XCRemoteSwiftPackageReference "lottie-spm" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 09E291C62EC42E2100296F4F /* Products */;
 			projectDirPath = "";
@@ -577,6 +583,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D4E5E5122FEA93D1009B8290 /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D4E5E5112FEA93D1009B8290 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D4E5E5122FEA93D1009B8290 /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 09E291BD2EC42E2100296F4F /* Project object */;
 }
