@@ -10,9 +10,7 @@ struct LlamaMascotContentView: View {
     @State private var bubbleScale: CGFloat = 0.8
     @State private var isMenuOpen = false
     @State private var showDeveloperTools = false
-    @State private var helpQuestionId: QuestionId?
-    @State private var helpQuestionText: String?
-    @State private var isHelpSheetPresented = false
+    @State private var helpContext: HelpContext?
     @State private var expandedHelpSections: Set<String> = []
     @State private var simReport: SimulationReport?
     @State private var simRunning = false
@@ -60,12 +58,11 @@ struct LlamaMascotContentView: View {
             //.navigationTitle("20 Questions: Animals")
             .overlay(alignment: .topTrailing) { optionsButton }
             .overlay { sideMenuOverlay }
-            .sheet(isPresented: $isHelpSheetPresented) {
-                helpSheetContent
+            .sheet(item: $helpContext) { ctx in
+                helpSheetContent(context: ctx)
                     .interactiveDismissDisabled(false) // allow swipe-to-close
                     .onDisappear {
-                        helpQuestionId = nil
-                        helpQuestionText = nil
+                        expandedHelpSections.removeAll()
                     }
             }
         }
@@ -108,13 +105,25 @@ struct LlamaMascotContentView: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                 Button {
-                    helpQuestionId = question.id
-                    helpQuestionText = question.text
-                    isHelpSheetPresented = true
+                    helpContext = HelpContext(id: question.id, text: question.text)
                 } label: {
-                    Text("Need Help?")
-                        .font(.caption.weight(.semibold))
-                        .foregroundColor(.blue)
+                    HStack(spacing: 6) {
+                        Image(systemName: "questionmark.circle")
+                            .font(.caption.weight(.semibold))
+                        Text("Need Help?")
+                            .font(.footnote.weight(.semibold))
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .foregroundColor(Color.blue.opacity(0.9))
+                    .background(
+                        Capsule()
+                            .fill(Color.blue.opacity(colorScheme == .dark ? 0.15 : 0.12))
+                    )
+                    .overlay(
+                        Capsule()
+                            .stroke(Color.blue.opacity(0.25), lineWidth: 1)
+                    )
                 }
             } else if let guess = viewModel.currentGuess {
                 // Guess mode
@@ -452,27 +461,17 @@ struct LlamaMascotContentView: View {
 
     // MARK: - Help Sheet
 
-    private var helpSheetContent: some View {
-        let entries: [(animal: Animal, answer: String)] = {
-            if let qId = helpQuestionId {
-                return viewModel.helpAnswers(for: qId)
-            }
-            return []
-        }()
+    private func helpSheetContent(context: HelpContext) -> some View {
+        let entries: [(animal: Animal, answer: String)] = viewModel.helpAnswers(for: context.id)
         let grouped = Dictionary(grouping: entries) { item in
             item.animal.name.first.map { String($0).uppercased() } ?? "#"
         }
         let sortedKeys = grouped.keys.sorted()
 
         return VStack(spacing: 16) {
-            if let text = helpQuestionText {
-                Text(text)
-                    .font(.headline)
-                    .multilineTextAlignment(.center)
-            } else {
-                Text("Question help")
-                    .font(.headline)
-            }
+            Text(context.text)
+                .font(.headline)
+                .multilineTextAlignment(.center)
 
             if entries.isEmpty {
                 Text("No data available for this question.")
@@ -551,7 +550,7 @@ struct LlamaMascotContentView: View {
                 }
             }
 
-            Button("Close") { isHelpSheetPresented = false }
+            Button("Close") { helpContext = nil }
                 .buttonStyle(.borderedProminent)
         }
         .padding()
@@ -775,6 +774,11 @@ struct LlamaMascotContentView: View {
         }
         .allowsHitTesting(false)
     }
+}
+
+private struct HelpContext: Identifiable {
+    let id: QuestionId
+    let text: String
 }
 
 // MARK: - Bubble Shape (Speech bubble with pointer)
