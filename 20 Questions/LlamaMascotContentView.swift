@@ -17,6 +17,7 @@ struct LlamaMascotContentView: View {
     @State private var noisySimReport: SimulationReport?
     @State private var noisySimRunning = false
     @State private var expandedRunIDs: Set<String> = []
+    @State private var contextAwareFunFacts = false
     @State private var funFact: (animalName: String, text: String)?
     @State private var funFactInterval: Int = 1
     @State private var questionChangeCount: Int = 0
@@ -411,6 +412,7 @@ struct LlamaMascotContentView: View {
                             cardFill: cardFill,
                             shadowColor: shadowColor,
                             developerMode: $showDeveloperTools,
+                            contextAwareFacts: $contextAwareFunFacts,
                             onFeedback: {
                                 withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
                             }
@@ -428,6 +430,7 @@ struct LlamaMascotContentView: View {
         let cardFill: Color
         let shadowColor: Color
         @Binding var developerMode: Bool
+        @Binding var contextAwareFacts: Bool
         let onFeedback: () -> Void
 
         var body: some View {
@@ -451,6 +454,12 @@ struct LlamaMascotContentView: View {
 
                 Toggle(isOn: $developerMode) {
                     Label("Developer Mode", systemImage: "hammer.fill")
+                }
+                .toggleStyle(SwitchToggleStyle(tint: .purple))
+                .padding(.vertical, 4)
+
+                Toggle(isOn: $contextAwareFacts) {
+                    Label("Context-aware fun facts", systemImage: "sparkles")
                 }
                 .toggleStyle(SwitchToggleStyle(tint: .purple))
                 .padding(.vertical, 4)
@@ -593,19 +602,31 @@ struct LlamaMascotContentView: View {
             return
         }
 
-        // Prefer remaining candidates, else any animal.
-        let candidates = viewModel.debugRemainingNames.isEmpty
-            ? Array(dict.keys)
-            : viewModel.debugRemainingNames.map { $0.lowercased() }.filter { dict[$0] != nil }
+        let pool: [String]
+        if contextAwareFunFacts {
+            var preference: [String] = []
+            if let guess = viewModel.currentGuess?.name.lowercased(), dict[guess] != nil {
+                preference.append(guess)
+            }
+            let remaining = viewModel.debugRemainingNames
+                .map { $0.lowercased() }
+                .filter { dict[$0] != nil }
+            preference.append(contentsOf: remaining)
+            pool = preference.isEmpty ? Array(dict.keys) : preference
+        } else {
+            pool = Array(dict.keys)
+        }
 
-        guard let animalKey = candidates.randomElement(),
+        guard let animalKey = pool.randomElement(),
               let facts = dict[animalKey],
               let fact = facts.randomElement() else {
             funFact = nil
             return
         }
         // Try to restore display name from model; fallback to key.
-        let displayName = viewModel.debugRemainingNames.first { $0.lowercased() == animalKey } ?? animalKey.capitalized
+        let displayName = viewModel.debugRemainingNames.first { $0.lowercased() == animalKey }
+            ?? viewModel.currentGuess?.name
+            ?? animalKey.capitalized
         funFact = (displayName, fact)
     }
 
