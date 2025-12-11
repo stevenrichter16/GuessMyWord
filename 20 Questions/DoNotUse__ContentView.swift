@@ -238,6 +238,30 @@ final class ANNGameViewModel: ObservableObject {
         questionImportance[questionId] ?? 1
     }
 
+    func helpAnswers(for questionId: QuestionId) -> [(animal: Animal, answer: String)] {
+        let items: [(Animal, String)] = allAnimals.map { animal in
+            let w = annStore.weight(for: animal.id, questionId: questionId)
+            let label: String
+            if w > 0 { label = "Yes" }
+            else if w < 0 { label = "No" }
+            else { label = "Unknown" }
+            return (animal, label)
+        }
+        func rank(_ label: String) -> Int {
+            switch label {
+            case "Yes": return 0
+            case "No": return 1
+            default: return 2
+            }
+        }
+        return items.sorted { a, b in
+            let ra = rank(a.1)
+            let rb = rank(b.1)
+            if ra == rb { return a.0.name < b.0.name }
+            return ra < rb
+        }
+    }
+
     private func shouldSkipQuestion(_ questionId: QuestionId) -> Bool {
         // If the user already said "No" to carnivore or herbivore, skip the omnivore follow-up.
         if questionId == "is_omnivore" {

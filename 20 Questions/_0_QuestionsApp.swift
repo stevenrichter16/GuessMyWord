@@ -16,8 +16,6 @@ struct _0_QuestionsApp: App {
         WindowGroup {
             if useLlamaMascotUI {
                 LlamaMascotContentView()
-            } else {
-                ContentView()
             }
         }
     }

@@ -10,6 +10,9 @@ struct LlamaMascotContentView: View {
     @State private var bubbleScale: CGFloat = 0.8
     @State private var isMenuOpen = false
     @State private var showDeveloperTools = false
+    @State private var helpQuestionId: QuestionId?
+    @State private var helpQuestionText: String?
+    @State private var isHelpSheetPresented = false
     @State private var simReport: SimulationReport?
     @State private var simRunning = false
     @State private var noisySimReport: SimulationReport?
@@ -56,6 +59,14 @@ struct LlamaMascotContentView: View {
             //.navigationTitle("20 Questions: Animals")
             .overlay(alignment: .topTrailing) { optionsButton }
             .overlay { sideMenuOverlay }
+            .sheet(isPresented: $isHelpSheetPresented) {
+                helpSheetContent
+                    .interactiveDismissDisabled(false) // allow swipe-to-close
+                    .onDisappear {
+                        helpQuestionId = nil
+                        helpQuestionText = nil
+                    }
+            }
         }
     }
 
@@ -95,6 +106,15 @@ struct LlamaMascotContentView: View {
                     .font(.title.weight(.semibold))
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
+                Button {
+                    helpQuestionId = question.id
+                    helpQuestionText = question.text
+                    isHelpSheetPresented = true
+                } label: {
+                    Text("Need Help?")
+                        .font(.caption.weight(.semibold))
+                        .foregroundColor(.blue)
+                }
             } else if let guess = viewModel.currentGuess {
                 // Guess mode
                 if viewModel.isFinished && viewModel.lastGuessWasWrong {
@@ -355,17 +375,17 @@ struct LlamaMascotContentView: View {
                             .onTapGesture {
                                 withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
                             }
-                SideMenuView(
-                    isOpen: $isMenuOpen,
-                    width: max(proxy.size.width * 0.3, 220),
-                    cardFill: cardFill,
-                    shadowColor: shadowColor,
-                    developerMode: $showDeveloperTools,
-                    onFeedback: {
-                        withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
-                    }
-                )
-                .frame(maxHeight: .infinity, alignment: .top)
+                        SideMenuView(
+                            isOpen: $isMenuOpen,
+                            width: max(proxy.size.width * 0.3, 220),
+                            cardFill: cardFill,
+                            shadowColor: shadowColor,
+                            developerMode: $showDeveloperTools,
+                            onFeedback: {
+                                withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
+                            }
+                        )
+                        .frame(maxHeight: .infinity, alignment: .top)
                     }
                 }
             }
@@ -429,6 +449,60 @@ struct LlamaMascotContentView: View {
         }
     }
 
+    // MARK: - Help Sheet
+
+    private var helpSheetContent: some View {
+        let entries: [(animal: Animal, answer: String)] = {
+            if let qId = helpQuestionId {
+                return viewModel.helpAnswers(for: qId)
+            }
+            return []
+        }()
+
+        return VStack(spacing: 16) {
+            if let text = helpQuestionText {
+                Text(text)
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
+            } else {
+                Text("Question help")
+                    .font(.headline)
+            }
+
+            if entries.isEmpty {
+                Text("No data available for this question.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            } else {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(entries, id: \.animal.id) { item in
+                            HStack {
+                                Text(item.animal.name)
+                                    .font(.subheadline)
+                                Spacer()
+                                Text(item.answer)
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(cardFill.opacity(0.9))
+                            )
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+            }
+
+            Button("Close") { isHelpSheetPresented = false }
+                .buttonStyle(.borderedProminent)
+        }
+        .padding()
+    }
+ 
     // MARK: - Developer Tools
 
     private var debugSimulator: some View {
