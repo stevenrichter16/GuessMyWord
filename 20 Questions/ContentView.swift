@@ -307,6 +307,7 @@ struct ContentView: View {
     private let buttonCorner: CGFloat = 16
     private let shadowRadius: CGFloat = 12
     private let shadowYOffset: CGFloat = 6
+    @State private var isMenuOpen = false
     @State private var simReport: SimulationReport?
     @State private var simRunning = false
     @State private var noisySimReport: SimulationReport?
@@ -356,6 +357,8 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("20 Questions: Animals")
+            .overlay(alignment: .topTrailing) { optionsButton }
+            .overlay { sideMenuOverlay }
         }
     }
 
@@ -368,6 +371,57 @@ struct ContentView: View {
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var optionsButton: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen.toggle() }
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.headline)
+                .rotationEffect(.degrees(isMenuOpen ? 90 : 0))
+                .frame(width: 36, height: 36)
+                .background(
+                    Circle()
+                        .fill(Color.white.opacity(colorScheme == .dark ? 0.15 : 0.9))
+                        .shadow(color: shadowColor.opacity(0.6), radius: 6, x: 0, y: 3)
+                )
+                .overlay(
+                    Circle()
+                        .stroke(Color.primary.opacity(0.12), lineWidth: 1)
+                )
+        }
+        .padding(.trailing, 16)
+        .padding(.top, 8)
+        .accessibilityLabel("More options")
+    }
+
+    private var sideMenuOverlay: some View {
+        GeometryReader { proxy in
+            ZStack(alignment: .trailing) {
+                if isMenuOpen {
+                    Color.black.opacity(0.25)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
+                        }
+                }
+                SideMenuView(
+                    isOpen: $isMenuOpen,
+                    width: max(proxy.size.width * 0.3, 220),
+                    cardFill: cardFill,
+                    shadowColor: shadowColor,
+                    onDeveloper: {
+                        withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
+                    },
+                    onFeedback: {
+                        withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
+                    }
+                )
+                .frame(maxHeight: .infinity, alignment: .top)
+            }
+        }
+        .allowsHitTesting(isMenuOpen)
     }
 
     private var progressBar: some View {
@@ -779,6 +833,66 @@ private struct SlideFadeBlur: ViewModifier {
             .opacity(Double(progress))
             .offset(y: (1 - progress) * 16)
             .blur(radius: (1 - progress) * 6)
+    }
+}
+
+// MARK: - Side Menu
+
+private struct SideMenuView: View {
+    @Binding var isOpen: Bool
+    let width: CGFloat
+    let cardFill: Color
+    let shadowColor: Color
+    let onDeveloper: () -> Void
+    let onFeedback: () -> Void
+
+    var body: some View {
+        VStack(spacing: 16) {
+            HStack {
+                Text("Menu")
+                    .font(.headline)
+                Spacer()
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) { isOpen = false }
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.subheadline.weight(.bold))
+                        .padding(8)
+                }
+                .accessibilityLabel("Close menu")
+            }
+            .padding(.bottom, 4)
+
+            Divider()
+
+            Button(action: onDeveloper) {
+                Label("Developer Mode", systemImage: "hammer.fill")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+            .padding(.vertical, 8)
+
+            Button(action: onFeedback) {
+                Label("Feedback", systemImage: "envelope.fill")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+            .padding(.vertical, 8)
+
+            Spacer()
+        }
+        .padding(16)
+        .frame(width: width)
+        .frame(maxHeight: .infinity, alignment: .top)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(cardFill)
+                .shadow(color: shadowColor.opacity(0.3), radius: 12, x: -6, y: 0)
+        )
+        .offset(x: isOpen ? 0 : width)
+        .animation(.easeInOut(duration: 0.25), value: isOpen)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Side menu")
     }
 }
 

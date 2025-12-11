@@ -8,6 +8,8 @@ struct LlamaMascotContentView: View {
     @State private var confettiParticles: [ConfettiParticle] = []
     @State private var llamaAnimating = false
     @State private var bubbleScale: CGFloat = 0.8
+    @State private var isMenuOpen = false
+    @State private var showDeveloperTools = false
     @State private var simReport: SimulationReport?
     @State private var simRunning = false
     @State private var noisySimReport: SimulationReport?
@@ -40,7 +42,9 @@ struct LlamaMascotContentView: View {
                         }
 
                         //debugStrip
-                        debugSimulator
+                        if showDeveloperTools {
+                            debugSimulator
+                        }
                         if shouldShowRestartButton {
                             restartButton
                         }
@@ -50,6 +54,8 @@ struct LlamaMascotContentView: View {
                 }
             }
             //.navigationTitle("20 Questions: Animals")
+            .overlay(alignment: .topTrailing) { optionsButton }
+            .overlay { sideMenuOverlay }
         }
     }
 
@@ -312,6 +318,115 @@ struct LlamaMascotContentView: View {
 
     private var shouldShowRestartButton: Bool {
         viewModel.currentGuess == nil && !viewModel.isFinished
+    }
+
+    // MARK: - Options Button + Side Menu
+
+    private var optionsButton: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen.toggle() }
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.headline)
+                .rotationEffect(.degrees(isMenuOpen ? 90 : 0))
+                .frame(width: 36, height: 36)
+                .background(
+                    Circle()
+                        .fill(Color.white.opacity(colorScheme == .dark ? 0.15 : 0.9))
+                        .shadow(color: shadowColor.opacity(0.6), radius: 6, x: 0, y: 3)
+                )
+                .overlay(
+                    Circle()
+                        .stroke(Color.primary.opacity(0.12), lineWidth: 1)
+                )
+        }
+        .padding(.trailing, 16)
+        .padding(.top, 8)
+        .accessibilityLabel("More options")
+    }
+
+    private var sideMenuOverlay: some View {
+        Group {
+            if isMenuOpen {
+                GeometryReader { proxy in
+                    ZStack(alignment: .trailing) {
+                        Color.black.opacity(0.25)
+                            .ignoresSafeArea()
+                            .onTapGesture {
+                                withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
+                            }
+                SideMenuView(
+                    isOpen: $isMenuOpen,
+                    width: max(proxy.size.width * 0.3, 220),
+                    cardFill: cardFill,
+                    shadowColor: shadowColor,
+                    developerMode: $showDeveloperTools,
+                    onFeedback: {
+                        withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
+                    }
+                )
+                .frame(maxHeight: .infinity, alignment: .top)
+                    }
+                }
+            }
+        }
+    }
+
+    private struct SideMenuView: View {
+        @Binding var isOpen: Bool
+        let width: CGFloat
+        let cardFill: Color
+        let shadowColor: Color
+        @Binding var developerMode: Bool
+        let onFeedback: () -> Void
+
+        var body: some View {
+            VStack(spacing: 16) {
+                HStack {
+                    Text("Menu")
+                        .font(.headline)
+                    Spacer()
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) { isOpen = false }
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.subheadline.weight(.bold))
+                            .padding(8)
+                    }
+                    .accessibilityLabel("Close menu")
+                }
+                .padding(.bottom, 4)
+
+                Divider()
+
+                Toggle(isOn: $developerMode) {
+                    Label("Developer Mode", systemImage: "hammer.fill")
+                }
+                .toggleStyle(SwitchToggleStyle(tint: .purple))
+                .padding(.vertical, 4)
+
+                Button(action: onFeedback) {
+                    Label("Feedback", systemImage: "envelope.fill")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.plain)
+                .padding(.vertical, 8)
+
+                Spacer()
+            }
+            .padding(16)
+            .frame(width: width)
+            .frame(maxHeight: .infinity, alignment: .top)
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(cardFill)
+                    .shadow(color: shadowColor.opacity(0.3), radius: 12, x: -6, y: 0)
+            )
+            .offset(x: isOpen ? 0 : width)
+            .animation(.easeInOut(duration: 0.25), value: isOpen)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Side menu")
+        }
     }
 
     // MARK: - Developer Tools
