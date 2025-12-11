@@ -45,5 +45,23 @@
     "Tigers mark territory using scent and scratch marks.",
     "Tiger cubs learn to hunt by watching their mothers.",
     "Tigers can swim well and often enjoy water \u2014 unlike many other cats."
+  ],
+  "kangaroo": [
+    "Kangaroos are surprisingly strong swimmers, paddling with their hind legs and steering with their tail.",
+    "The red kangaroo is the largest, standing over 6 feet tall and weighing up to about 200 pounds.",
+    "Kangaroos generally cannot hop backward because their powerful hind legs and long tail are built for forward movement."
+  ],
+  "squirrel": [
+    "Squirrels can leap about six feet in a single bound and survive falls from roughly 100 feet by using their tail for balance and as a parachute.",
+    "Squirrels often fake-bury nuts to deceive thieves, digging and covering empty holes while keeping the nut to hide elsewhere.",
+    "They can sniff out food buried under a foot of snow, combining scent with memory of landmarks.",
+    "One squirrel may bury thousands of nuts each year across many spots (scatter-hoarding) to improve the odds of finding some later."
+  ],
+  "hippo": [
+    "A hippo’s closest living relatives are whales, dolphins, and porpoises, sharing a semi-aquatic ancestor from ~55 million years ago.",
+    "Despite their bulk, hippos can sprint up to about 22 mph over short distances—faster than a human.",
+    "Adult hippos eat roughly 80–110 pounds of grass nightly, grazing for hours and traveling miles to feed.",
+    "Hippos can’t swim; they walk or run along riverbeds and can hold their breath for around five minutes.",
+    "Hippos secrete a reddish “blood sweat” that acts as sunscreen, antibiotic, and cooling layer."
   ]
 }
