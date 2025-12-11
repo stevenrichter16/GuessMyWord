@@ -249,12 +249,10 @@ struct LlamaMascotContentView: View {
     private var progressBar: some View {
         let currentStep = min(viewModel.currentTurn, viewModel.maxTurnCount)
         let fraction = max(0, min(1, Double(currentStep) / Double(viewModel.maxTurnCount)))
-        let track = Color.primary.opacity(colorScheme == .dark ? 0.25 : 0.08)
-        let active = LinearGradient(
-            colors: [.orange, .pink, .purple],
-            startPoint: .leading,
-            endPoint: .trailing
-        )
+        let track = Color.primary.opacity(colorScheme == .dark ? 0.2 : 0.08)
+        let active = colorScheme == .dark
+            ? LinearGradient(colors: [Color.teal, Color.purple], startPoint: .leading, endPoint: .trailing)
+            : LinearGradient(colors: [Color.orange, Color.pink, Color.purple], startPoint: .leading, endPoint: .trailing)
         return VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text("Progress")
@@ -265,16 +263,23 @@ struct LlamaMascotContentView: View {
                     .foregroundColor(.secondary)
             }
             GeometryReader { proxy in
+                let radius: CGFloat = 16
+                let fillWidth = max(24, fraction * proxy.size.width)
                 ZStack(alignment: .leading) {
-                    Capsule()
+                    RoundedRectangle(cornerRadius: radius)
                         .fill(track)
-                        .frame(height: 10)
-                    Capsule()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: radius)
+                                .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+                        )
+                        .frame(height: 12)
+                    RoundedRectangle(cornerRadius: radius)
                         .fill(active)
-                        .frame(width: max(24, fraction * proxy.size.width), height: 10)
+                        .frame(width: fillWidth, height: 12)
+                        .shadow(color: shadowColor.opacity(0.25), radius: 6, x: 0, y: 3)
                 }
             }
-            .frame(height: 10)
+            .frame(height: 12)
         }
         .padding()
         .background(
