@@ -480,35 +480,38 @@ struct LlamaMascotContentView: View {
                     .foregroundColor(.secondary)
             } else {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 10) {
+                    LazyVStack(alignment: .leading, spacing: 10, pinnedViews: [.sectionHeaders]) {
                         ForEach(sortedKeys, id: \.self) { key in
                             let isExpanded = expandedHelpSections.contains(key)
-                            VStack(alignment: .leading, spacing: 6) {
-                                Button {
-                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                        if isExpanded { expandedHelpSections.remove(key) }
-                                        else { expandedHelpSections.insert(key) }
+                            Section(
+                                header:
+                                    Button {
+                                        withAnimation(.easeInOut(duration: 0.2)) {
+                                            if isExpanded { expandedHelpSections.remove(key) }
+                                            else { expandedHelpSections.insert(key) }
+                                        }
+                                    } label: {
+                                        HStack {
+                                            Text(key)
+                                                .font(.headline)
+                                            Spacer()
+                                            Image(systemName: "chevron.down")
+                                                .font(.caption.weight(.bold))
+                                                .foregroundColor(.secondary)
+                                                .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                                                .animation(.easeInOut(duration: 0.2), value: isExpanded)
+                                        }
+                                        .padding(.vertical, 8)
+                                        .padding(.horizontal, 12)
+                                        .frame(maxWidth: .infinity)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .fill(cardFill.opacity(0.95))
+                                                .shadow(color: shadowColor.opacity(0.15), radius: 4, x: 0, y: 2)
+                                        )
                                     }
-                                } label: {
-                                    HStack {
-                                        Text(key)
-                                            .font(.headline)
-                                            .padding(.vertical, 6)
-                                            .padding(.horizontal, 10)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 12)
-                                                    .fill(cardFill.opacity(0.95))
-                                                    .shadow(color: shadowColor.opacity(0.15), radius: 4, x: 0, y: 2)
-                                            )
-                                        Spacer()
-                                        Image(systemName: "chevron.down")
-                                            .font(.caption.weight(.bold))
-                                            .foregroundColor(.secondary)
-                                            .rotationEffect(.degrees(isExpanded ? 180 : 0))
-                                            .animation(.easeInOut(duration: 0.2), value: isExpanded)
-                                    }
-                                    .padding(.vertical, 4)
-                                }
+                                    .buttonStyle(.plain)
+                            ) {
                                 if isExpanded, let items = grouped[key] {
                                     VStack(alignment: .leading, spacing: 8) {
                                         ForEach(items.sorted { $0.animal.name < $1.animal.name }, id: \.animal.id) { item in
