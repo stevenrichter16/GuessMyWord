@@ -485,38 +485,61 @@ struct LlamaMascotContentView: View {
                             let isExpanded = expandedHelpSections.contains(key)
                             VStack(alignment: .leading, spacing: 6) {
                                 Button {
-                                    if isExpanded { expandedHelpSections.remove(key) }
-                                    else { expandedHelpSections.insert(key) }
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        if isExpanded { expandedHelpSections.remove(key) }
+                                        else { expandedHelpSections.insert(key) }
+                                    }
                                 } label: {
                                     HStack {
                                         Text(key)
                                             .font(.headline)
+                                            .padding(.vertical, 6)
+                                            .padding(.horizontal, 10)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .fill(cardFill.opacity(0.95))
+                                                    .shadow(color: shadowColor.opacity(0.15), radius: 4, x: 0, y: 2)
+                                            )
                                         Spacer()
-                                        Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                                        Image(systemName: "chevron.down")
                                             .font(.caption.weight(.bold))
                                             .foregroundColor(.secondary)
+                                            .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                                            .animation(.easeInOut(duration: 0.2), value: isExpanded)
                                     }
                                     .padding(.vertical, 4)
                                 }
                                 if isExpanded, let items = grouped[key] {
-                                    VStack(alignment: .leading, spacing: 6) {
+                                    VStack(alignment: .leading, spacing: 8) {
                                         ForEach(items.sorted { $0.animal.name < $1.animal.name }, id: \.animal.id) { item in
-                                            HStack {
+                                            HStack(alignment: .firstTextBaseline, spacing: 8) {
                                                 Text(item.animal.name)
                                                     .font(.subheadline)
                                                 Spacer()
+                                                let tint = helpAnswerColor(item.answer)
                                                 Text(item.answer)
                                                     .font(.subheadline.weight(.semibold))
-                                                    .foregroundColor(.secondary)
+                                                    .foregroundColor(tint)
+                                                    .padding(.horizontal, 10)
+                                                    .padding(.vertical, 4)
+                                                    .background(
+                                                        Capsule()
+                                                            .fill(tint.opacity(0.15))
+                                                    )
+                                                    .overlay(
+                                                        Capsule()
+                                                            .stroke(tint.opacity(0.35), lineWidth: 1)
+                                                    )
                                             }
-                                            .padding(.vertical, 4)
-                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 6)
+                                            .padding(.horizontal, 10)
                                             .background(
-                                                RoundedRectangle(cornerRadius: 10)
+                                                RoundedRectangle(cornerRadius: 12)
                                                     .fill(cardFill.opacity(0.9))
                                             )
                                         }
                                     }
+                                    .padding(.leading, 4)
                                 }
                             }
                         }
@@ -528,6 +551,12 @@ struct LlamaMascotContentView: View {
             Button("Close") { isHelpSheetPresented = false }
                 .buttonStyle(.borderedProminent)
         }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 18)
+                .fill(cardFill)
+                .shadow(color: shadowColor, radius: 10, x: 0, y: 6)
+        )
         .padding()
     }
  
@@ -680,6 +709,14 @@ struct LlamaMascotContentView: View {
 
     private var shadowColor: Color {
         colorScheme == .dark ? Color.black.opacity(0.5) : Color.black.opacity(0.12)
+    }
+
+    private func helpAnswerColor(_ label: String) -> Color {
+        switch label.lowercased() {
+        case "yes": return .green
+        case "no": return .red
+        default: return .orange
+        }
     }
 
     private var backgroundGradient: LinearGradient {
