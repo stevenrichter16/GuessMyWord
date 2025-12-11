@@ -5,6 +5,7 @@ import SwiftUI
 struct LlamaMascotContentView: View {
     @StateObject private var viewModel = ANNGameViewModel()!
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var confettiParticles: [ConfettiParticle] = []
     @State private var llamaAnimating = false
     @State private var bubbleScale: CGFloat = 0.8
@@ -27,6 +28,8 @@ struct LlamaMascotContentView: View {
             ZStack {
                 backgroundGradient
                     .ignoresSafeArea()
+                    .overlay(meltingLayer)
+                    .overlay(glassParallaxLayer)
 
                 ScrollView {
                     VStack(spacing: 16) {
@@ -83,6 +86,98 @@ struct LlamaMascotContentView: View {
             }
             .onChange(of: viewModel.currentGuess?.id) { _, _ in generateFunFact() }
         }
+    }
+
+    private var glassParallaxLayer: some View {
+        GeometryReader { proxy in
+            let w = proxy.size.width
+            let h = proxy.size.height
+            ZStack {
+                floatingBlob(x: w * 0.2, y: h * 0.15, size: 220, color: Color.purple.opacity(0.18), speed: 16)
+                floatingBlob(x: w * 0.8, y: h * 0.25, size: 260, color: Color.pink.opacity(0.16), speed: 20)
+                floatingBlob(x: w * 0.3, y: h * 0.7, size: 280, color: Color.blue.opacity(0.14), speed: 18)
+            }
+        }
+        .allowsHitTesting(false)
+    }
+
+    private func floatingBlob(x: CGFloat, y: CGFloat, size: CGFloat, color: Color, speed: Double) -> some View {
+        let offset: CGFloat = size * 0.08
+        return Circle()
+            .fill(color)
+            .blur(radius: size * 0.25)
+            .frame(width: size, height: size)
+            .position(x: x, y: y)
+            .offset(y: offset)
+            .animation(.easeInOut(duration: speed).repeatForever(autoreverses: true), value: UUID())
+    }
+
+    private var meltingLayer: some View {
+        GeometryReader { proxy in
+            let w = proxy.size.width
+            let h = proxy.size.height
+            let drips: [(CGFloat, CGFloat, Color, Double)] = [
+                (0.20, 140.0, colorScheme == .dark ? Color.purple.opacity(0.24) : Color.purple.opacity(0.18), 9.0),
+                (0.45, 200.0, colorScheme == .dark ? Color.pink.opacity(0.22) : Color.pink.opacity(0.16), 11.0),
+                (0.70, 160.0, colorScheme == .dark ? Color.blue.opacity(0.20) : Color.blue.opacity(0.14), 13.0),
+                (0.88, 120.0, colorScheme == .dark ? Color.cyan.opacity(0.18) : Color.cyan.opacity(0.12), 10.0)
+            ]
+
+            TimelineView(.animation) { timeline in
+                let t = timeline.date.timeIntervalSinceReferenceDate
+                ZStack {
+                    ForEach(0..<drips.count, id: \.self) { idx in
+                        let item = drips[idx]
+                        let x = w * item.0 + CGFloat(sin(t / item.3) * 12)
+                        let startY: CGFloat = -300
+                        let endY: CGFloat = h + 300
+                        meltingDrip(
+                            x: x,
+                            startY: startY,
+                            endY: endY,
+                            width: item.1,
+                            color: item.2,
+                            time: t,
+                            speed: item.3
+                        )
+                    }
+                }
+            }
+        }
+        .allowsHitTesting(false)
+    }
+
+    private func meltingDrip(x: CGFloat, startY: CGFloat, endY: CGFloat, width: CGFloat, color: Color, time: TimeInterval, speed: Double) -> some View {
+        if reduceMotion { return AnyView(Color.clear) }
+        let height: CGFloat = endY - startY
+        let base = Rectangle()
+            .fill(
+                LinearGradient(
+                    colors: [color, color.opacity(0)],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+            .frame(width: width, height: height)
+            .blur(radius: width * 0.35)
+            .position(x: x, y: startY)
+
+        func blob(phaseOffset: Double) -> some View {
+            let phase = CGFloat((time / speed + phaseOffset).truncatingRemainder(dividingBy: 1))
+            let yOffset = phase * height
+            // Fade at the very start/end of each pass to avoid hard resets.
+            let fade = max(0, min(1, min(phase * 3, (1 - phase) * 3)))
+            return base
+                .opacity(Double(fade))
+                .offset(y: yOffset)
+        }
+
+        return AnyView(
+            ZStack {
+                blob(phaseOffset: 0.0)
+                blob(phaseOffset: 0.5) // staggered to keep the flow continuous
+            }
+        )
     }
 
     // MARK: - Mascot with Dialogue Bubble
@@ -186,9 +281,15 @@ struct LlamaMascotContentView: View {
         .padding(.bottom, 44)
         .frame(maxWidth: .infinity)
         .background(
-            BubbleShape()
-                .fill(bubbleFill)
-                .shadow(color: shadowColor, radius: 8, x: 0, y: 4)
+            GlassBackground(
+                cornerRadius: 20,
+                tint: glassTint,
+                strokeColor: Color.primary.opacity(0.08),
+                shadowColor: shadowColor.opacity(0.3),
+                shadowRadius: 8,
+                movingGradient: true
+            )
+            .mask(BubbleShape())
         )
         .overlay(confettiLayer)
     }
@@ -283,9 +384,14 @@ struct LlamaMascotContentView: View {
         }
         .padding()
         .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(cardFill)
-                .shadow(color: shadowColor, radius: 10, x: 0, y: 6)
+            GlassBackground(
+                cornerRadius: 16,
+                tint: glassTint,
+                strokeColor: Color.primary.opacity(0.1),
+                shadowColor: shadowColor.opacity(0.3),
+                shadowRadius: 10,
+                movingGradient: false
+            )
         )
     }
 
@@ -384,6 +490,7 @@ struct LlamaMascotContentView: View {
         } label: {
             Image(systemName: "ellipsis")
                 .font(.headline)
+                .foregroundColor(.primary)
                 .rotationEffect(.degrees(isMenuOpen ? 90 : 0))
                 .frame(width: 36, height: 36)
                 .background(
@@ -414,7 +521,7 @@ struct LlamaMascotContentView: View {
                         SideMenuView(
                             isOpen: $isMenuOpen,
                             width: max(proxy.size.width * 0.3, 220),
-                            cardFill: cardFill,
+                            cardFill: glassTint,
                             shadowColor: shadowColor,
                             developerMode: $showDeveloperTools,
                             contextAwareFacts: $contextAwareFunFacts,
@@ -443,12 +550,14 @@ struct LlamaMascotContentView: View {
                 HStack {
                     Text("Menu")
                         .font(.headline)
+                        .foregroundColor(.primary)
                     Spacer()
                     Button {
                         withAnimation(.easeInOut(duration: 0.2)) { isOpen = false }
                     } label: {
                         Image(systemName: "xmark")
                             .font(.subheadline.weight(.bold))
+                            .foregroundColor(.primary)
                             .padding(8)
                     }
                     .accessibilityLabel("Close menu")
@@ -460,12 +569,14 @@ struct LlamaMascotContentView: View {
                 Toggle(isOn: $developerMode) {
                     Label("Developer Mode", systemImage: "hammer.fill")
                 }
+                .foregroundColor(.primary)
                 .toggleStyle(SwitchToggleStyle(tint: .purple))
                 .padding(.vertical, 4)
 
                 Toggle(isOn: $contextAwareFacts) {
                     Label("Context-aware fun facts", systemImage: "sparkles")
                 }
+                .foregroundColor(.primary)
                 .toggleStyle(SwitchToggleStyle(tint: .purple))
                 .padding(.vertical, 4)
 
@@ -474,6 +585,7 @@ struct LlamaMascotContentView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .buttonStyle(.plain)
+                .foregroundColor(.primary)
                 .padding(.vertical, 8)
 
                 Spacer()
@@ -636,14 +748,11 @@ struct LlamaMascotContentView: View {
     }
 
     private func funFactCard(_ fact: (animalName: String, text: String)) -> some View {
-        let accent = colorScheme == .dark
-            ? Color.purple.opacity(0.25)
-            : Color.purple.opacity(0.12)
-
-        return VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text("Fun Fact")
                     .font(.headline)
+                    .foregroundColor(.primary)
                 Spacer()
                 Button {
                     withAnimation(.easeInOut(duration: 0.15)) {
@@ -654,6 +763,7 @@ struct LlamaMascotContentView: View {
                         .font(.subheadline.weight(.semibold))
                         .rotationEffect(.degrees(15))
                         .scaleEffect(0.95)
+                        .foregroundColor(.primary)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Refresh fun fact")
@@ -670,13 +780,14 @@ struct LlamaMascotContentView: View {
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(accent)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color.primary.opacity(0.08), lineWidth: 1)
-                )
-                .shadow(color: shadowColor.opacity(0.2), radius: 8, x: 0, y: 4)
+            GlassBackground(
+                cornerRadius: 16,
+                tint: glassTint,
+                strokeColor: Color.primary.opacity(0.08),
+                shadowColor: shadowColor.opacity(0.2),
+                shadowRadius: 8,
+                movingGradient: false
+            )
         )
         .accessibilityLabel("Fun fact about \(fact.animalName). \(fact.text)")
     }
@@ -830,6 +941,10 @@ struct LlamaMascotContentView: View {
 
     private var shadowColor: Color {
         colorScheme == .dark ? Color.black.opacity(0.5) : Color.black.opacity(0.12)
+    }
+
+    private var glassTint: Color {
+        colorScheme == .dark ? Color.purple.opacity(0.22) : Color.purple.opacity(0.16)
     }
 
     private func helpAnswerColor(_ label: String) -> Color {
