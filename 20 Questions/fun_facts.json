@@ -1,6 +1,10 @@
 {
   "elephant": [
-    "Elephants trucks have 40,000 muscles and can delicately pick up a single blade of grass or rip branches off trees"
+    "Elephants trucks have 40,000 muscles and can delicately pick up a single blade of grass or rip branches off trees",
+    "Elephants are the largest land mammals on Earth.",
+    "Elephants are incredibly intelligent and can remember people, places, and experiences for many years \u2014 showing remarkable long-term memory.",
+    "Elephants drink over 200 liters of water a day and use their tusks to dig for water.",
+    "Elephants communicate with low-frequency sounds and vibrations that can travel miles."
   ],
   "octopus": [
     "Octopus have three hearts and blue blood",
@@ -8,6 +12,38 @@
   ],
   "giraffe": [
     "Giraffe sleep only a few minutes at a time (often totaling under 2 hours a day)",
-    "Giraffe have the same number of neck vertebrae as humans\u2014seven\u2014just much larger"
+    "Giraffes are the tallest land animals in the world (14-19ft).",
+    "Giraffes spotted coat patterns are unique to each individual \u2014 like fingerprints.",
+    "Giraffes spots help with camouflage and act as thermal windows to help cool the body.",
+    "Giraffes use necking \u2014 neck-to-neck combat \u2014 to establish dominance."
+  ],
+  "dog": [
+    "Dogs have an amazing sense of smell \u2014 much stronger than humans, which is why they are used in tracking and detection roles.",
+    "Dogs were one of the first animals domesticated by humans, living with people for thousands of years.",
+    "Dogs can hear sounds at frequencies far beyond human range, making their hearing extremely sensitive.",
+    "There are hundreds of dog breeds, each with unique traits and skills.",
+    "Some dogs can understand over 100 words and commands with proper training."
+  ],
+  "cat": [
+    "Cats sleep a lot \u2014 about 70% of their lives \u2014 making them expert nappers!",
+    "Cats have 32 muscles that control their ears, allowing incredibly precise movement.",
+    "Cats can make over 100 different vocal sounds, while dogs make about 10.",
+    "A group of kittens is called a \u2018kindle.\u2019",
+    "Cats have whiskers on the backs of their front legs as well as their face!"
+  ],
+  "lion": [
+    "Lions are the only big cats that live in social groups, which are called prides.",
+    "A lion\u2019s roar can be heard up to 5 miles (about 8 kilometers) away.",
+    "Female lions (lionesses) are the primary hunters in the pride.",
+    "Male lions\u2019 manes vary in color and size, and darker manes are associated with stronger males.",
+    "Lions spend up to 20 hours a day resting."
+  ],
+  "tiger": [
+    "Tigers are the largest members of the cat family.",
+    "Even if a tiger's fur is shaved, its skin retains the same striped pattern.",
+    "A tiger\u2019s striped pattern is unique, like a human fingerprint.",
+    "Tigers mark territory using scent and scratch marks.",
+    "Tiger cubs learn to hunt by watching their mothers.",
+    "Tigers can swim well and often enjoy water \u2014 unlike many other cats."
   ]
 }
