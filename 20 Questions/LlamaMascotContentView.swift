@@ -55,6 +55,7 @@ struct LlamaMascotContentView: View {
                         }
                         if viewModel.currentQuestion != nil && !viewModel.isFinished, let fact = funFact {
                             funFactCard(fact)
+                                .padding(.top, 10)
                         }
                         Spacer(minLength: 20)
                     }
@@ -609,16 +610,24 @@ struct LlamaMascotContentView: View {
     }
 
     private func funFactCard(_ fact: (animalName: String, text: String)) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let accent = colorScheme == .dark
+            ? Color.purple.opacity(0.25)
+            : Color.purple.opacity(0.12)
+
+        return VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text("Fun Fact")
                     .font(.headline)
                 Spacer()
                 Button {
-                    generateFunFact()
+                    withAnimation(.easeInOut(duration: 0.15)) {
+                        generateFunFact()
+                    }
                 } label: {
                     Image(systemName: "arrow.clockwise")
                         .font(.subheadline.weight(.semibold))
+                        .rotationEffect(.degrees(15))
+                        .scaleEffect(0.95)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Refresh fun fact")
@@ -629,14 +638,21 @@ struct LlamaMascotContentView: View {
             Text(fact.text)
                 .font(.subheadline)
                 .multilineTextAlignment(.leading)
+                .lineLimit(3)
+                .foregroundColor(Color.primary.opacity(0.9))
         }
-        .padding()
+        .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(cardFill.opacity(0.95))
-                .shadow(color: shadowColor.opacity(0.25), radius: 8, x: 0, y: 4)
+                .fill(accent)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                )
+                .shadow(color: shadowColor.opacity(0.2), radius: 8, x: 0, y: 4)
         )
+        .accessibilityLabel("Fun fact about \(fact.animalName). \(fact.text)")
     }
 
     // MARK: - Developer Tools
