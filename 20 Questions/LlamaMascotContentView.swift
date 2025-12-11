@@ -17,6 +17,9 @@ struct LlamaMascotContentView: View {
     @State private var noisySimReport: SimulationReport?
     @State private var noisySimRunning = false
     @State private var expandedRunIDs: Set<String> = []
+    @State private var funFact: (animalName: String, text: String)?
+    @State private var funFactInterval: Int = 1
+    @State private var questionChangeCount: Int = 0
 
     var body: some View {
         NavigationStack {
@@ -50,6 +53,9 @@ struct LlamaMascotContentView: View {
                         if shouldShowRestartButton {
                             restartButton
                         }
+                        if viewModel.currentQuestion != nil && !viewModel.isFinished, let fact = funFact {
+                            funFactCard(fact)
+                        }
                         Spacer(minLength: 20)
                     }
                     .padding()
@@ -65,6 +71,15 @@ struct LlamaMascotContentView: View {
                         expandedHelpSections.removeAll()
                     }
             }
+            .onAppear { generateFunFact() }
+            .onChange(of: viewModel.currentQuestion?.id) { _, newValue in
+                guard newValue != nil else { return }
+                questionChangeCount += 1
+                if questionChangeCount % funFactInterval == 0 {
+                    generateFunFact()
+                }
+            }
+            .onChange(of: viewModel.currentGuess?.id) { _, _ in generateFunFact() }
         }
     }
 
@@ -291,14 +306,18 @@ struct LlamaMascotContentView: View {
                     LlamaAnswerButton(title: "Yes!", color: .green, scheme: colorScheme) {
                         viewModel.finalizeGame(correct: true)
                         withAnimation { showConfetti() }
+                        generateFunFact()
                     }
                     LlamaAnswerButton(title: "Nope", color: .orange, scheme: colorScheme) {
                         viewModel.finalizeGame(correct: false)
+                        generateFunFact()
                     }
                 }
             } else {
                 Button {
                     viewModel.restart()
+                    questionChangeCount = 0
+                    generateFunFact()
                 } label: {
                     HStack {
                         Image(systemName: "arrow.counterclockwise")
@@ -561,7 +580,65 @@ struct LlamaMascotContentView: View {
         )
         .padding()
     }
- 
+
+    // MARK: - Fun Facts
+
+    private func generateFunFact() {
+        guard let url = Bundle.main.url(forResource: "fun_facts", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let dict = try? JSONSerialization.jsonObject(with: data) as? [String: [String]],
+              !dict.isEmpty else {
+            funFact = nil
+            return
+        }
+
+        // Prefer remaining candidates, else any animal.
+        let candidates = viewModel.debugRemainingNames.isEmpty
+            ? Array(dict.keys)
+            : viewModel.debugRemainingNames.map { $0.lowercased() }.filter { dict[$0] != nil }
+
+        guard let animalKey = candidates.randomElement(),
+              let facts = dict[animalKey],
+              let fact = facts.randomElement() else {
+            funFact = nil
+            return
+        }
+        // Try to restore display name from model; fallback to key.
+        let displayName = viewModel.debugRemainingNames.first { $0.lowercased() == animalKey } ?? animalKey.capitalized
+        funFact = (displayName, fact)
+    }
+
+    private func funFactCard(_ fact: (animalName: String, text: String)) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Fun Fact")
+                    .font(.headline)
+                Spacer()
+                Button {
+                    generateFunFact()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Refresh fun fact")
+            }
+            Text(fact.animalName)
+                .font(.subheadline.weight(.semibold))
+                .foregroundColor(.secondary)
+            Text(fact.text)
+                .font(.subheadline)
+                .multilineTextAlignment(.leading)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(cardFill.opacity(0.95))
+                .shadow(color: shadowColor.opacity(0.25), radius: 8, x: 0, y: 4)
+        )
+    }
+
     // MARK: - Developer Tools
 
     private var debugSimulator: some View {
