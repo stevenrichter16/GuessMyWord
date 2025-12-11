@@ -8,6 +8,11 @@ struct LlamaMascotContentView: View {
     @State private var confettiParticles: [ConfettiParticle] = []
     @State private var llamaAnimating = false
     @State private var bubbleScale: CGFloat = 0.8
+    @State private var simReport: SimulationReport?
+    @State private var simRunning = false
+    @State private var noisySimReport: SimulationReport?
+    @State private var noisySimRunning = false
+    @State private var expandedRunIDs: Set<String> = []
 
     var body: some View {
         NavigationStack {
@@ -35,6 +40,7 @@ struct LlamaMascotContentView: View {
                         }
 
                         //debugStrip
+                        debugSimulator
                         if shouldShowRestartButton {
                             restartButton
                         }
@@ -306,6 +312,143 @@ struct LlamaMascotContentView: View {
 
     private var shouldShowRestartButton: Bool {
         viewModel.currentGuess == nil && !viewModel.isFinished
+    }
+
+    // MARK: - Developer Tools
+
+    private var debugSimulator: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Developer Tools")
+                .font(.headline)
+            HStack(spacing: 12) {
+                Button {
+                    Task { await runSims(contradictions: 0) }
+                } label: {
+                    Label("Run 10 sims", systemImage: "play.fill")
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(simRunning || noisySimRunning)
+
+                Button {
+                    Task { await runSims(contradictions: 2) }
+                } label: {
+                    Label("Run noisy sims", systemImage: "waveform.path.ecg")
+                }
+                .buttonStyle(.bordered)
+                .disabled(simRunning || noisySimRunning)
+            }
+            if simRunning || noisySimRunning {
+                HStack {
+                    ProgressView()
+                    Text("Simulating...")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+            }
+            if let sim = simReport {
+                Text("Clean sims: \(sim.correct)/\(sim.totalRuns) correct (\(Int(sim.accuracy * 100))%).")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                runList(sim, label: "Recent clean runs", keyPrefix: "clean")
+            }
+            if let sim = noisySimReport {
+                Text("Noisy sims: \(sim.correct)/\(sim.totalRuns) correct (\(Int(sim.accuracy * 100))%).")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                runList(sim, label: "Recent noisy runs", keyPrefix: "noisy")
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(cardFill.opacity(0.9))
+                .shadow(color: shadowColor, radius: 6, x: 0, y: 4)
+        )
+    }
+
+    private func runSims(contradictions: Int) async {
+        if contradictions > 0 { noisySimRunning = true } else { simRunning = true }
+        let simulator = GameSimulator(maxTurns: 20)
+        let report: SimulationReport
+        if contradictions > 0 {
+            report = await simulator.runSimulationsWithContradictions(10, contradictions: contradictions)
+            noisySimReport = report
+        } else {
+            report = await simulator.runSimulations(10)
+            simReport = report
+        }
+        simRunning = false
+        noisySimRunning = false
+    }
+
+    @ViewBuilder
+    private func runList(_ report: SimulationReport, label: String, keyPrefix: String) -> some View {
+        let runs = Array(report.runs.prefix(10))
+        Group {
+            if runs.isEmpty {
+                EmptyView()
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(label)
+                        .font(.subheadline.weight(.semibold))
+                    ForEach(Array(runs.indices), id: \.self) { idx in
+                        let run = runs[idx]
+                        let runId = "\(keyPrefix)-\(idx)"
+                        let expanded = expandedRunIDs.contains(runId)
+                        DebugRunRow(
+                            idx: idx,
+                            runId: runId,
+                            run: run,
+                            isExpanded: expanded,
+                            cardFill: cardFill,
+                            toggle: {
+                                if expanded { expandedRunIDs.remove(runId) }
+                                else { expandedRunIDs.insert(runId) }
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private struct DebugRunRow: View {
+        let idx: Int
+        let runId: String
+        let run: SimulationRun
+        let isExpanded: Bool
+        let cardFill: Color
+        let toggle: () -> Void
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text("Run \(idx + 1): \(run.wasCorrect ? "✅" : "❌")")
+                    Spacer()
+                    Button(isExpanded ? "Hide" : "Show", action: toggle)
+                        .font(.caption)
+                }
+                if isExpanded {
+                    ForEach(run.transcript) { entry in
+                        HStack(alignment: .top) {
+                            Text("Q\(entry.turn)")
+                                .font(.caption2.weight(.bold))
+                                .foregroundColor(.secondary)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(entry.question)
+                                    .font(.caption)
+                                Text("Answer: \(entry.answer.displayLabel)")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(6)
+            .background(RoundedRectangle(cornerRadius: 8).fill(cardFill.opacity(0.8)))
+        }
     }
 
     // MARK: - Styling

@@ -30,7 +30,9 @@ final class ANNGameViewModel: ObservableObject {
     private let topKForQuestionSelection = 8
     private let questionImportance: [QuestionId: Int] = [
         // Reliability-heavy signal: if true, should swing the ranking harder.
-        "is_venomous": 3
+        "is_venomous": 3,
+        "has_feathers": 2,
+        "is_bigger_than_car": 2
     ]
 
     init?(annStore: ANNDataStore? = LLMScaffolding.annStore ?? ANNDataStore()) {
@@ -198,6 +200,7 @@ final class ANNGameViewModel: ObservableObject {
 
         for q in allQuestions {
             if askedQuestions.contains(q.id) { continue }
+            if shouldSkipQuestion(q.id) { continue }
 
             var yesCount = 0
             var noCount = 0
@@ -233,6 +236,24 @@ final class ANNGameViewModel: ObservableObject {
 
     private func importance(for questionId: QuestionId) -> Int {
         questionImportance[questionId] ?? 1
+    }
+
+    private func shouldSkipQuestion(_ questionId: QuestionId) -> Bool {
+        // If the user already said "No" to carnivore or herbivore, skip the omnivore follow-up.
+        if questionId == "is_omnivore" {
+            if answers["is_carnivore"] == .no || answers["is_herbivore"] == .no {
+                return true
+            }
+        }
+        // If a high-level animal class is already confirmed, skip asking the others.
+        let classes: Set<QuestionId> = ["is_amphibian", "is_reptile", "is_mammal", "is_bird"]
+        if classes.contains(questionId) {
+            // If any other class question was answered yes, this one is redundant.
+            for key in classes where key != questionId {
+                if answers[key] == .yes { return true }
+            }
+        }
+        return false
     }
 
     private func entropy(_ counts: [Int]) -> Double {
@@ -281,13 +302,16 @@ final class ANNGameViewModel: ObservableObject {
 struct ContentView: View {
     @StateObject private var viewModel: ANNGameViewModel
     @Environment(\.colorScheme) private var colorScheme
-#if DEBUG
+    // Design tokens for consistent rounding/shadow.
+    private let cardCorner: CGFloat = 18
+    private let buttonCorner: CGFloat = 16
+    private let shadowRadius: CGFloat = 12
+    private let shadowYOffset: CGFloat = 6
     @State private var simReport: SimulationReport?
     @State private var simRunning = false
     @State private var noisySimReport: SimulationReport?
     @State private var noisySimRunning = false
     @State private var expandedRunIDs: Set<String> = []
-#endif
     @State private var confettiParticles: [ConfettiParticle] = []
 
     init(viewModel: ANNGameViewModel? = ANNGameViewModel()) {
@@ -322,9 +346,7 @@ struct ContentView: View {
                         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: viewModel.currentGuess?.id)
 
                         debugStrip
-#if DEBUG
                         debugSimulator
-#endif
                         if shouldShowRestartButton {
                             restartButton
                         }
@@ -368,19 +390,19 @@ struct ContentView: View {
                 ZStack(alignment: .leading) {
                     Capsule()
                         .fill(track)
-                        .frame(height: 10)
+                        .frame(height: 15)
                     Capsule()
                         .fill(active)
-                        .frame(width: max(24, fraction * proxy.size.width), height: 10)
+                        .frame(width: max(24, fraction * proxy.size.width), height: 15)
                 }
             }
             .frame(height: 10)
         }
         .padding()
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: cardCorner)
                 .fill(cardFill)
-                .shadow(color: shadowColor, radius: 10, x: 0, y: 6)
+                .shadow(color: shadowColor, radius: shadowRadius, x: 0, y: shadowYOffset)
         )
     }
 
@@ -399,9 +421,9 @@ struct ContentView: View {
         .padding(.horizontal, 18)
         .frame(maxWidth: .infinity)
         .background(
-            DialogueBubbleShape(pointerHeight: 12, cornerRadius: 18)
+            DialogueBubbleShape(pointerHeight: 12, cornerRadius: cardCorner)
                 .fill(cardFill)
-                .shadow(color: shadowColor, radius: 12, x: 0, y: 8)
+                .shadow(color: shadowColor, radius: shadowRadius, x: 0, y: shadowYOffset)
         )
     }
 
@@ -477,9 +499,9 @@ struct ContentView: View {
         .padding()
         .frame(maxWidth: .infinity)
         .background(
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: cardCorner)
                 .fill(cardFill)
-                .shadow(color: shadowColor, radius: 14, x: 0, y: 8)
+                .shadow(color: shadowColor, radius: shadowRadius, x: 0, y: shadowYOffset)
         )
         .overlay(confettiLayer)
     }
@@ -496,9 +518,9 @@ struct ContentView: View {
         .padding()
         .frame(maxWidth: .infinity)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: cardCorner)
                 .fill(cardFill)
-                .shadow(color: shadowColor, radius: 10, x: 0, y: 6)
+                .shadow(color: shadowColor, radius: shadowRadius, x: 0, y: shadowYOffset)
         )
     }
 
@@ -515,7 +537,7 @@ struct ContentView: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: cardCorner)
                 .fill(cardFill.opacity(0.9))
         )
     }
@@ -591,7 +613,6 @@ struct ContentView: View {
         )
     }
 
-#if DEBUG
     private var debugSimulator: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Developer Tools")
@@ -708,7 +729,6 @@ struct ContentView: View {
             }
         }
     }
-#endif
 }
 
 private struct AnswerButton: View {
@@ -724,13 +744,13 @@ private struct AnswerButton: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
                 .background(
-                    RoundedRectangle(cornerRadius: 14)
+                    RoundedRectangle(cornerRadius: 16)
                         .fill(buttonBackground)
                 )
         }
         .buttonStyle(.plain)
         .overlay(
-            RoundedRectangle(cornerRadius: 14)
+            RoundedRectangle(cornerRadius: 16)
                 .stroke(color.opacity(scheme == .dark ? 0.6 : 0.4), lineWidth: 1)
         )
         .shadow(color: color.opacity(0.35), radius: 8, x: 0, y: 5)
