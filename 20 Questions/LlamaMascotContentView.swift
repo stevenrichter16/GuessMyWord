@@ -13,6 +13,7 @@ struct LlamaMascotContentView: View {
     @State private var helpQuestionId: QuestionId?
     @State private var helpQuestionText: String?
     @State private var isHelpSheetPresented = false
+    @State private var expandedHelpSections: Set<String> = []
     @State private var simReport: SimulationReport?
     @State private var simRunning = false
     @State private var noisySimReport: SimulationReport?
@@ -458,6 +459,10 @@ struct LlamaMascotContentView: View {
             }
             return []
         }()
+        let grouped = Dictionary(grouping: entries) { item in
+            item.animal.name.first.map { String($0).uppercased() } ?? "#"
+        }
+        let sortedKeys = grouped.keys.sorted()
 
         return VStack(spacing: 16) {
             if let text = helpQuestionText {
@@ -475,22 +480,45 @@ struct LlamaMascotContentView: View {
                     .foregroundColor(.secondary)
             } else {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 8) {
-                        ForEach(entries, id: \.animal.id) { item in
-                            HStack {
-                                Text(item.animal.name)
-                                    .font(.subheadline)
-                                Spacer()
-                                Text(item.answer)
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundColor(.secondary)
+                    VStack(alignment: .leading, spacing: 10) {
+                        ForEach(sortedKeys, id: \.self) { key in
+                            let isExpanded = expandedHelpSections.contains(key)
+                            VStack(alignment: .leading, spacing: 6) {
+                                Button {
+                                    if isExpanded { expandedHelpSections.remove(key) }
+                                    else { expandedHelpSections.insert(key) }
+                                } label: {
+                                    HStack {
+                                        Text(key)
+                                            .font(.headline)
+                                        Spacer()
+                                        Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                                            .font(.caption.weight(.bold))
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .padding(.vertical, 4)
+                                }
+                                if isExpanded, let items = grouped[key] {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        ForEach(items.sorted { $0.animal.name < $1.animal.name }, id: \.animal.id) { item in
+                                            HStack {
+                                                Text(item.animal.name)
+                                                    .font(.subheadline)
+                                                Spacer()
+                                                Text(item.answer)
+                                                    .font(.subheadline.weight(.semibold))
+                                                    .foregroundColor(.secondary)
+                                            }
+                                            .padding(.vertical, 4)
+                                            .padding(.horizontal, 8)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .fill(cardFill.opacity(0.9))
+                                            )
+                                        }
+                                    }
+                                }
                             }
-                            .padding(.vertical, 4)
-                            .padding(.horizontal, 8)
-                            .background(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(cardFill.opacity(0.9))
-                            )
                         }
                     }
                     .padding(.vertical, 4)
