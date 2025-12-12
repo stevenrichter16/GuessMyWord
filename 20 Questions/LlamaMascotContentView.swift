@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// A fun alternative UI for 20 Questions featuring Larry the Llama mascot
 /// who asks questions through a dialogue bubble instead of plain cards.
@@ -645,18 +646,18 @@ struct LlamaMascotContentView: View {
                 Text("Fun Fact")
                     .font(.headline)
                 Spacer()
-                Button {
-                    withAnimation(.easeInOut(duration: 0.15)) {
-                        generateFunFact()
-                    }
-                } label: {
-                    Image(systemName: "arrow.clockwise")
-                        .font(.subheadline.weight(.semibold))
-                        .rotationEffect(.degrees(15))
-                        .scaleEffect(0.95)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Refresh fun fact")
+//                Button {
+//                    withAnimation(.easeInOut(duration: 0.15)) {
+//                        generateFunFact()
+//                    }
+//                } label: {
+//                    Image(systemName: "arrow.clockwise")
+//                        .font(.subheadline.weight(.semibold))
+//                        .rotationEffect(.degrees(15))
+//                        .scaleEffect(0.95)
+//                }
+//                .buttonStyle(.plain)
+//                .accessibilityLabel("Refresh fun fact")
             }
             Text(fact.animalName)
                 .font(.subheadline.weight(.semibold))
@@ -678,6 +679,21 @@ struct LlamaMascotContentView: View {
                 )
                 .shadow(color: shadowColor.opacity(0.2), radius: 8, x: 0, y: 4)
         )
+        .overlay(alignment: .topTrailing) {
+            if let imageName = funFactAssetName(for: fact.animalName) {
+                Circle()
+                    .fill(Color.white.opacity(0.0))
+                    .frame(width: 61, height: 61)
+                    .overlay(
+                        Image(imageName)
+                            .renderingMode(.original)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 61, height: 61)
+                    )
+                    .padding(8)
+            }
+        }
         .accessibilityLabel("Fun fact about \(fact.animalName). \(fact.text)")
     }
 
@@ -838,6 +854,31 @@ struct LlamaMascotContentView: View {
         case "no": return .red
         default: return .orange
         }
+    }
+
+    private func funFactAssetName(for animalName: String) -> String? {
+        let normalized = animalName
+            .lowercased()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        var candidates: [String] = [
+            normalized,
+            normalized.replacingOccurrences(of: " ", with: "_"),
+            normalized.replacingOccurrences(of: "-", with: "_")
+        ]
+        // Special mappings where the asset name differs from the display name.
+        let aliases: [String: String] = [
+            "hippopotamus": "hippo",
+            "hippo": "hippo"
+        ]
+        if let mapped = aliases[normalized] {
+            candidates.insert(mapped, at: 0)
+        }
+        for name in candidates {
+            if UIImage(named: name) != nil {
+                return name
+            }
+        }
+        return nil
     }
 
     private var backgroundGradient: LinearGradient {

@@ -63,5 +63,38 @@
     "Adult hippos eat roughly 80–110 pounds of grass nightly, grazing for hours and traveling miles to feed.",
     "Hippos can’t swim; they walk or run along riverbeds and can hold their breath for around five minutes.",
     "Hippos secrete a reddish “blood sweat” that acts as sunscreen, antibiotic, and cooling layer."
+  ],
+  "koala": [
+    "Koalas have fingerprints almost identical to humans, making them hard to tell apart even under a microscope.",
+    "Koalas have two opposable thumbs on each front paw for an incredibly strong grip on trees.",
+    "A koala’s thick, padded tail acts like a built-in cushion so they can sit in trees for hours.",
+    "The name “koala” comes from an Aboriginal word meaning “no drink,” since they get most moisture from eucalyptus leaves."
+  ],
+  "panda": [
+    "Pandas munch bamboo for 12+ hours a day, using a pseudo-thumb to grip it, and poop frequently because digestion is inefficient.",
+    "About 99% of a panda’s diet is bamboo, so they eat roughly 26–83 pounds daily to get enough nutrients.",
+    "Despite their bulk, pandas are agile in trees and water, and can cross rivers in the wild.",
+    "Instead of hibernating, pandas move to lower elevations for warmer winter temperatures."
+  ],
+  "zebra": [
+    "No two zebras share the same stripe pattern—like human fingerprints—which helps them recognize one another.",
+    "Their stripes can confuse predators and even deter biting flies, acting as natural pest control.",
+    "Zebras are actually black animals with white stripes, not the other way around.",
+    "They communicate with barks, brays, and expressive facial cues.",
+    "Zebras are fast and athletic, reaching 40+ mph to escape predators."
+  ],
+  "bear": [
+    "Bears are highly intelligent—capable of problem solving, complex vocal communication, and even basic tool use.",
+    "Their sense of smell is extraordinarily strong, detecting food, mates, or threats from miles away—stronger than a bloodhound.",
+    "Most bears are omnivores; exceptions include the carnivorous polar bear and the panda bear, which eats almost exclusively bamboo.",
+    "Sun bears have exceptionally long tongues, reaching up to about 9.8 inches to extract insects and honey.",
+    "There are eight bear species: North American black bear, brown bear, polar bear, Asiatic black bear, Andean bear, panda bear, sloth bear, and sun bear."
+  ],
+  "wolf": [
+    "A wolf’s sense of smell is roughly 100 times stronger than a human’s, and they hear exceptionally well.",
+    "Wolves sit at the top of their food chain; humans are their primary predator.",
+    "They typically hunt large prey like deer or moose using endurance and teamwork, but will also take smaller animals.",
+    "Howls carry long distances (up to ~10 miles) to coordinate the pack and mark territory, along with body language and scent.",
+    "Wolves are the largest wild canids, capable of traveling 12+ miles in a day and sprinting around 37–43 mph."
   ]
 }
