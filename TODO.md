@@ -1,7 +1,8 @@
 # TODO
 
 - Restart confirmation in dark mode should use a purple accent.
-- Remove tabs; move the sidebar ellipses toggle to the bottom of the screen. The sidebar should open as a menu that slides up from the bottom instead of sliding out from the side.
+- Move the current sidebar options into a tab bar that’s hidden by default; tapping the bottom ellipses reveals the tab bar sliding up from the bottom.
+- Remove current options from the tab bar before refactoring the sidebar into the tab bar.
 - Add Replay feature (new page):
   - Show an “All Animals” circle first.
   - Present the first question with non-tappable Yes/No buttons.

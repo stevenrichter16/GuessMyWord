@@ -29,6 +29,7 @@ struct LlamaMascotContentView: View {
     @StateObject private var funFactsStore = FunFactsStore()
     @State private var showGallery = false
     @State private var showRestartConfirm = false
+    @State private var showOptionsTabBar = false
     @State private var bearPlayer: AVPlayer?
     @State private var bearVideoError: String?
 
@@ -75,8 +76,8 @@ struct LlamaMascotContentView: View {
                 }
             }
             //.navigationTitle("20 Questions: Animals")
-            .overlay(alignment: .topTrailing) { optionsButton }
-            .overlay { sideMenuOverlay }
+            .overlay(alignment: .bottomTrailing) { optionsEllipsesButton }
+            .overlay(alignment: .bottom) { optionsTabBar }
             .overlay { restartConfirmOverlay }
             .sheet(item: $helpContext) { ctx in
                 helpSheetContent(context: ctx)
@@ -438,149 +439,6 @@ struct LlamaMascotContentView: View {
     }
 
     // MARK: - Options Button + Side Menu
-
-    private var optionsButton: some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen.toggle() }
-        } label: {
-            Image(systemName: "ellipsis")
-                .font(.headline)
-                .rotationEffect(.degrees(isMenuOpen ? 90 : 0))
-                .frame(width: 36, height: 36)
-                .background(
-                    Circle()
-                        .fill(Color.white.opacity(colorScheme == .dark ? 0.15 : 0.9))
-                        .shadow(color: shadowColor.opacity(0.6), radius: 6, x: 0, y: 3)
-                )
-                .overlay(
-                    Circle()
-                        .stroke(Color.primary.opacity(0.12), lineWidth: 1)
-                )
-        }
-        .padding(.trailing, 16)
-        .padding(.top, 8)
-        .accessibilityLabel("More options")
-    }
-
-    private var sideMenuOverlay: some View {
-        Group {
-            if isMenuOpen {
-                GeometryReader { proxy in
-                    ZStack(alignment: .trailing) {
-                        Color.black.opacity(0.25)
-                            .ignoresSafeArea()
-                            .onTapGesture {
-                                withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
-                            }
-                        SideMenuView(
-                            isOpen: $isMenuOpen,
-                            width: max(proxy.size.width * 0.3, 220),
-                            cardFill: cardFill,
-                            shadowColor: shadowColor,
-                            developerMode: $showDeveloperTools,
-                            contextAwareFacts: $contextAwareFunFacts,
-                            onShowFunFacts: {
-                                withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
-                                showFunFactsPage = true
-                            },
-                            onShowGallery: {
-                                withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
-                                showGallery = true
-                            },
-                            onFeedback: {
-                                withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
-                            }
-                        )
-                        .frame(maxHeight: .infinity, alignment: .top)
-                    }
-                }
-            }
-        }
-    }
-
-    private struct SideMenuView: View {
-        @Binding var isOpen: Bool
-        let width: CGFloat
-        let cardFill: Color
-        let shadowColor: Color
-        @Binding var developerMode: Bool
-        @Binding var contextAwareFacts: Bool
-        let onShowFunFacts: () -> Void
-        let onShowGallery: () -> Void
-        let onFeedback: () -> Void
-
-        var body: some View {
-            VStack(spacing: 16) {
-                HStack {
-                    Text("Menu")
-                        .font(.headline)
-                    Spacer()
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) { isOpen = false }
-                    } label: {
-                        Image(systemName: "xmark")
-                            .font(.subheadline.weight(.bold))
-                            .padding(8)
-                    }
-                    .accessibilityLabel("Close menu")
-                }
-                .padding(.bottom, 4)
-
-                Divider()
-
-                Toggle(isOn: $developerMode) {
-                    Label("Developer Mode", systemImage: "hammer.fill")
-                }
-                .toggleStyle(SwitchToggleStyle(tint: .purple))
-                .padding(.vertical, 4)
-
-                Toggle(isOn: $contextAwareFacts) {
-                    Label("Context-aware fun facts", systemImage: "sparkles")
-                }
-                .toggleStyle(SwitchToggleStyle(tint: .purple))
-                .padding(.vertical, 4)
-
-                Button {
-                    onShowFunFacts()
-                } label: {
-                    Label("Fun Facts", systemImage: "lightbulb")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .buttonStyle(.plain)
-                .padding(.vertical, 4)
-
-                Button {
-                    onShowGallery()
-                } label: {
-                    Label("Gallery", systemImage: "photo.on.rectangle.angled")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .buttonStyle(.plain)
-                .padding(.vertical, 4)
-
-                Button(action: onFeedback) {
-                    Label("Feedback", systemImage: "envelope.fill")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .buttonStyle(.plain)
-                .padding(.vertical, 8)
-
-                Spacer()
-            }
-            .padding(16)
-            .frame(width: width)
-            .frame(maxHeight: .infinity, alignment: .top)
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(cardFill)
-                    .shadow(color: shadowColor.opacity(0.3), radius: 12, x: -6, y: 0)
-            )
-            .offset(x: isOpen ? 0 : width)
-            .animation(.easeInOut(duration: 0.25), value: isOpen)
-            .accessibilityElement(children: .contain)
-            .accessibilityLabel("Side menu")
-        }
-    }
 
     // MARK: - Help Sheet
 
@@ -964,6 +822,113 @@ struct LlamaMascotContentView: View {
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
+        }
+    }
+
+    private var optionsEllipsesButton: some View {
+        Button {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                showOptionsTabBar.toggle()
+            }
+        } label: {
+            Image(systemName: showOptionsTabBar ? "xmark.circle.fill" : "ellipsis.circle.fill")
+                .font(.title.weight(.bold))
+                .padding(12)
+                .background(
+                    Circle()
+                        .fill(Color.white.opacity(colorScheme == .dark ? 0.2 : 0.9))
+                        .shadow(color: shadowColor.opacity(0.5), radius: 8, x: 0, y: 4)
+                )
+        }
+        .padding(.trailing, 16)
+        .padding(.bottom, 20)
+        .accessibilityLabel(showOptionsTabBar ? "Close options" : "Toggle options")
+    }
+
+    private var optionsTabBar: some View {
+        VStack(spacing: 10) {
+            HStack {
+                Spacer()
+                Button {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                        showOptionsTabBar = false
+                    }
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title3.weight(.bold))
+                        .padding(8)
+                        .background(
+                            Circle()
+                                .fill(Color.white.opacity(colorScheme == .dark ? 0.2 : 0.9))
+                        )
+                }
+                .accessibilityLabel("Close options")
+            }
+            .padding(.horizontal, 12)
+            .padding(.top, 8)
+            HStack(spacing: 12) {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        showDeveloperTools.toggle()
+                    }
+                } label: {
+                    Image(systemName: "hammer.fill")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .tint(showDeveloperTools ? .purple : .primary)
+
+                Button {
+                    showFunFactsPage = true
+                    showOptionsTabBar = false
+                } label: {
+                    Image(systemName: "lightbulb")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+
+                Button {
+                    showGallery = true
+                    showOptionsTabBar = false
+                } label: {
+                    Image(systemName: "photo.on.rectangle.angled")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+            }
+            .padding(.horizontal, 12)
+            .padding(.bottom, 10)
+        }
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 18)
+                .fill(cardFill)
+                .shadow(color: shadowColor.opacity(0.35), radius: 12, x: 0, y: -2)
+        )
+        .padding(.horizontal, 12)
+        .offset(y: showOptionsTabBar ? 0 : 220)
+        .opacity(showOptionsTabBar ? 1 : 0)
+        .allowsHitTesting(showOptionsTabBar)
+        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: showOptionsTabBar)
+        .overlay(alignment: .topTrailing) {
+            if showOptionsTabBar {
+                Button {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                        showOptionsTabBar = false
+                    }
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title3.weight(.bold))
+                        .padding(8)
+                        .background(
+                            Circle()
+                                .fill(Color.white.opacity(colorScheme == .dark ? 0.2 : 0.9))
+                        )
+                }
+                .padding(.trailing, 12)
+                .padding(.top, 8)
+                .accessibilityLabel("Close options")
+            }
         }
     }
 
