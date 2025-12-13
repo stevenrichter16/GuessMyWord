@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import AVKit
 
 /// A fun alternative UI for 20 Questions featuring Larry the Llama mascot
 /// who asks questions through a dialogue bubble instead of plain cards.
@@ -22,6 +23,8 @@ struct LlamaMascotContentView: View {
     @State private var funFact: (animalName: String, text: String)?
     @State private var funFactInterval: Int = 1
     @State private var questionChangeCount: Int = 0
+    @State private var bearPlayer: AVPlayer?
+    @State private var bearVideoError: String?
 
     var body: some View {
         NavigationStack {
@@ -33,6 +36,7 @@ struct LlamaMascotContentView: View {
                     VStack(spacing: 16) {
                         header
                         progressBar
+                        bearVideo
 
                         // Main mascot area
                         mascotWithDialogue
@@ -288,6 +292,45 @@ struct LlamaMascotContentView: View {
                 .fill(cardFill)
                 .shadow(color: shadowColor, radius: 10, x: 0, y: 6)
         )
+    }
+
+    private var bearVideo: some View {
+        Group {
+            if let player = bearPlayer {
+                VideoPlayer(player: player)
+                    .frame(height: 180)
+                    .cornerRadius(12)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                    )
+                    .shadow(color: shadowColor.opacity(0.2), radius: 8, x: 0, y: 4)
+            } else if let error = bearVideoError {
+                Text(error)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .onAppear { setupBearPlayer() }
+    }
+
+    private func setupBearPlayer() {
+        guard bearPlayer == nil else { return }
+        guard let url = Bundle.main.url(forResource: "bear_dance", withExtension: "mp4") else {
+            bearVideoError = "Bear video missing from bundle."
+            return
+        }
+        let player = AVPlayer(url: url)
+        player.actionAtItemEnd = .none
+        player.isMuted = true
+        player.play()
+        NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: player.currentItem, queue: .main) { _ in
+            player.seek(to: .zero)
+            player.play()
+        }
+        bearPlayer = player
+        bearVideoError = nil
     }
 
     // MARK: - Buttons

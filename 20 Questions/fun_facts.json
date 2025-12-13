@@ -46,6 +46,12 @@
     "Tiger cubs learn to hunt by watching their mothers.",
     "Tigers can swim well and often enjoy water \u2014 unlike many other cats."
   ],
+  "cheetah": [
+    "Unlike most cats, cheetahs can\u2019t fully retract their claws, leaving the tips exposed like cleats; their extra-hard paw pads act like tire treads for grip on explosive starts and sharp turns.",
+    "A cheetah\u2019s long, furry tail works like a rudder during high-speed maneuvers, generating forces and torques that help it pivot quickly.",
+    "Cheetahs have extremely low genetic diversity, and unrelated cheetahs have accepted each other\u2019s skin grafts in experiments.",
+    "Even with their speed, only about 40\u201350% of cheetah hunts end in a kill; many attempts fail during the final tackle and trip."
+  ],
   "kangaroo": [
     "Kangaroos are surprisingly strong swimmers, paddling with their hind legs and steering with their tail.",
     "The red kangaroo is the largest, standing over 6 feet tall and weighing up to about 200 pounds.",
@@ -84,11 +90,26 @@
     "Zebras are fast and athletic, reaching 40+ mph to escape predators."
   ],
   "bear": [
-    "Bears are highly intelligent—capable of problem solving, complex vocal communication, and even basic tool use.",
+    "Bears are highly intelligent and capable of problem solving, complex vocal communication, and even basic tool use.",
     "Their sense of smell is extraordinarily strong, detecting food, mates, or threats from miles away—stronger than a bloodhound.",
     "Most bears are omnivores; exceptions include the carnivorous polar bear and the panda bear, which eats almost exclusively bamboo.",
     "Sun bears have exceptionally long tongues, reaching up to about 9.8 inches to extract insects and honey.",
     "There are eight bear species: North American black bear, brown bear, polar bear, Asiatic black bear, Andean bear, panda bear, sloth bear, and sun bear."
+  ],
+  "bat": [
+    "Bat wings are covered in tiny hairs with touch sensors that help flight control; damaging those hairs can impair flight.",
+    "Tent-making bats chew leaf veins so the leaf folds into a shelter, creating umbrella-like homes for groups in tropical rain.",
+    "The greater bulldog bat uses echolocation to pick up tiny ripples from fish on water, then swoops in to grab them with oversized claws.",
+    "Many bats enter a power-save mode called torpor, briefly dropping body temperature, heart rate, and breathing to conserve energy when cold or food is scarce.",
+    "Bat heart rates can jump from about 6 BPM in torpor to roughly 900 BPM in flight within minutes.",
+    "Vampire bats aren\u2019t clumsy on the ground—they can run and even shift into a brief gallop-like run when needed."
+  ],
+  "chimpanzee": [
+    "In some savanna populations, chimpanzees have been seen sharpening sticks into spear-like tools to hunt small prey such as bushbabies.",
+    "Chimpanzees drum on large tree buttress roots with hands and feet to send low-frequency signals that can travel over a kilometer.",
+    "They sometimes fray stick tips into brush-like ends to pull more termites when fishing them out of mounds.",
+    "Chimpanzees typically build a fresh sleeping nest almost every night, often choosing tree species that make the nest more comfortable.",
+    "Chimp yawns can be contagious; seeing another chimp yawn can trigger a yawn in the observer."
   ],
   "wolf": [
     "A wolf’s sense of smell is roughly 100 times stronger than a human’s, and they hear exceptionally well.",
@@ -96,5 +117,39 @@
     "They typically hunt large prey like deer or moose using endurance and teamwork, but will also take smaller animals.",
     "Howls carry long distances (up to ~10 miles) to coordinate the pack and mark territory, along with body language and scent.",
     "Wolves are the largest wild canids, capable of traveling 12+ miles in a day and sprinting around 37–43 mph."
+  ],
+  "fox": [
+    "Foxes can hear low-frequency sounds and pinpoint prey under snow from several feet away; their oversized ears also help regulate heat.",
+    "A fox’s tail, or brush, provides balance when running and doubles as a warm blanket; they also use tail signals to communicate.",
+    "Urban foxes have adapted to city life, navigating traffic and raiding bins at night, shifting territories seasonally to follow food.",
+    "Red foxes aren’t always red—silver, black, and cross-phase coats are common—but they’re all the same species (Vulpes vulpes).",
+    "Foxes cache surplus food in many small hiding spots, marking them with scent and relocating them later using memory and smell.",
+    "Foxes have partially retractable claws that stay sharp for climbing and gripping slippery prey; they can climb low branches to stash food or nap.",
+    "Foxes appear to use Earth’s magnetic field when pouncing, often aligning toward a consistent NNE heading and succeeding more when they do."
+  ],
+  "deer": [
+    "Deer grow and shed antlers annually; the velvet-covered antlers are among the fastest-growing tissues and can add about an inch per day at peak.",
+    "Fawns are born with little scent and spotted coats for camouflage, spending much of their early days lying still while the mother forages.",
+    "Deer have a 310–330° field of view and detect motion extremely well; their night vision is boosted by a reflective eye layer (tapetum lucidum).",
+    "Specialized tendons and muscle alignment let deer lock their legs for stable resting, conserving energy and enabling quick flight when threatened.",
+    "Deer are strong swimmers and will cross rivers or lakes to escape predators; they can also bound over obstacles, clearing 8–10 feet vertically.",
+    "During rut, bucks spar to establish dominance, clashing antlers and using scent marks and grunts; many leave rubs and scrapes to signal status.",
+    "Deer stomachs have four chambers, letting them ferment and extract nutrients from fibrous plants."
+  ],
+  "porcupine": [
+    "Porcupine quills have microscopic backward-facing barbs that help them slide in easily but make them harder to pull out.",
+    "Porcupine quills carry a greasy coating that shows antibiotic activity in lab tests.",
+    "Porcupines cannot shoot or throw their quills; the quills simply detach when something touches or bites them.",
+    "North American porcupines are strong swimmers, and their hollow quills add buoyancy like a built-in life jacket.",
+    "Baby porcupines are born with soft quills that harden within hours, helping protect the mother during birth.",
+    "A North American porcupine carries over 30,000 quills, with some areas packing around 150 quills per square inch.",
+    "During courtship, a male may spray a receptive female with urine, and scent marking is a big part of their mating behavior."
+  ],
+  "monkey": [
+    "Vervet monkeys use different alarm calls for different predators, such as eagles versus leopards versus snakes.",
+    "Howler monkeys roar so loudly because an enlarged hyoid bone acts like a built-in sound resonator, carrying their calls for miles as territory announcements.",
+    "Some wild Japanese macaques learned to wash sweet potatoes before eating them, and the habit spread through the group like a tradition.",
+    "Certain capuchin monkeys rub toxic millipedes over their fur as DIY bug sprays.",
+    "Geladas are unusual primates because they are mostly grass-eaters, grazing in highland grasslands like fuzzy little livestock."
   ]
 }

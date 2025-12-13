@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B4B2467E2FA1234500000002 /* 20 Questions/bear_dance.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = B4B2467D2FA1234500000001 /* 20 Questions/bear_dance.mp4 */; };
+		B4B246822FA1234500000005 /* 20 Questions/baboon_compressed.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = B4B246832FA1234500000006 /* 20 Questions/baboon_compressed.mp4 */; };
+		B4B246842FA1234500000007 /* 20 Questions/cat_compressed.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = B4B246852FA1234500000008 /* 20 Questions/cat_compressed.mp4 */; };
+		B4B246872FA1234500000009 /* 20 Questions/deer_compressed.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = B4B246862FA123450000000A /* 20 Questions/deer_compressed.mp4 */; };
 		C3E39AC22F90A1B4006C8721 /* 20 Questions/animals_ann.json in Resources */ = {isa = PBXBuildFile; fileRef = C3E39AC12F90A1B4006C8721 /* 20 Questions/animals_ann.json */; };
 		D4E5E5102FEA93D1009B8290 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = D4E5E5112FEA93D1009B8290 /* Lottie */; };
 /* End PBXBuildFile section */
@@ -32,6 +36,10 @@
 		09E291C52EC42E2100296F4F /* 20 Questions.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "20 Questions.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		09E291D72EC42E2400296F4F /* 20 QuestionsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "20 QuestionsTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		09E291E12EC42E2400296F4F /* 20 QuestionsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "20 QuestionsUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4B2467D2FA1234500000001 /* 20 Questions/bear_dance.mp4 */ = {isa = PBXFileReference; lastKnownFileType = video.mp4; path = "20 Questions/bear_dance.mp4"; sourceTree = "<group>"; };
+		B4B246832FA1234500000006 /* 20 Questions/baboon_compressed.mp4 */ = {isa = PBXFileReference; lastKnownFileType = video.mp4; path = "20 Questions/baboon_compressed.mp4"; sourceTree = "<group>"; };
+		B4B246852FA1234500000008 /* 20 Questions/cat_compressed.mp4 */ = {isa = PBXFileReference; lastKnownFileType = video.mp4; path = "20 Questions/cat_compressed.mp4"; sourceTree = "<group>"; };
+		B4B246862FA123450000000A /* 20 Questions/deer_compressed.mp4 */ = {isa = PBXFileReference; lastKnownFileType = video.mp4; path = "20 Questions/deer_compressed.mp4"; sourceTree = "<group>"; };
 		C3E39AC12F90A1B4006C8721 /* 20 Questions/animals_ann.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "20 Questions/animals_ann.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,6 +95,7 @@
 				09E291E42EC42E2400296F4F /* 20 QuestionsUITests */,
 				09E291C62EC42E2100296F4F /* Products */,
 				C3E39AC12F90A1B4006C8721 /* 20 Questions/animals_ann.json */,
+				B06FE83D2EED1F4300A69350 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -98,6 +107,17 @@
 				09E291E12EC42E2400296F4F /* 20 QuestionsUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B06FE83D2EED1F4300A69350 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				B4B2467D2FA1234500000001 /* 20 Questions/bear_dance.mp4 */,
+				B4B246832FA1234500000006 /* 20 Questions/baboon_compressed.mp4 */,
+				B4B246852FA1234500000008 /* 20 Questions/cat_compressed.mp4 */,
+				B4B246862FA123450000000A /* 20 Questions/deer_compressed.mp4 */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -225,6 +245,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3E39AC22F90A1B4006C8721 /* 20 Questions/animals_ann.json in Resources */,
+				B4B2467E2FA1234500000002 /* 20 Questions/bear_dance.mp4 in Resources */,
+				B4B246822FA1234500000005 /* 20 Questions/baboon_compressed.mp4 in Resources */,
+				B4B246842FA1234500000007 /* 20 Questions/cat_compressed.mp4 in Resources */,
+				B4B246872FA1234500000009 /* 20 Questions/deer_compressed.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
