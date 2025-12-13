@@ -25,6 +25,7 @@ struct LlamaMascotContentView: View {
     @State private var funFactInterval: Int = 1
     @State private var questionChangeCount: Int = 0
     @StateObject private var funFactsStore = FunFactsStore()
+    @State private var showGallery = false
     @State private var bearPlayer: AVPlayer?
     @State private var bearVideoError: String?
 
@@ -82,6 +83,9 @@ struct LlamaMascotContentView: View {
             }
             .sheet(isPresented: $showFunFactsPage) {
                 FunFactsView(store: funFactsStore)
+            }
+            .sheet(isPresented: $showGallery) {
+                GalleryView()
             }
             .onAppear { generateFunFact() }
             .onChange(of: viewModel.currentQuestion?.id) { _, newValue in
@@ -471,6 +475,10 @@ struct LlamaMascotContentView: View {
                                 withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
                                 showFunFactsPage = true
                             },
+                            onShowGallery: {
+                                withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
+                                showGallery = true
+                            },
                             onFeedback: {
                                 withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
                             }
@@ -490,6 +498,7 @@ struct LlamaMascotContentView: View {
         @Binding var developerMode: Bool
         @Binding var contextAwareFacts: Bool
         let onShowFunFacts: () -> Void
+        let onShowGallery: () -> Void
         let onFeedback: () -> Void
 
         var body: some View {
@@ -527,6 +536,15 @@ struct LlamaMascotContentView: View {
                     onShowFunFacts()
                 } label: {
                     Label("Fun Facts", systemImage: "lightbulb")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.plain)
+                .padding(.vertical, 4)
+
+                Button {
+                    onShowGallery()
+                } label: {
+                    Label("Gallery", systemImage: "photo.on.rectangle.angled")
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .buttonStyle(.plain)
