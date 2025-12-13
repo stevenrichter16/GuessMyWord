@@ -24,6 +24,8 @@ struct LlamaMascotContentView: View {
     @State private var showFunFactsPage = false
     @State private var funFactInterval: Int = 1
     @State private var questionChangeCount: Int = 0
+    @State private var lastHelpLetter: String?
+    @State private var helpSheetSelectedLetter: String?
     @StateObject private var funFactsStore = FunFactsStore()
     @State private var showGallery = false
     @State private var showRestartConfirm = false
@@ -81,6 +83,7 @@ struct LlamaMascotContentView: View {
                     .interactiveDismissDisabled(false) // allow swipe-to-close
                     .onDisappear {
                         expandedHelpSections.removeAll()
+                        helpSheetSelectedLetter = nil
                     }
             }
             .sheet(isPresented: $showFunFactsPage) {
@@ -588,98 +591,113 @@ struct LlamaMascotContentView: View {
         }
         let sortedKeys = grouped.keys.sorted()
 
-        return VStack(spacing: 16) {
-            Text(context.text)
-                .font(.headline)
-                .multilineTextAlignment(.center)
+        return ScrollViewReader { proxy in
+            VStack(spacing: 16) {
+                Text(context.text)
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
 
-            if entries.isEmpty {
-                Text("No data available for this question.")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            } else {
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 10, pinnedViews: [.sectionHeaders]) {
-                        ForEach(sortedKeys, id: \.self) { key in
-                            let isExpanded = expandedHelpSections.contains(key)
-                            Section(
-                                header:
-                                    Button {
-                                        withAnimation(.easeInOut(duration: 0.2)) {
-                                            if isExpanded { expandedHelpSections.remove(key) }
-                                            else { expandedHelpSections.insert(key) }
-                                        }
-                                    } label: {
-                                        HStack {
-                                            Text(key)
-                                                .font(.headline)
-                                            Spacer()
-                                            Image(systemName: "chevron.down")
-                                                .font(.caption.weight(.bold))
-                                                .foregroundColor(.secondary)
-                                                .rotationEffect(.degrees(isExpanded ? 180 : 0))
-                                                .animation(.easeInOut(duration: 0.2), value: isExpanded)
-                                        }
-                                        .padding(.vertical, 8)
-                                        .padding(.horizontal, 12)
-                                        .frame(maxWidth: .infinity)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .fill(cardFill.opacity(0.95))
-                                                .shadow(color: shadowColor.opacity(0.15), radius: 4, x: 0, y: 2)
-                                        )
-                                    }
-                                    .buttonStyle(.plain)
-                            ) {
-                                if isExpanded, let items = grouped[key] {
-                                    VStack(alignment: .leading, spacing: 8) {
-                                        ForEach(items.sorted { $0.animal.name < $1.animal.name }, id: \.animal.id) { item in
-                                            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                                                Text(item.animal.name)
-                                                    .font(.subheadline)
-                                                Spacer()
-                                                let tint = helpAnswerColor(item.answer)
-                                                Text(item.answer)
-                                                    .font(.subheadline.weight(.semibold))
-                                                    .foregroundColor(tint)
-                                                    .padding(.horizontal, 10)
-                                                    .padding(.vertical, 4)
-                                                    .background(
-                                                        Capsule()
-                                                            .fill(tint.opacity(0.15))
-                                                    )
-                                                    .overlay(
-                                                        Capsule()
-                                                            .stroke(tint.opacity(0.35), lineWidth: 1)
-                                                    )
+                if entries.isEmpty {
+                    Text("No data available for this question.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                } else {
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 10, pinnedViews: [.sectionHeaders]) {
+                            ForEach(sortedKeys, id: \.self) { key in
+                                let isExpanded = expandedHelpSections.contains(key)
+                                Section(
+                                    header:
+                                        Button {
+                                            withAnimation(.easeInOut(duration: 0.2)) {
+                                                if isExpanded { expandedHelpSections.remove(key) }
+                                                else { expandedHelpSections.insert(key) }
+                                                helpSheetSelectedLetter = key
+                                                lastHelpLetter = key
                                             }
-                                            .padding(.vertical, 6)
-                                            .padding(.horizontal, 10)
+                                        } label: {
+                                            HStack {
+                                                Text(key)
+                                                    .font(.headline)
+                                                Spacer()
+                                                Image(systemName: "chevron.down")
+                                                    .font(.caption.weight(.bold))
+                                                    .foregroundColor(.secondary)
+                                                    .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                                                    .animation(.easeInOut(duration: 0.2), value: isExpanded)
+                                            }
+                                            .padding(.vertical, 8)
+                                            .padding(.horizontal, 12)
+                                            .frame(maxWidth: .infinity)
                                             .background(
                                                 RoundedRectangle(cornerRadius: 12)
-                                                    .fill(cardFill.opacity(0.9))
+                                                    .fill(cardFill.opacity(0.95))
+                                                    .shadow(color: shadowColor.opacity(0.15), radius: 4, x: 0, y: 2)
                                             )
                                         }
+                                        .buttonStyle(.plain)
+                                ) {
+                                    if isExpanded, let items = grouped[key] {
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            ForEach(items.sorted { $0.animal.name < $1.animal.name }, id: \.animal.id) { item in
+                                                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                                                    Text(item.animal.name)
+                                                        .font(.subheadline)
+                                                    Spacer()
+                                                    let tint = helpAnswerColor(item.answer)
+                                                    Text(item.answer)
+                                                        .font(.subheadline.weight(.semibold))
+                                                        .foregroundColor(tint)
+                                                        .padding(.horizontal, 10)
+                                                        .padding(.vertical, 4)
+                                                        .background(
+                                                            Capsule()
+                                                                .fill(tint.opacity(0.15))
+                                                        )
+                                                        .overlay(
+                                                            Capsule()
+                                                                .stroke(tint.opacity(0.35), lineWidth: 1)
+                                                        )
+                                                }
+                                                .padding(.vertical, 6)
+                                                .padding(.horizontal, 10)
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 12)
+                                                        .fill(cardFill.opacity(0.9))
+                                                )
+                                            }
+                                        }
+                                        .padding(.leading, 4)
                                     }
-                                    .padding(.leading, 4)
+                                }
+                                .id(key)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                    .onAppear {
+                        if let letter = helpSheetSelectedLetter ?? lastHelpLetter {
+                            expandedHelpSections.insert(letter)
+                            DispatchQueue.main.async {
+                                withAnimation(.easeInOut(duration: 0.25)) {
+                                    proxy.scrollTo(letter, anchor: .top)
                                 }
                             }
                         }
                     }
-                    .padding(.vertical, 4)
                 }
-            }
 
-            Button("Close") { helpContext = nil }
-                .buttonStyle(.borderedProminent)
+                Button("Close") { helpContext = nil }
+                    .buttonStyle(.borderedProminent)
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 18)
+                    .fill(cardFill)
+                    .shadow(color: shadowColor, radius: 10, x: 0, y: 6)
+            )
+            .padding()
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 18)
-                .fill(cardFill)
-                .shadow(color: shadowColor, radius: 10, x: 0, y: 6)
-        )
-        .padding()
     }
 
     // MARK: - Fun Facts
