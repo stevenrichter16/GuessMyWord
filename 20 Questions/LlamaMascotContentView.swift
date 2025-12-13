@@ -21,6 +21,7 @@ struct LlamaMascotContentView: View {
     @State private var expandedRunIDs: Set<String> = []
     @State private var contextAwareFunFacts = false
     @State private var funFact: (animalName: String, text: String)?
+    @State private var showFunFactsPage = false
     @State private var funFactInterval: Int = 1
     @State private var questionChangeCount: Int = 0
     @State private var bearPlayer: AVPlayer?
@@ -77,6 +78,9 @@ struct LlamaMascotContentView: View {
                     .onDisappear {
                         expandedHelpSections.removeAll()
                     }
+            }
+            .sheet(isPresented: $showFunFactsPage) {
+                FunFactsView()
             }
             .onAppear { generateFunFact() }
             .onChange(of: viewModel.currentQuestion?.id) { _, newValue in
@@ -462,6 +466,10 @@ struct LlamaMascotContentView: View {
                             shadowColor: shadowColor,
                             developerMode: $showDeveloperTools,
                             contextAwareFacts: $contextAwareFunFacts,
+                            onShowFunFacts: {
+                                withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
+                                showFunFactsPage = true
+                            },
                             onFeedback: {
                                 withAnimation(.easeInOut(duration: 0.2)) { isMenuOpen = false }
                             }
@@ -480,6 +488,7 @@ struct LlamaMascotContentView: View {
         let shadowColor: Color
         @Binding var developerMode: Bool
         @Binding var contextAwareFacts: Bool
+        let onShowFunFacts: () -> Void
         let onFeedback: () -> Void
 
         var body: some View {
@@ -511,6 +520,15 @@ struct LlamaMascotContentView: View {
                     Label("Context-aware fun facts", systemImage: "sparkles")
                 }
                 .toggleStyle(SwitchToggleStyle(tint: .purple))
+                .padding(.vertical, 4)
+
+                Button {
+                    onShowFunFacts()
+                } label: {
+                    Label("Fun Facts", systemImage: "lightbulb")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .buttonStyle(.plain)
                 .padding(.vertical, 4)
 
                 Button(action: onFeedback) {
@@ -900,28 +918,7 @@ struct LlamaMascotContentView: View {
     }
 
     private func funFactAssetName(for animalName: String) -> String? {
-        let normalized = animalName
-            .lowercased()
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        var candidates: [String] = [
-            normalized,
-            normalized.replacingOccurrences(of: " ", with: "_"),
-            normalized.replacingOccurrences(of: "-", with: "_")
-        ]
-        // Special mappings where the asset name differs from the display name.
-        let aliases: [String: String] = [
-            "hippopotamus": "hippo",
-            "hippo": "hippo"
-        ]
-        if let mapped = aliases[normalized] {
-            candidates.insert(mapped, at: 0)
-        }
-        for name in candidates {
-            if UIImage(named: name) != nil {
-                return name
-            }
-        }
-        return nil
+        FunFactAssetResolver.resolve(animalName)
     }
 
     private var backgroundGradient: LinearGradient {
