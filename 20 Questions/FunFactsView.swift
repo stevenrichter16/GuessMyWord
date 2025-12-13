@@ -1,9 +1,20 @@
 import SwiftUI
 
+@MainActor
 struct FunFactsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-    @StateObject private var store = FunFactsStore()
+    @StateObject private var store: FunFactsStore
+    @State private var collapsedIds: Set<String> = []
+
+    @MainActor
+    init(store: FunFactsStore? = nil) {
+        if let store {
+            _store = StateObject(wrappedValue: store)
+        } else {
+            _store = StateObject(wrappedValue: FunFactsStore())
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -17,6 +28,12 @@ struct FunFactsView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") { dismiss() }
                 }
+            }
+            .onAppear {
+                seedCollapsed()
+            }
+            .onChange(of: store.animals.map(\.id)) { ids in
+                seedCollapsed(with: ids)
             }
         }
     }
@@ -43,6 +60,18 @@ struct FunFactsView: View {
                         Text("\(store.animals.count) animals")
                             .font(.caption)
                             .foregroundColor(.secondary)
+                        HStack(spacing: 8) {
+                            Button("Expand all") { withAnimation(.spring()) { expandAll() } }
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(Capsule().fill(Color.primary.opacity(0.08)))
+                            Button("Collapse all") { withAnimation(.spring()) { collapseAll() } }
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(Capsule().fill(Color.primary.opacity(0.08)))
+                        }
                     }
                     .padding(.horizontal)
 
@@ -60,6 +89,7 @@ struct FunFactsView: View {
 
     @ViewBuilder
     private func card(for animal: FunFactsAnimal) -> some View {
+        let isCollapsed = collapsedIds.contains(animal.id)
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 12) {
                 avatar(for: animal)
@@ -71,21 +101,38 @@ struct FunFactsView: View {
                         .foregroundColor(.secondary)
                 }
                 Spacer()
+                Button {
+                    withAnimation(.spring()) {
+                        toggleCollapse(for: animal.id)
+                    }
+                } label: {
+                    Image(systemName: isCollapsed ? "chevron.down" : "chevron.up")
+                        .font(.headline.weight(.bold))
+                        .foregroundColor(.secondary)
+                        .padding(8)
+                        .background(
+                            Circle()
+                                .fill(Color.primary.opacity(0.07))
+                        )
+                }
+                .accessibilityLabel(isCollapsed ? "Expand \(animal.name)" : "Collapse \(animal.name)")
             }
-            Divider()
-                .opacity(0.35)
-            VStack(alignment: .leading, spacing: 8) {
+            if !isCollapsed {
+                Divider()
+                    .opacity(0.35)
+            VStack(alignment: .leading, spacing: 12) {
                 ForEach(Array(animal.facts.enumerated()), id: \.offset) { index, fact in
                     HStack(alignment: .top, spacing: 8) {
                         Text("•")
                             .font(.headline)
                             .foregroundColor(.purple.opacity(0.8))
-                            .accessibilityHidden(true)
-                        Text(fact)
-                            .font(.body)
-                            .foregroundColor(.primary)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .accessibilityLabel("Fun fact \(index + 1) about \(animal.name). \(fact)")
+                                .accessibilityHidden(true)
+                            Text(fact)
+                                .font(.body)
+                                .foregroundColor(.primary)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .accessibilityLabel("Fun fact \(index + 1) about \(animal.name). \(fact)")
+                        }
                     }
                 }
             }
@@ -161,12 +208,26 @@ struct FunFactsView: View {
             )
         }
     }
-}
 
-#if DEBUG
-struct FunFactsView_Previews: PreviewProvider {
-    static var previews: some View {
-        FunFactsView()
+    private func toggleCollapse(for id: String) {
+        if collapsedIds.contains(id) {
+            collapsedIds.remove(id)
+        } else {
+            collapsedIds.insert(id)
+        }
+    }
+
+    private func collapseAll() {
+        collapsedIds = Set(store.animals.map(\.id))
+    }
+
+    private func expandAll() {
+        collapsedIds.removeAll()
+    }
+
+    private func seedCollapsed(with ids: [String]? = nil) {
+        guard collapsedIds.isEmpty else { return }
+        let allIds = ids ?? store.animals.map(\.id)
+        collapsedIds = Set(allIds)
     }
 }
-#endif

@@ -37,10 +37,13 @@ enum FunFactAssetResolver {
 
 @MainActor
 final class FunFactsStore: ObservableObject {
-    @Published private(set) var animals: [FunFactsAnimal] = []
+    @Published private(set) var animals: [FunFactsAnimal]
 
-    init() {
-        load()
+    init(animals: [FunFactsAnimal] = []) {
+        self.animals = animals
+        if animals.isEmpty {
+            load()
+        }
     }
 
     private func load() {
