@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 @MainActor
 struct FunFactsView: View {
@@ -6,6 +7,7 @@ struct FunFactsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @StateObject private var store: FunFactsStore
     @State private var collapsedIds: Set<String> = []
+    @State private var copiedMessage: String?
 
     @MainActor
     init(store: FunFactsStore? = nil) {
@@ -34,6 +36,18 @@ struct FunFactsView: View {
             }
             .onChange(of: store.animals.map(\.id)) { ids in
                 seedCollapsed(with: ids)
+            }
+            .overlay(alignment: .top) {
+                if let msg = copiedMessage {
+                    Text(msg)
+                        .font(.footnote.weight(.semibold))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Capsule().fill(Color.black.opacity(0.8)))
+                        .foregroundColor(.white)
+                        .padding(.top, 12)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                }
             }
         }
     }
@@ -121,17 +135,25 @@ struct FunFactsView: View {
                 Divider()
                     .opacity(0.35)
             VStack(alignment: .leading, spacing: 12) {
-                ForEach(Array(animal.facts.enumerated()), id: \.offset) { index, fact in
-                    HStack(alignment: .top, spacing: 8) {
-                        Text("•")
-                            .font(.headline)
-                            .foregroundColor(.purple.opacity(0.8))
+                    ForEach(Array(animal.facts.enumerated()), id: \.offset) { index, fact in
+                        HStack(alignment: .top, spacing: 8) {
+                            Text("•")
+                                .font(.headline)
+                                .foregroundColor(.purple.opacity(0.8))
                                 .accessibilityHidden(true)
                             Text(fact)
                                 .font(.body)
                                 .foregroundColor(.primary)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .accessibilityLabel("Fun fact \(index + 1) about \(animal.name). \(fact)")
+                        }
+                        .contextMenu {
+                            Button {
+                                UIPasteboard.general.string = fact
+                                showCopied()
+                            } label: {
+                                Label("Copy", systemImage: "doc.on.doc")
+                            }
                         }
                     }
                 }
@@ -229,5 +251,16 @@ struct FunFactsView: View {
         guard collapsedIds.isEmpty else { return }
         let allIds = ids ?? store.animals.map(\.id)
         collapsedIds = Set(allIds)
+    }
+
+    private func showCopied() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            copiedMessage = "Copied"
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                copiedMessage = nil
+            }
+        }
     }
 }
