@@ -38,23 +38,32 @@ enum FunFactAssetResolver {
 @MainActor
 final class FunFactsStore: ObservableObject {
     @Published private(set) var animals: [FunFactsAnimal]
+    let picker: FunFactPicker?
+    private let nameMap: [String: String]
 
     init(animals: [FunFactsAnimal] = []) {
-        self.animals = animals
         if animals.isEmpty {
-            load()
+            let names = FunFactsStore.loadAnimalNames()
+            self.nameMap = names
+            self.animals = FunFactsStore.buildAnimals(using: names)
+        } else {
+            self.animals = animals
+            self.nameMap = Dictionary(uniqueKeysWithValues: animals.map { ($0.id.lowercased(), $0.name) })
         }
+        picker = FunFactPicker()
     }
 
-    private func load() {
+    func displayName(for id: String) -> String {
+        nameMap[id.lowercased()] ?? id.replacingOccurrences(of: "_", with: " ").capitalized
+    }
+
+    private static func buildAnimals(using names: [String: String]) -> [FunFactsAnimal] {
         guard let url = Bundle.main.url(forResource: "fun_facts", withExtension: "json"),
               let data = try? Data(contentsOf: url),
               let dict = try? JSONSerialization.jsonObject(with: data) as? [String: [String]] else {
-            animals = []
-            return
+            return []
         }
 
-        let names = loadAnimalNames()
         let entries: [FunFactsAnimal] = dict.compactMap { key, facts in
             let cleanedFacts = facts
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -66,10 +75,10 @@ final class FunFactsStore: ObservableObject {
         }
         .sorted { $0.name < $1.name }
 
-        animals = entries
+        return entries
     }
 
-    private func loadAnimalNames() -> [String: String] {
+    private static func loadAnimalNames() -> [String: String] {
         guard let store = ANNDataStore(resourceName: "animals_ann") else { return [:] }
         var map: [String: String] = [:]
         for animal in store.config.animals {

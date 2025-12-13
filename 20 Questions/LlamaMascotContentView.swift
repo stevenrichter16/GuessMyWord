@@ -24,6 +24,7 @@ struct LlamaMascotContentView: View {
     @State private var showFunFactsPage = false
     @State private var funFactInterval: Int = 1
     @State private var questionChangeCount: Int = 0
+    @StateObject private var funFactsStore = FunFactsStore()
     @State private var bearPlayer: AVPlayer?
     @State private var bearVideoError: String?
 
@@ -80,7 +81,7 @@ struct LlamaMascotContentView: View {
                     }
             }
             .sheet(isPresented: $showFunFactsPage) {
-                FunFactsView()
+                FunFactsView(store: funFactsStore)
             }
             .onAppear { generateFunFact() }
             .onChange(of: viewModel.currentQuestion?.id) { _, newValue in
@@ -661,40 +662,13 @@ struct LlamaMascotContentView: View {
     // MARK: - Fun Facts
 
     private func generateFunFact() {
-        guard let url = Bundle.main.url(forResource: "fun_facts", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let dict = try? JSONSerialization.jsonObject(with: data) as? [String: [String]],
-              !dict.isEmpty else {
+        guard let picker = funFactsStore.picker,
+              let result = picker.nextFact() else {
             funFact = nil
             return
         }
-
-        let pool: [String]
-        if contextAwareFunFacts {
-            var preference: [String] = []
-            if let guess = viewModel.currentGuess?.name.lowercased(), dict[guess] != nil {
-                preference.append(guess)
-            }
-            let remaining = viewModel.debugRemainingNames
-                .map { $0.lowercased() }
-                .filter { dict[$0] != nil }
-            preference.append(contentsOf: remaining)
-            pool = preference.isEmpty ? Array(dict.keys) : preference
-        } else {
-            pool = Array(dict.keys)
-        }
-
-        guard let animalKey = pool.randomElement(),
-              let facts = dict[animalKey],
-              let fact = facts.randomElement() else {
-            funFact = nil
-            return
-        }
-        // Try to restore display name from model; fallback to key.
-        let displayName = viewModel.debugRemainingNames.first { $0.lowercased() == animalKey }
-            ?? viewModel.currentGuess?.name
-            ?? animalKey.capitalized
-        funFact = (displayName, fact)
+        let displayName = funFactsStore.displayName(for: result.animal)
+        funFact = (displayName, result.fact)
     }
 
     private func funFactCard(_ fact: (animalName: String, text: String)) -> some View {
