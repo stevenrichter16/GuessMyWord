@@ -92,6 +92,11 @@ struct GalleryView: View {
                     } label: {
                         Label("Copy", systemImage: "doc.on.doc")
                     }
+                    Button {
+                        saveAvatar(item)
+                    } label: {
+                        Label("Save Image", systemImage: "square.and.arrow.down")
+                    }
                 }
         }
         .padding(12)
@@ -169,9 +174,15 @@ struct GalleryView: View {
         }
     }
 
-    private func showCopied() {
+    private func saveAvatar(_ item: GalleryItem) {
+        guard let asset = item.assetName, let image = UIImage(named: asset) else { return }
+        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+        showCopied(message: "Saved")
+    }
+
+    private func showCopied(message: String = "Copied") {
         withAnimation(.easeInOut(duration: 0.2)) {
-            copiedMessage = "Copied"
+            copiedMessage = message
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
             withAnimation(.easeInOut(duration: 0.2)) {

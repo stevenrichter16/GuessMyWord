@@ -131,10 +131,16 @@ struct FunFactsView: View {
                 }
                 .accessibilityLabel(isCollapsed ? "Expand \(animal.name)" : "Collapse \(animal.name)")
             }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                withAnimation(.spring()) {
+                    toggleCollapse(for: animal.id)
+                }
+            }
             if !isCollapsed {
                 Divider()
                     .opacity(0.35)
-            VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 12) {
                     ForEach(Array(animal.facts.enumerated()), id: \.offset) { index, fact in
                         HStack(alignment: .top, spacing: 8) {
                             Text("•")

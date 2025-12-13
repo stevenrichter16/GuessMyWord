@@ -26,6 +26,7 @@ struct LlamaMascotContentView: View {
     @State private var questionChangeCount: Int = 0
     @StateObject private var funFactsStore = FunFactsStore()
     @State private var showGallery = false
+    @State private var showRestartConfirm = false
     @State private var bearPlayer: AVPlayer?
     @State private var bearVideoError: String?
 
@@ -74,6 +75,7 @@ struct LlamaMascotContentView: View {
             //.navigationTitle("20 Questions: Animals")
             .overlay(alignment: .topTrailing) { optionsButton }
             .overlay { sideMenuOverlay }
+            .overlay { restartConfirmOverlay }
             .sheet(item: $helpContext) { ctx in
                 helpSheetContent(context: ctx)
                     .interactiveDismissDisabled(false) // allow swipe-to-close
@@ -96,6 +98,7 @@ struct LlamaMascotContentView: View {
                 }
             }
             .onChange(of: viewModel.currentGuess?.id) { _, _ in generateFunFact() }
+            .animation(.easeInOut(duration: 0.2), value: showRestartConfirm)
         }
     }
 
@@ -414,7 +417,9 @@ struct LlamaMascotContentView: View {
 
     private var restartButton: some View {
         Button {
-            viewModel.restart()
+            withAnimation(.easeInOut(duration: 0.25)) {
+                showRestartConfirm = true
+            }
         } label: {
             HStack {
                 Image(systemName: "arrow.counterclockwise")
@@ -748,6 +753,13 @@ struct LlamaMascotContentView: View {
             }
         }
         .accessibilityLabel("Fun fact about \(fact.animalName). \(fact.text)")
+        .contextMenu {
+            Button {
+                UIPasteboard.general.string = "\(fact.animalName): \(fact.text)"
+            } label: {
+                Label("Copy", systemImage: "doc.on.doc")
+            }
+        }
     }
 
     // MARK: - Developer Tools
@@ -934,6 +946,68 @@ struct LlamaMascotContentView: View {
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
+        }
+    }
+
+    private var restartConfirmOverlay: some View {
+        Group {
+            if showRestartConfirm {
+                ZStack {
+                    Color.black.opacity(0.35)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                showRestartConfirm = false
+                            }
+                        }
+                    VStack(spacing: 12) {
+                        HStack {
+                            Text("Restart game?")
+                                .font(.headline)
+                            Spacer()
+                        }
+                        Text("Are you sure you want to restart this game?")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        HStack {
+                            Button(role: .cancel) {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    showRestartConfirm = false
+                                }
+                            } label: {
+                                Text("Cancel")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.bordered)
+                            Button(role: .destructive) {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    showRestartConfirm = false
+                                }
+                                viewModel.restart()
+                                questionChangeCount = 0
+                                generateFunFact()
+                            } label: {
+                                Text("Restart")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                    }
+                    .padding(20)
+                    .frame(maxWidth: 340)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(cardFill)
+                            .shadow(color: shadowColor.opacity(0.25), radius: 12, x: 0, y: 6)
+                    )
+                    .padding()
+                    .scaleEffect(showRestartConfirm ? 1 : 0.94)
+                    .opacity(showRestartConfirm ? 1 : 0)
+                    .animation(.spring(response: 0.35, dampingFraction: 0.8), value: showRestartConfirm)
+                }
+                .transition(.opacity)
+            }
         }
     }
 
