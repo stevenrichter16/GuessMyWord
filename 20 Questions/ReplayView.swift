@@ -108,6 +108,10 @@ struct ReplayView: View {
     @State private var answerPulse = false
     @State private var answerMessage: String?
     private let annStore = ANNDataStore(resourceName: "animals_ann")
+    @State private var lastCandidates: [String] = []
+    @State private var centerRipple = false
+    @State private var showStory = false
+    @State private var showVerticalBoard = false
 
     init(steps: [ReplayStep], autoRunTest: Bool = false) {
         _viewModel = StateObject(wrappedValue: ReplayViewModel(steps: steps))
@@ -127,27 +131,24 @@ struct ReplayView: View {
                     Button("Close") { dismiss() }
                 }
             }
-            .overlay(alignment: .bottom) {
-                if let msg = answerMessage {
-                    Text(msg)
-                        .font(.footnote.weight(.semibold))
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .background(Capsule().fill(Color.black.opacity(0.8)))
-                        .foregroundColor(.white)
-                        .padding(.bottom, 16)
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
-                }
-            }
             .onAppear {
                 if autoRunTest && !didAutoRun {
                     didAutoRun = true
                     runTestReplay()
                 }
+                lastCandidates = viewModel.steps.first?.candidates ?? []
                 startPulse()
                 triggerAnswerPulse()
             }
             .onChange(of: viewModel.currentIndex) { _ in
+                let current = viewModel.steps[viewModel.currentIndex].candidates
+                let removed = Set(lastCandidates).subtracting(current)
+                if !removed.isEmpty {
+                    withAnimation(.easeInOut(duration: 0.4)) {
+                        centerRipple.toggle()
+                    }
+                }
+                lastCandidates = current
                 startPulse()
                 triggerAnswerPulse()
             }
@@ -182,11 +183,9 @@ struct ReplayView: View {
         } else {
             let step = viewModel.steps[viewModel.currentIndex]
             VStack(spacing: 20) {
-                if let guess = viewModel.steps.last?.candidates.first {
-                    Text("AI guess: \(guess)")
-                        .font(.headline.weight(.semibold))
+                if let guess = aiGuessName {
+                    guessBadge(guess: guess, in: step.candidates)
                         .padding(.horizontal)
-                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 HStack {
                     Button {
@@ -230,36 +229,65 @@ struct ReplayView: View {
                 }
 
                 GeometryReader { geo in
-                    ZStack {
-                        Circle()
-                            .stroke(
-                                AngularGradient(gradient: Gradient(colors: [.red, .orange, .yellow]), center: .center),
-                                lineWidth: 12
-                            )
-                            .frame(width: 160, height: 160)
-                            .overlay(
-                                Circle()
-                                    .fill(Color.white.opacity(colorScheme == .dark ? 0.08 : 0.12))
-                            )
-                            .overlay(
-                                Circle()
-                                    .stroke(Color.primary.opacity(0.12), lineWidth: 1)
-                            )
-                            .position(x: geo.size.width / 2, y: geo.size.height / 2)
-                        ForEach(Array(step.candidates.enumerated()), id: \.element) { idx, name in
-                            avatarView(name: name, rank: idx, total: step.candidates.count, question: step.question)
-                                .frame(width: 70, height: 70)
-                                .position(position(for: idx, total: step.candidates.count, in: geo.size))
-                                .transition(.scale.combined(with: .opacity))
-                                .animation(.easeInOut(duration: 0.6), value: step.candidates)
+                    Group {
+                        if showVerticalBoard {
+                            verticalBoard(step: step, size: geo.size)
+                                .transition(.move(edge: .trailing).combined(with: .opacity))
+                        } else {
+                            circularBoard(step: step, size: geo.size)
+                                .transition(.move(edge: .leading).combined(with: .opacity))
                         }
                     }
+                    .contentShape(Rectangle())
+                    .highPriorityGesture(
+                        DragGesture(minimumDistance: 20)
+                            .onEnded { value in
+                                if value.translation.width > 40 {
+                                    withAnimation(.easeInOut(duration: 0.25)) { showVerticalBoard = true }
+                                } else if value.translation.width < -40 {
+                                    withAnimation(.easeInOut(duration: 0.25)) { showVerticalBoard = false }
+                                }
+                            }
+                    )
                 }
-                .frame(height: 320)
+                .frame(height: 340)
 
                 if viewModel.steps.count > 1 {
                     slider
                 }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            showStory.toggle()
+                        }
+                    } label: {
+                        HStack {
+                            Text("Story")
+                                .font(.headline)
+                            Spacer()
+                            Image(systemName: "chevron.down")
+                                .rotationEffect(.degrees(showStory ? 180 : 0))
+                        }
+                        .padding(.horizontal)
+                    }
+                    if showStory {
+                        if viewModel.steps.isEmpty {
+                            Text("No story available yet.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal)
+                        } else {
+                            ScrollView {
+                                storyTimeline
+                                    .padding(.bottom, 8)
+                            }
+                            .frame(maxHeight: 160)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                        }
+                    }
+                }
+                .animation(.easeInOut(duration: 0.25), value: showStory)
 
                 HStack(spacing: 16) {
                     Text("Step \(viewModel.currentIndex + 1) of \(viewModel.steps.count)")
@@ -308,18 +336,103 @@ struct ReplayView: View {
             .animation(.spring(response: 0.35, dampingFraction: 0.7), value: isSelected)
     }
 
-    private func avatarView(name: String, rank: Int, total: Int, question: String) -> some View {
+    private func circularBoard(step: ReplayStep, size: CGSize) -> some View {
+        ZStack {
+            Circle()
+                .stroke(
+                    AngularGradient(gradient: Gradient(colors: [.red, .orange, .yellow]), center: .center),
+                    lineWidth: 12
+                )
+                .frame(width: 160, height: 160)
+                .overlay(
+                    Circle()
+                        .fill(Color.white.opacity(colorScheme == .dark ? 0.08 : 0.12))
+                )
+                .overlay(
+                    Circle()
+                        .stroke(Color.primary.opacity(0.12), lineWidth: 1)
+                )
+                .overlay(
+                    Circle()
+                        .fill(Color.white.opacity(0.18))
+                        .scaleEffect(centerRipple ? 1.2 : 0.85)
+                        .blur(radius: 6)
+                        .opacity(centerRipple ? 0.35 : 0.0)
+                        .animation(.easeInOut(duration: 0.6), value: centerRipple)
+                )
+                .position(x: size.width / 2, y: size.height / 2)
+            ForEach(Array(step.candidates.enumerated()), id: \.element) { idx, name in
+                let persistence = persistenceCount(for: name, upTo: viewModel.currentIndex)
+                let isGuess = viewModel.steps.last?.candidates.first?.lowercased() == name.lowercased()
+                avatarView(name: name, rank: idx, total: step.candidates.count, question: step.question, persistence: persistence, isGuess: isGuess)
+                    .frame(width: 70, height: 70)
+                    .position(position(for: idx, total: step.candidates.count, in: size))
+                    .transition(.scale.combined(with: .opacity))
+                    .animation(.easeInOut(duration: 0.6), value: step.candidates)
+            }
+        }
+    }
+
+    private func verticalBoard(step: ReplayStep, size: CGSize) -> some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 10) {
+                ForEach(Array(step.candidates.enumerated()), id: \.element) { idx, name in
+                    let persistence = persistenceCount(for: name, upTo: viewModel.currentIndex)
+                    let isGuess = viewModel.steps.last?.candidates.first?.lowercased() == name.lowercased()
+                    HStack(spacing: 10) {
+                        Text("\(idx + 1).")
+                            .font(.caption.weight(.bold))
+                            .frame(width: 26, alignment: .trailing)
+                            .foregroundColor(.secondary)
+                        avatarView(name: name, rank: idx, total: step.candidates.count, question: step.question, persistence: persistence, isGuess: isGuess)
+                            .frame(width: 52, height: 52)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(name)
+                                .font(.subheadline.weight(.semibold))
+                            if isGuess {
+                                Text("AI guess")
+                                    .font(.caption2.weight(.bold))
+                                    .foregroundColor(.blue)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Capsule().fill(Color.blue.opacity(0.12)))
+                            }
+                        }
+                        Spacer()
+                    }
+                    .padding(8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.primary.opacity(colorScheme == .dark ? 0.08 : 0.05))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                    )
+                    .transition(.opacity.combined(with: .move(edge: .trailing)))
+                }
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+        }
+    }
+
+    private func avatarView(name: String, rank: Int, total: Int, question: String, persistence: Int, isGuess: Bool) -> some View {
         let asset = FunFactAssetResolver.resolve(name)
         let tint = colorForRank(rank, total: total)
+        let isStable = persistence >= 3
         return Group {
             if let asset, let image = UIImage(named: asset) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
                     .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.primary.opacity(0.08), lineWidth: 1))
+                    .overlay(
+                        Circle()
+                            .stroke(isGuess ? Color.blue.opacity(0.5) : Color.primary.opacity(0.08), lineWidth: isGuess ? 3 : 1)
+                    )
                     .background(Circle().fill(tint.opacity(0.18)))
-                    .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+                    .shadow(color: isStable ? Color.purple.opacity(0.4) : Color.black.opacity(0.1), radius: isStable ? 8 : 4, x: 0, y: 2)
             } else {
                 ZStack {
                     Circle().fill(tint.opacity(0.3))
@@ -333,6 +446,17 @@ struct ReplayView: View {
         }
         .onTapGesture {
             showAnswer(for: name, questionText: question)
+        }
+        .overlay(alignment: .bottom) {
+            if isStable {
+                Text("Stable")
+                    .font(.caption2.weight(.bold))
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Capsule().fill(Color.purple.opacity(0.15)))
+                    .foregroundColor(.purple)
+                    .offset(y: 10)
+            }
         }
     }
 
@@ -360,6 +484,23 @@ struct ReplayView: View {
 
     private func triggerAnswerPulse() {
         answerPulse.toggle()
+    }
+
+    private var storyTimeline: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(Array(viewModel.steps.enumerated()), id: \.offset) { idx, _ in
+                HStack(alignment: .top, spacing: 8) {
+                    Text("#\(idx + 1)")
+                        .font(.caption.weight(.bold))
+                        .padding(6)
+                        .background(Circle().fill(Color.primary.opacity(0.08)))
+                    Text(caption(for: idx))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .padding(.horizontal)
     }
 
     private var slider: some View {
@@ -406,6 +547,77 @@ struct ReplayView: View {
         }
     }
 
+    private var aiGuessName: String? {
+        viewModel.steps.last?.candidates.first
+    }
+
+    private func caption(for index: Int) -> String {
+        let step = viewModel.steps[index]
+        let answer = step.answer.rawValue
+        let question = step.question
+        let previous = index > 0 ? viewModel.steps[index - 1].candidates.map { $0.lowercased() } : []
+        let current = step.candidates.map { $0.lowercased() }
+        let added = step.candidates.filter { !previous.contains($0.lowercased()) }
+        let removed = (index > 0 ? viewModel.steps[index - 1].candidates : []).filter { !current.contains($0.lowercased()) }
+
+        var parts: [String] = []
+        if !added.isEmpty {
+            parts.append("boosted \(list(added))")
+        }
+        if !removed.isEmpty {
+            parts.append("demoted \(list(removed))")
+        }
+        let change = parts.isEmpty ? "kept candidates steady" : parts.joined(separator: "; ")
+        return "Answering '\(answer)' to \(question) \(change)."
+    }
+
+    private func list(_ items: [String]) -> String {
+        if items.count == 1 { return items[0] }
+        let allButLast = items.dropLast()
+        if let last = items.last {
+            return allButLast.joined(separator: ", ") + " and " + last
+        }
+        return ""
+    }
+
+    private func guessBadge(guess: String, in currentCandidates: [String]) -> some View {
+        let asset = FunFactAssetResolver.resolve(guess)
+        let isPresent = currentCandidates.contains(where: { $0.lowercased() == guess.lowercased() })
+        return HStack(spacing: 8) {
+            if let asset, let image = UIImage(named: asset) {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 32, height: 32)
+                    .clipShape(Circle())
+                    .overlay(Circle().stroke(Color.blue.opacity(0.7), lineWidth: 2))
+            } else {
+                Circle()
+                    .fill(Color.blue.opacity(0.1))
+                    .frame(width: 32, height: 32)
+                    .overlay(
+                        Text(String(guess.prefix(1)))
+                            .font(.caption.weight(.bold))
+                            .foregroundColor(.blue)
+                    )
+            }
+            Text("Guess: \(guess)")
+                .font(.caption.weight(.semibold))
+                .foregroundColor(.primary)
+            Spacer()
+        }
+        .padding(8)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.blue.opacity(isPresent ? 0.12 : 0.06))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.blue.opacity(0.25), lineWidth: 1)
+        )
+        .opacity(isPresent ? 1 : 0.7)
+    }
+
     private func showAnswer(for animalName: String, questionText: String) {
         guard let store = annStore else { return }
         // Match question by text (case-insensitive).
@@ -436,6 +648,22 @@ struct ReplayView: View {
                 answerMessage = nil
             }
         }
+    }
+
+    private func persistenceCount(for name: String, upTo index: Int) -> Int {
+        guard index >= 0 && index < viewModel.steps.count else { return 0 }
+        var count = 0
+        var i = index
+        while i >= 0 {
+            let step = viewModel.steps[i]
+            if step.candidates.contains(where: { $0.lowercased() == name.lowercased() }) {
+                count += 1
+            } else {
+                break
+            }
+            i -= 1
+        }
+        return count
     }
 
     private var backgroundGradient: LinearGradient {
