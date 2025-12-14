@@ -106,6 +106,8 @@ struct ReplayView: View {
     @State private var didAutoRun = false
     @State private var pulse = false
     @State private var answerPulse = false
+    @State private var answerMessage: String?
+    private let annStore = ANNDataStore(resourceName: "animals_ann")
 
     init(steps: [ReplayStep], autoRunTest: Bool = false) {
         _viewModel = StateObject(wrappedValue: ReplayViewModel(steps: steps))
@@ -123,6 +125,18 @@ struct ReplayView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") { dismiss() }
+                }
+            }
+            .overlay(alignment: .bottom) {
+                if let msg = answerMessage {
+                    Text(msg)
+                        .font(.footnote.weight(.semibold))
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .background(Capsule().fill(Color.black.opacity(0.8)))
+                        .foregroundColor(.white)
+                        .padding(.bottom, 16)
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
             }
             .onAppear {
@@ -194,10 +208,19 @@ struct ReplayView: View {
                 .padding(.horizontal)
 
                 VStack(spacing: 10) {
-                    Text(step.question)
-                        .font(.title3.weight(.semibold))
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
+                    HStack(alignment: .firstTextBaseline, spacing: 12) {
+                        Text(step.question)
+                            .font(.title3.weight(.semibold))
+                            .multilineTextAlignment(.leading)
+                    }
+                    .padding(.horizontal)
+                    Text("\(step.answer.rawValue)")
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(step.answer.rawValue == "Yes" ? Capsule().fill(Color.green.opacity(0.12)) : Capsule().fill(Color.red.opacity(0.12)))
+                        .foregroundColor(step.answer.rawValue == "Yes" ? .green : .red)
+                        
                     HStack(spacing: 12) {
                         answerButton("Yes", isSelected: step.answer == .yes)
                         answerButton("No", isSelected: step.answer == .no)
@@ -224,7 +247,7 @@ struct ReplayView: View {
                             )
                             .position(x: geo.size.width / 2, y: geo.size.height / 2)
                         ForEach(Array(step.candidates.enumerated()), id: \.element) { idx, name in
-                            avatarView(name: name, rank: idx, total: step.candidates.count)
+                            avatarView(name: name, rank: idx, total: step.candidates.count, question: step.question)
                                 .frame(width: 70, height: 70)
                                 .position(position(for: idx, total: step.candidates.count, in: geo.size))
                                 .transition(.scale.combined(with: .opacity))
@@ -234,7 +257,9 @@ struct ReplayView: View {
                 }
                 .frame(height: 320)
 
-                slider
+                if viewModel.steps.count > 1 {
+                    slider
+                }
 
                 HStack(spacing: 16) {
                     Text("Step \(viewModel.currentIndex + 1) of \(viewModel.steps.count)")
@@ -283,7 +308,7 @@ struct ReplayView: View {
             .animation(.spring(response: 0.35, dampingFraction: 0.7), value: isSelected)
     }
 
-    private func avatarView(name: String, rank: Int, total: Int) -> some View {
+    private func avatarView(name: String, rank: Int, total: Int, question: String) -> some View {
         let asset = FunFactAssetResolver.resolve(name)
         let tint = colorForRank(rank, total: total)
         return Group {
@@ -305,6 +330,9 @@ struct ReplayView: View {
                         .padding(6)
                 }
             }
+        }
+        .onTapGesture {
+            showAnswer(for: name, questionText: question)
         }
     }
 
@@ -374,6 +402,38 @@ struct ReplayView: View {
             }
             await MainActor.run {
                 isTesting = false
+            }
+        }
+    }
+
+    private func showAnswer(for animalName: String, questionText: String) {
+        guard let store = annStore else { return }
+        // Match question by text (case-insensitive).
+        let lowered = questionText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard let questionId = store.config.questions.first(where: { $0.text.lowercased() == lowered })?.id else {
+            answerMessage = "\(animalName): Unknown"
+            scheduleAnswerClear()
+            return
+        }
+        // Find animal id by name (case-insensitive).
+        guard let animal = store.config.animals.first(where: { $0.name.lowercased() == animalName.lowercased() }) else {
+            answerMessage = "\(animalName): Unknown"
+            scheduleAnswerClear()
+            return
+        }
+        let weight = store.weight(for: animal.id, questionId: questionId)
+        let label: String
+        if weight > 0 { label = "Yes" }
+        else if weight < 0 { label = "No" }
+        else { label = "Unknown" }
+        answerMessage = "\(animal.name): \(label)"
+        scheduleAnswerClear()
+    }
+
+    private func scheduleAnswerClear() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                answerMessage = nil
             }
         }
     }
