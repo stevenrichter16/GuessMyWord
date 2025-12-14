@@ -243,9 +243,9 @@ struct ReplayView: View {
                         DragGesture(minimumDistance: 20)
                             .onEnded { value in
                                 if value.translation.width > 40 {
-                                    withAnimation(.easeInOut(duration: 0.25)) { showVerticalBoard = true }
-                                } else if value.translation.width < -40 {
                                     withAnimation(.easeInOut(duration: 0.25)) { showVerticalBoard = false }
+                                } else if value.translation.width < -40 {
+                                    withAnimation(.easeInOut(duration: 0.25)) { showVerticalBoard = true }
                                 }
                             }
                     )

@@ -15,18 +15,19 @@ struct _0_QuestionsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            TabView {
-                if useLlamaMascotUI {
-                    LlamaMascotContentView()
-                        .tabItem {
-                            Label("Game", systemImage: "sparkles")
-                        }
-                }
-                BearVideoView()
-                    .tabItem {
-                        Label("Videos", systemImage: "film.stack")
-                    }
-            }
+            LlamaMascotContentView()
+//            TabView {
+//                if useLlamaMascotUI {
+//                    LlamaMascotContentView()
+//                        .tabItem {
+//                            Label("Game", systemImage: "sparkles")
+//                        }
+//                }
+//                BearVideoView()
+//                    .tabItem {
+//                        Label("Videos", systemImage: "film.stack")
+//                    }
+//            }
         }
     }
 
