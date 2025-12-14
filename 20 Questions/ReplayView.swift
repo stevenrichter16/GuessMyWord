@@ -111,11 +111,12 @@ struct ReplayView: View {
     @State private var lastCandidates: [String] = []
     @State private var centerRipple = false
     @State private var showStory = false
-    @State private var showVerticalBoard = false
+    @State private var showVerticalBoard: Bool = false
 
-    init(steps: [ReplayStep], autoRunTest: Bool = false) {
+    init(steps: [ReplayStep], autoRunTest: Bool = false, showVerticalBoard initialShowVerticalBoard: Bool = false) {
         _viewModel = StateObject(wrappedValue: ReplayViewModel(steps: steps))
         self.autoRunTest = autoRunTest
+        _showVerticalBoard = State(initialValue: initialShowVerticalBoard)
     }
 
     var body: some View {
@@ -187,38 +188,21 @@ struct ReplayView: View {
                     guessBadge(guess: guess, in: step.candidates)
                         .padding(.horizontal)
                 }
-                HStack {
-                    Button {
-                        runTestReplay()
-                    } label: {
-                        HStack(spacing: 6) {
-                            if isTesting { ProgressView().scaleEffect(0.8) }
-                            Image(systemName: "wand.and.stars")
-                            Text(isTesting ? "Simulating…" : "Test")
-                        }
-                        .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(Capsule().fill(Color.primary.opacity(0.12)))
-                    }
-                    .disabled(isTesting)
-                    Spacer()
-                }
-                .padding(.horizontal)
 
                 VStack(spacing: 10) {
                     HStack(alignment: .firstTextBaseline, spacing: 12) {
                         Text(step.question)
                             .font(.title3.weight(.semibold))
                             .multilineTextAlignment(.leading)
+                        Text("\(step.answer.rawValue)")
+                            .font(.caption.weight(.semibold))
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(step.answer.rawValue == "Yes" ? Capsule().fill(Color.green.opacity(0.12)) : Capsule().fill(Color.red.opacity(0.12)))
+                            .foregroundColor(step.answer.rawValue == "Yes" ? .green : .red)
                     }
                     .padding(.horizontal)
-                    Text("\(step.answer.rawValue)")
-                        .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(step.answer.rawValue == "Yes" ? Capsule().fill(Color.green.opacity(0.12)) : Capsule().fill(Color.red.opacity(0.12)))
-                        .foregroundColor(step.answer.rawValue == "Yes" ? .green : .red)
+
                         
                     HStack(spacing: 12) {
                         answerButton("Yes", isSelected: step.answer == .yes)
@@ -256,43 +240,58 @@ struct ReplayView: View {
                     slider
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            showStory.toggle()
-                        }
-                    } label: {
-                        HStack {
-                            Text("Story")
-                                .font(.headline)
-                            Spacer()
-                            Image(systemName: "chevron.down")
-                                .rotationEffect(.degrees(showStory ? 180 : 0))
-                        }
-                        .padding(.horizontal)
-                    }
-                    if showStory {
-                        if viewModel.steps.isEmpty {
-                            Text("No story available yet.")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                                .padding(.horizontal)
-                        } else {
-                            ScrollView {
-                                storyTimeline
-                                    .padding(.bottom, 8)
-                            }
-                            .frame(maxHeight: 160)
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
-                        }
-                    }
-                }
-                .animation(.easeInOut(duration: 0.25), value: showStory)
+//                VStack(alignment: .leading, spacing: 8) {
+//                    Button {
+//                        withAnimation(.easeInOut(duration: 0.25)) {
+//                            showStory.toggle()
+//                        }
+//                    } label: {
+//                        HStack {
+//                            Text("Story")
+//                                .font(.headline)
+//                            Spacer()
+//                            Image(systemName: "chevron.down")
+//                                .rotationEffect(.degrees(showStory ? 180 : 0))
+//                        }
+//                        .padding(.horizontal)
+//                    }
+//                    if showStory {
+//                        if viewModel.steps.isEmpty {
+//                            Text("No story available yet.")
+//                                .font(.caption)
+//                                .foregroundColor(.secondary)
+//                                .padding(.horizontal)
+//                        } else {
+//                            ScrollView {
+//                                storyTimeline
+//                                    .padding(.bottom, 8)
+//                            }
+//                            .frame(maxHeight: 160)
+//                            .transition(.move(edge: .bottom).combined(with: .opacity))
+//                        }
+//                    }
+//                }
+//                .animation(.easeInOut(duration: 0.25), value: showStory)
 
                 HStack(spacing: 16) {
-                    Text("Step \(viewModel.currentIndex + 1) of \(viewModel.steps.count)")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
+                    Button {
+                        runTestReplay()
+                    } label: {
+                        HStack(spacing: 6) {
+                            if isTesting { ProgressView().scaleEffect(0.8) }
+                            Image(systemName: "wand.and.stars")
+                            Text(isTesting ? "Simulating…" : "Test")
+                        }
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 8)
+                        .background(Capsule().fill(Color.primary.opacity(0.12)))
+                    }
+                    .disabled(isTesting)
+                    Spacer()
+//                    Text("Step \(viewModel.currentIndex + 1) of \(viewModel.steps.count)")
+//                        .font(.footnote)
+//                        .foregroundColor(.secondary)
                     Spacer()
                     Picker("Speed", selection: $viewModel.speed) {
                         ForEach(ReplaySpeed.allCases) { speed in
@@ -689,4 +688,33 @@ struct ReplayView: View {
             )
         }
     }
+}
+
+#Preview("Replay Vertical Board") {
+    ReplayView(
+        steps: ReplayView.previewSteps,
+        autoRunTest: false,
+        showVerticalBoard: true
+    )
+    .preferredColorScheme(.light)
+}
+
+private extension ReplayView {
+    static let previewSteps: [ReplayStep] = [
+        ReplayStep(
+            question: "Is it a big cat?",
+            answer: .yes,
+            candidates: ["Lion", "Tiger", "Leopard", "Cheetah", "Wolf", "Fox", "Bear", "Hyena"]
+        ),
+        ReplayStep(
+            question: "Does it have a mane?",
+            answer: .yes,
+            candidates: ["Lion", "Tiger", "Leopard", "Bear", "Wolf", "Fox", "Hyena", "Giraffe"]
+        ),
+        ReplayStep(
+            question: "Is it striped?",
+            answer: .no,
+            candidates: ["Lion", "Leopard", "Bear", "Wolf", "Fox", "Hyena", "Giraffe", "Elephant"]
+        )
+    ]
 }

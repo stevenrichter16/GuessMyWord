@@ -87,7 +87,6 @@ struct LlamaMascotContentView: View {
 //            }
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 optionsTabView
-                    
             }
         .overlay { restartConfirmOverlay }
         .sheet(isPresented: $showReplay) {
