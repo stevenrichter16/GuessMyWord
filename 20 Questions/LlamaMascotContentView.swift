@@ -30,6 +30,8 @@ struct LlamaMascotContentView: View {
     @State private var showGallery = false
     @State private var showRestartConfirm = false
     @State private var showOptionsTabBar = false
+    @State private var showReplay = false
+    @State private var launchReplayWithTest = false
     @State private var bearPlayer: AVPlayer?
     @State private var bearVideoError: String?
 
@@ -70,20 +72,28 @@ struct LlamaMascotContentView: View {
                             funFactCard(fact)
                                 .padding(.top, 10)
                         }
+                        if viewModel.isFinished && !viewModel.replaySteps.isEmpty {
+                            replayButton
+                        }
                         Spacer(minLength: 20)
                     }
                     .padding()
                 }
             }
             //.navigationTitle("20 Questions: Animals")
-            .overlay(alignment: .bottomTrailing) { optionsEllipsesButton }
-            .overlay(alignment: .bottom) { optionsTabBar }
-            .overlay { restartConfirmOverlay }
-            .sheet(item: $helpContext) { ctx in
-                helpSheetContent(context: ctx)
-                    .interactiveDismissDisabled(false) // allow swipe-to-close
-                    .onDisappear {
-                        expandedHelpSections.removeAll()
+        .overlay(alignment: .bottomTrailing) { optionsEllipsesButton }
+        .overlay(alignment: .bottom) { optionsTabBar }
+        .overlay { restartConfirmOverlay }
+        .sheet(isPresented: $showReplay) {
+            let steps = viewModel.replaySteps.map { ReplayStep(question: $0.question, answer: $0.answer, candidates: $0.candidates) }
+            ReplayView(steps: steps, autoRunTest: launchReplayWithTest)
+                .onDisappear { launchReplayWithTest = false }
+        }
+        .sheet(item: $helpContext) { ctx in
+            helpSheetContent(context: ctx)
+                .interactiveDismissDisabled(false) // allow swipe-to-close
+                .onDisappear {
+                    expandedHelpSections.removeAll()
                         helpSheetSelectedLetter = nil
                     }
             }
@@ -353,6 +363,15 @@ struct LlamaMascotContentView: View {
 
     private var answerButtons: some View {
         HStack(spacing: 12) {
+            Button {
+                launchReplayWithTest = true
+                showReplay = true
+            } label: {
+                Image(systemName: "wand.and.stars")
+                    .padding(8)
+            }
+            .buttonStyle(.bordered)
+
             LlamaAnswerButton(title: "Yes", color: .green, scheme: colorScheme) {
                 viewModel.answerCurrentQuestion(.yes)
             }
@@ -432,6 +451,19 @@ struct LlamaMascotContentView: View {
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(.bordered)
+    }
+
+    private var replayButton: some View {
+        Button {
+            showReplay = true
+        } label: {
+            HStack {
+                Image(systemName: "gobackward")
+                Text("Replay")
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
     }
 
     private var shouldShowRestartButton: Bool {
@@ -877,6 +909,15 @@ struct LlamaMascotContentView: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(showDeveloperTools ? .purple : .primary)
+
+                Button {
+                    showReplay = true
+                    showOptionsTabBar = false
+                } label: {
+                    Image(systemName: "gobackward")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
 
                 Button {
                     showFunFactsPage = true

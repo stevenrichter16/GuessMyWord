@@ -10,6 +10,13 @@ struct Question: Identifiable, Equatable {
     let text: String
 }
 
+struct ReplayStepData: Identifiable {
+    let id = UUID()
+    let question: String
+    let answer: Answer
+    let candidates: [String]
+}
+
 final class ANNGameViewModel: ObservableObject {
     @Published var currentQuestion: Question?
     @Published var currentGuess: Animal?
@@ -17,6 +24,7 @@ final class ANNGameViewModel: ObservableObject {
     @Published var debugRemainingNames: [String] = []
     @Published var statusMessage: String?
     @Published var lastGuessWasWrong: Bool = false
+    @Published var replaySteps: [ReplayStepData] = []
 
     private let annStore: ANNDataStore
     private let allAnimals: [Animal]
@@ -51,6 +59,8 @@ final class ANNGameViewModel: ObservableObject {
         answers[q.id] = answer
         askedQuestions.insert(q.id)
         rerankAnimals()
+        let snapshot = ReplayStepData(question: q.text, answer: answer, candidates: debugRemainingNames)
+        replaySteps.append(snapshot)
         runStep()
     }
 
@@ -63,6 +73,7 @@ final class ANNGameViewModel: ObservableObject {
         isFinished = false
         lastGuessWasWrong = false
         debugRemainingNames = remainingAnimals.map(\.name)
+        replaySteps = []
         runStep()
     }
 
