@@ -126,7 +126,7 @@ struct ReplayView: View {
                     .ignoresSafeArea()
                 content
             }
-            .navigationTitle("Replay")
+            //.navigationTitle("Replay")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") { dismiss() }
@@ -183,23 +183,24 @@ struct ReplayView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         } else {
             let step = viewModel.steps[viewModel.currentIndex]
-            VStack(spacing: 20) {
+            VStack(spacing: 10) {
                 if let guess = aiGuessName {
                     guessBadge(guess: guess, in: step.candidates)
                         .padding(.horizontal)
                 }
-
-                VStack(spacing: 10) {
+                VStack(spacing: 12) {
                     HStack(alignment: .firstTextBaseline, spacing: 12) {
+ 
                         Text(step.question)
                             .font(.title3.weight(.semibold))
                             .multilineTextAlignment(.leading)
-                        Text("\(step.answer.rawValue)")
-                            .font(.caption.weight(.semibold))
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
-                            .background(step.answer.rawValue == "Yes" ? Capsule().fill(Color.green.opacity(0.12)) : Capsule().fill(Color.red.opacity(0.12)))
-                            .foregroundColor(step.answer.rawValue == "Yes" ? .green : .red)
+                        
+//                        Text("\(step.answer.rawValue)")
+//                            .font(.caption.weight(.semibold))
+//                            .padding(.horizontal, 10)
+//                            .padding(.vertical, 6)
+//                            .background(step.answer.rawValue == "Yes" ? Capsule().fill(Color.green.opacity(0.12)) : Capsule().fill(Color.red.opacity(0.12)))
+//                            .foregroundColor(step.answer.rawValue == "Yes" ? .green : .red)
                     }
                     .padding(.horizontal)
 
@@ -234,7 +235,8 @@ struct ReplayView: View {
                             }
                     )
                 }
-                .frame(height: 340)
+                .frame(height: 490)
+                
 
                 if viewModel.steps.count > 1 {
                     slider
@@ -272,7 +274,7 @@ struct ReplayView: View {
 //                    }
 //                }
 //                .animation(.easeInOut(duration: 0.25), value: showStory)
-
+                
                 HStack(spacing: 16) {
                     Button {
                         runTestReplay()
@@ -288,18 +290,17 @@ struct ReplayView: View {
                         .background(Capsule().fill(Color.primary.opacity(0.12)))
                     }
                     .disabled(isTesting)
-                    Spacer()
-//                    Text("Step \(viewModel.currentIndex + 1) of \(viewModel.steps.count)")
-//                        .font(.footnote)
-//                        .foregroundColor(.secondary)
+                    //Spacer()
                     Spacer()
                     Picker("Speed", selection: $viewModel.speed) {
                         ForEach(ReplaySpeed.allCases) { speed in
                             Text(speed.rawValue).tag(speed)
+                                .padding(.horizontal)
                         }
                     }
                     .pickerStyle(.segmented)
                     .frame(width: 180)
+                    
                     Button {
                         viewModel.togglePlay()
                     } label: {
@@ -314,7 +315,7 @@ struct ReplayView: View {
 
     private func answerButton(_ title: String, isSelected: Bool) -> some View {
         Text(title)
-            .font(.subheadline.weight(.semibold))
+            .font(.caption.weight(.semibold))
             .foregroundColor(isSelected ? .white : .primary)
             .padding(.horizontal, 14)
             .padding(.vertical, 8)
@@ -374,20 +375,22 @@ struct ReplayView: View {
 
     private func verticalBoard(step: ReplayStep, size: CGSize) -> some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 6) {
                 ForEach(Array(step.candidates.enumerated()), id: \.element) { idx, name in
-                    let persistence = persistenceCount(for: name, upTo: viewModel.currentIndex)
-                    let isGuess = viewModel.steps.last?.candidates.first?.lowercased() == name.lowercased()
-                    HStack(spacing: 10) {
-                        Text("\(idx + 1).")
-                            .font(.caption.weight(.bold))
-                            .frame(width: 26, alignment: .trailing)
-                            .foregroundColor(.secondary)
-                        avatarView(name: name, rank: idx, total: step.candidates.count, question: step.question, persistence: persistence, isGuess: isGuess)
-                            .frame(width: 52, height: 52)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(name)
-                                .font(.subheadline.weight(.semibold))
+                let persistence = persistenceCount(for: name, upTo: viewModel.currentIndex)
+                let isGuess = viewModel.steps.last?.candidates.first?.lowercased() == name.lowercased()
+                let isStable = persistence >= 3
+                HStack(spacing: 10) {
+                    Text("\(idx + 1).")
+                        .font(.caption.weight(.bold))
+                        .frame(width: 26, alignment: .trailing)
+                        .foregroundColor(.secondary)
+                    avatarView(name: name, rank: idx, total: step.candidates.count, question: step.question, persistence: persistence, isGuess: isGuess, showStableBadge: false)
+                        .frame(width: 42, height: 42)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(name)
+                            .font(.subheadline.weight(.semibold))
+                        HStack(spacing: 6) {
                             if isGuess {
                                 Text("AI guess")
                                     .font(.caption2.weight(.bold))
@@ -396,27 +399,36 @@ struct ReplayView: View {
                                     .padding(.vertical, 2)
                                     .background(Capsule().fill(Color.blue.opacity(0.12)))
                             }
+                            if isStable {
+                                Text("Stable")
+                                    .font(.caption2.weight(.bold))
+                                    .foregroundColor(.purple)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Capsule().fill(Color.purple.opacity(0.12)))
+                            }
                         }
-                        Spacer()
                     }
+                    Spacer()
+                }
                     .padding(8)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.primary.opacity(colorScheme == .dark ? 0.08 : 0.05))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.primary.opacity(0.08), lineWidth: 1)
-                    )
+//                    .background(
+//                        RoundedRectangle(cornerRadius: 12)
+//                            .fill(Color.primary.opacity(colorScheme == .dark ? 0.08 : 0.05))
+//                    )
+//                    .overlay(
+//                        RoundedRectangle(cornerRadius: 12)
+//                            .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+//                    )
                     .transition(.opacity.combined(with: .move(edge: .trailing)))
                 }
             }
             .padding(.horizontal)
-            .padding(.vertical, 8)
+            .padding(.vertical, 0)
         }
     }
 
-    private func avatarView(name: String, rank: Int, total: Int, question: String, persistence: Int, isGuess: Bool) -> some View {
+    private func avatarView(name: String, rank: Int, total: Int, question: String, persistence: Int, isGuess: Bool, showStableBadge: Bool = true) -> some View {
         let asset = FunFactAssetResolver.resolve(name)
         let tint = colorForRank(rank, total: total)
         let isStable = persistence >= 3
@@ -447,14 +459,14 @@ struct ReplayView: View {
             showAnswer(for: name, questionText: question)
         }
         .overlay(alignment: .bottom) {
-            if isStable {
+            if showStableBadge && isStable {
                 Text("Stable")
                     .font(.caption2.weight(.bold))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(Capsule().fill(Color.purple.opacity(0.15)))
                     .foregroundColor(.purple)
-                    .offset(y: 10)
+                    .offset(y: 20)
             }
         }
     }
@@ -523,6 +535,8 @@ struct ReplayView: View {
         }
         .padding(.horizontal)
     }
+        
+    
 
     private func runTestReplay() {
         guard !isTesting else { return }
@@ -587,7 +601,7 @@ struct ReplayView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 32, height: 32)
+                    .frame(width: 42, height: 42)
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.blue.opacity(0.7), lineWidth: 2))
             } else {
@@ -605,7 +619,7 @@ struct ReplayView: View {
                 .foregroundColor(.primary)
             Spacer()
         }
-        .padding(8)
+        .padding(4)
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color.blue.opacity(isPresent ? 0.12 : 0.06))
