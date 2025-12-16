@@ -117,6 +117,12 @@ struct LlamaMascotContentView: View {
                 }
             }
             .onChange(of: viewModel.currentGuess?.id) { _, _ in generateFunFact() }
+            .onChange(of: viewModel.isFinished) { _, finished in
+                if finished {
+                    lastHelpLetter = nil
+                    helpSheetSelectedLetter = nil
+                }
+            }
             .animation(.easeInOut(duration: 0.2), value: showRestartConfirm)
         }
     }
