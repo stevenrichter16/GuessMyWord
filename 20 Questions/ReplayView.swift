@@ -195,22 +195,22 @@ struct ReplayView: View {
                             .font(.title3.weight(.semibold))
                             .multilineTextAlignment(.leading)
                         
-//                        Text("\(step.answer.rawValue)")
-//                            .font(.caption.weight(.semibold))
-//                            .padding(.horizontal, 10)
-//                            .padding(.vertical, 6)
-//                            .background(step.answer.rawValue == "Yes" ? Capsule().fill(Color.green.opacity(0.12)) : Capsule().fill(Color.red.opacity(0.12)))
-//                            .foregroundColor(step.answer.rawValue == "Yes" ? .green : .red)
+                        Text("\(step.answer.rawValue)")
+                            .font(.caption.weight(.semibold))
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(step.answer.rawValue == "Yes" ? Capsule().fill(Color.green.opacity(0.12)) : Capsule().fill(Color.red.opacity(0.12)))
+                            .foregroundColor(step.answer.rawValue == "Yes" ? .green : .red)
                     }
                     .padding(.horizontal)
 
                         
-                    HStack(spacing: 12) {
-                        answerButton("Yes", isSelected: step.answer == .yes)
-                        answerButton("No", isSelected: step.answer == .no)
-                        answerButton("Maybe", isSelected: step.answer == .maybe || step.answer == .notSure)
-                    }
-                    .padding(.horizontal)
+//                    HStack(spacing: 12) {
+//                        answerButton("Yes", isSelected: step.answer == .yes)
+//                        answerButton("No", isSelected: step.answer == .no)
+//                        answerButton("Maybe", isSelected: step.answer == .maybe || step.answer == .notSure)
+//                    }
+//                    .padding(.horizontal)
                 }
 
                 GeometryReader { geo in
@@ -235,7 +235,7 @@ struct ReplayView: View {
                             }
                     )
                 }
-                .frame(height: 490)
+                .frame(height: 520)
                 
 
                 if viewModel.steps.count > 1 {
