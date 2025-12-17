@@ -1,75 +1,4 @@
 {
-  "elephant": [
-    "Elephants trucks have 40,000 muscles and can delicately pick up a single blade of grass or rip branches off trees",
-    "Elephants are the largest land mammals on Earth.",
-    "Elephants are incredibly intelligent and can remember people, places, and experiences for many years.",
-    "Elephants drink over 200 liters of water a day and use their tusks to dig for water.",
-    "Elephants communicate with low-frequency sounds and vibrations that can travel miles."
-  ],
-  "octopus": [
-    "Octopus have three hearts and blue blood",
-    "Under stress, octopuses sometimes detach an arm, which can keep moving for up to an hour."
-  ],
-  "giraffe": [
-    "Giraffe sleep only a few minutes at a time (often totaling under 2 hours a day)",
-    "Giraffes are the tallest land animals in the world (14-19ft).",
-    "Giraffes spotted coat patterns are unique to each individual \u2014 like fingerprints.",
-    "Giraffes spots help with camouflage and act as thermal windows to help cool the body.",
-    "Giraffes use necking \u2014 neck-to-neck combat \u2014 to establish dominance."
-  ],
-  "dog": [
-    "Dogs have an amazing sense of smell \u2014 much stronger than humans, which is why they are used in tracking and detection roles.",
-    "Dogs were one of the first animals domesticated by humans, living with people for thousands of years.",
-    "Dogs can hear sounds at frequencies far beyond human range, making their hearing extremely sensitive.",
-    "There are hundreds of dog breeds, each with unique traits and skills.",
-    "Some dogs can understand over 100 words and commands with proper training."
-  ],
-  "cat": [
-    "Cats sleep a lot \u2014 about 70% of their lives \u2014 making them expert nappers!",
-    "Cats have 32 muscles that control their ears, allowing incredibly precise movement.",
-    "Cats can make over 100 different vocal sounds, while dogs make about 10.",
-    "A group of kittens is called a \u2018kindle.\u2019",
-    "Cats have whiskers on the backs of their front legs as well as their face!"
-  ],
-  "lion": [
-    "Lions are the only big cats that live in social groups, which are called prides.",
-    "A lion\u2019s roar can be heard up to 5 miles (about 8 kilometers) away.",
-    "Female lions (lionesses) are the primary hunters in the pride.",
-    "Male lions\u2019 manes vary in color and size, and darker manes are associated with stronger males.",
-    "Lions spend up to 20 hours a day resting."
-  ],
-  "tiger": [
-    "Tigers are the largest members of the cat family.",
-    "Even if a tiger's fur is shaved, its skin retains the same striped pattern.",
-    "A tiger\u2019s striped pattern is unique, like a human fingerprint.",
-    "Tigers mark territory using scent and scratch marks.",
-    "Tiger cubs learn to hunt by watching their mothers.",
-    "Tigers can swim well and often enjoy water \u2014 unlike many other cats."
-  ],
-  "cheetah": [
-    "Unlike most cats, cheetahs can\u2019t fully retract their claws, leaving the tips exposed like cleats.",
-    "A cheetah\u2019s long, furry tail works like a rudder during high-speed maneuvers, generating forces and torques that help it pivot quickly.",
-    "Cheetahs have extremely low genetic diversity, and unrelated cheetahs have accepted each other\u2019s skin grafts in experiments.",
-    "Even with their speed, only about 40\u201350% of cheetah hunts end in a kill; many attempts fail during the final tackle and trip."
-  ],
-  "kangaroo": [
-    "Kangaroos are surprisingly strong swimmers, paddling with their hind legs and steering with their tail.",
-    "The red kangaroo is the largest, standing over 6 feet tall and weighing up to about 200 pounds.",
-    "Kangaroos generally cannot hop backward because their powerful hind legs and long tail are built for forward movement."
-  ],
-  "squirrel": [
-    "Squirrels can leap about six feet in a single bound and survive falls from roughly 100 feet by using their tail for balance and as a parachute.",
-    "Squirrels often fake-bury nuts to deceive thieves, digging and covering empty holes while keeping the nut to hide elsewhere.",
-    "They can sniff out food buried under a foot of snow, combining scent with memory of landmarks.",
-    "One squirrel may bury thousands of nuts each year across many spots (scatter-hoarding) to improve the odds of finding some later."
-  ],
-  "hippo": [
-    "A hippo’s closest living relatives are whales, dolphins, and porpoises, sharing a semi-aquatic ancestor from ~55 million years ago.",
-    "Despite their bulk, hippos can sprint up to about 22 mph over short distances—faster than a human.",
-    "Adult hippos eat roughly 80–110 pounds of grass nightly, grazing for hours and traveling miles to feed.",
-    "Hippos can’t swim; they walk or run along riverbeds and can hold their breath for around five minutes.",
-    "Hippos secrete a reddish “blood sweat” that acts as sunscreen, antibiotic, and cooling layer."
-  ],
   "alpaca": [
     "Alpacas tend to poop in a few communal dung piles instead of randomly everywhere.",
     "Alpacas only have bottom front teeth, which helps them clip grass rather than yank plants out by the roots.",
@@ -85,16 +14,6 @@
     "Fire ants can link their bodies into floating rafts that stay buoyant for days during floods.",
     "Exploding ants can sacrifice themselves by rupturing their bodies to release a sticky, irritating secretion that can disable enemies."
   ],
-  "bee": [
-    "Honey bees can dance to tell nestmates where food is.",
-    "Bumblebees can sense the electric fields around flowers using tiny sensory hairs, which helps them tell whether a flower was recently visited.",
-    "Experiments show honey bees can understand zero as a quantity.",
-    "Worker bees fan and evaporate water droplets to cool their hive down, and heat it up by vibrating flight muscles.",
-    "When bees are sleep-deprived their dances get sloppier, which can make it harder for nestmates to find food."
-  ],
-  "baboon": [
-    "Baboons have a large vocal and gesture repertoire, including over 30 distinct calls plus expressive yawns, stares, and lip-smacks."
-  ],
   "armadillo": [
     "Nine-banded armadillos typically have four offspring at once, and they are genetically identical.",
     "When surprised, a nine-banded armadillo can leap about 3-4 feet straight into the air.",
@@ -102,24 +21,16 @@
     "Some armadillos’ skin and armor can appear to glow under ultraviolet light.",
     "Armadillo burrows get reused by lots of other animals, and giant armadillo burrows have been reported sheltering dozens of species."
   ],
-  "koala": [
-    "Koalas have fingerprints almost identical to humans, making them hard to tell apart even under a microscope.",
-    "Koalas have two opposable thumbs on each front paw for an incredibly strong grip on trees.",
-    "A koala’s thick, padded tail acts like a built-in cushion so they can sit in trees for hours.",
-    "The name “koala” comes from an Aboriginal word meaning “no drink,” since they get most moisture from eucalyptus leaves."
+  "baboon": [
+    "Baboons have a large vocal and gesture repertoire, including over 30 distinct calls plus expressive yawns, stares, and lip-smacks."
   ],
-  "panda": [
-    "Pandas munch bamboo for 12+ hours a day, using a pseudo-thumb to grip it, and poop frequently because digestion is inefficient.",
-    "About 99% of a panda’s diet is bamboo, so they eat roughly 26–83 pounds daily to get enough nutrients.",
-    "Despite their bulk, pandas are agile in trees and water, and can cross rivers in the wild.",
-    "Instead of hibernating, pandas move to lower elevations for warmer winter temperatures."
-  ],
-  "zebra": [
-    "No two zebras share the same stripe pattern—like human fingerprints—which helps them recognize one another.",
-    "Their stripes can confuse predators and even deter biting flies, acting as natural pest control.",
-    "Zebras are actually black animals with white stripes, not the other way around.",
-    "They communicate with barks, brays, and expressive facial cues.",
-    "Zebras are fast and athletic, reaching 40+ mph to escape predators."
+  "bat": [
+    "Bat wings are covered in tiny hairs with touch sensors that help flight control; damaging those hairs can impair flight.",
+    "Tent-making bats chew leaf veins so the leaf folds into a shelter, creating umbrella-like homes for groups in tropical rain.",
+    "The greater bulldog bat uses echolocation to pick up tiny ripples from fish on water, then swoops in to grab them with oversized claws.",
+    "Many bats enter a power-save mode called torpor, briefly dropping body temperature, heart rate, and breathing to conserve energy when cold or food is scarce.",
+    "Bat heart rates can jump from about 6 BPM in torpor to roughly 900 BPM in flight within minutes.",
+    "Vampire bats aren’t clumsy on the ground—they can run and even shift into a brief gallop-like run when needed."
   ],
   "bear": [
     "Bears are highly intelligent and capable of problem solving, complex vocal communication, and even basic tool use.",
@@ -128,13 +39,25 @@
     "Sun bears have exceptionally long tongues, reaching up to about 9.8 inches to extract insects and honey.",
     "There are eight bear species: North American black, brown, polar, Asiatic black, Andean, panda, sloth, and sun bear."
   ],
-  "bat": [
-    "Bat wings are covered in tiny hairs with touch sensors that help flight control; damaging those hairs can impair flight.",
-    "Tent-making bats chew leaf veins so the leaf folds into a shelter, creating umbrella-like homes for groups in tropical rain.",
-    "The greater bulldog bat uses echolocation to pick up tiny ripples from fish on water, then swoops in to grab them with oversized claws.",
-    "Many bats enter a power-save mode called torpor, briefly dropping body temperature, heart rate, and breathing to conserve energy when cold or food is scarce.",
-    "Bat heart rates can jump from about 6 BPM in torpor to roughly 900 BPM in flight within minutes.",
-    "Vampire bats aren\u2019t clumsy on the ground—they can run and even shift into a brief gallop-like run when needed."
+  "bee": [
+    "Honey bees can dance to tell nestmates where food is.",
+    "Bumblebees can sense the electric fields around flowers using tiny sensory hairs, which helps them tell whether a flower was recently visited.",
+    "Experiments show honey bees can understand zero as a quantity.",
+    "Worker bees fan and evaporate water droplets to cool their hive down, and heat it up by vibrating flight muscles.",
+    "When bees are sleep-deprived their dances get sloppier, which can make it harder for nestmates to find food."
+  ],
+  "cat": [
+    "Cats sleep a lot — about 70% of their lives — making them expert nappers!",
+    "Cats have 32 muscles that control their ears, allowing incredibly precise movement.",
+    "Cats can make over 100 different vocal sounds, while dogs make about 10.",
+    "A group of kittens is called a ‘kindle.’",
+    "Cats have whiskers on the backs of their front legs as well as their face!"
+  ],
+  "cheetah": [
+    "Unlike most cats, cheetahs can’t fully retract their claws, leaving the tips exposed like cleats.",
+    "A cheetah’s long, furry tail works like a rudder during high-speed maneuvers, generating forces and torques that help it pivot quickly.",
+    "Cheetahs have extremely low genetic diversity, and unrelated cheetahs have accepted each other’s skin grafts in experiments.",
+    "Even with their speed, only about 40–50% of cheetah hunts end in a kill; many attempts fail during the final tackle and trip."
   ],
   "chimpanzee": [
     "In some savanna populations, chimpanzees have been seen sharpening sticks into spear-like tools to hunt small prey such as bushbabies.",
@@ -143,21 +66,11 @@
     "Chimpanzees typically build a fresh sleeping nest almost every night, often choosing tree species that make the nest more comfortable.",
     "Chimp yawns can be contagious; seeing another chimp yawn can trigger a yawn in the observer."
   ],
-  "wolf": [
-    "A wolf’s sense of smell is roughly 100 times stronger than a human’s, and they hear exceptionally well.",
-    "Wolves sit at the top of their food chain; humans are their primary predator.",
-    "Wolves typically hunt large prey like deer or moose using endurance and teamwork, but will also take smaller animals.",
-    "Wolf howls carry long distances of up to 10 miles to coordinate the pack and mark territory.",
-    "Wolves are the largest wild canids, capable of traveling 12+ miles in a day and sprinting around 37–43 mph."
-  ],
-  "fox": [
-    "Foxes can hear low-frequency sounds and pinpoint prey under snow from several feet away; their oversized ears also help regulate heat.",
-    "A fox’s tail, or brush, provides balance when running and doubles as a warm blanket; they also use tail signals to communicate.",
-    "Urban foxes have adapted to city life, navigating traffic and raiding bins at night, shifting territories seasonally to follow food.",
-    "Red foxes aren’t always red—silver, black, and cross-phase coats are common—but they’re all the same species (Vulpes vulpes).",
-    "Foxes cache surplus food in many small hiding spots, marking them with scent and relocating them later using memory and smell.",
-    "Foxes have partially retractable claws that stay sharp for climbing and gripping slippery prey; they can climb low branches to stash food or nap.",
-    "Foxes appear to use Earth’s magnetic field when pouncing, often aligning toward a consistent NNE heading and succeeding more when they do."
+  "chinchilla": [
+    "Chinchillas can grow around 50-75 hairs from a single follicle.",
+    "Chinchillas can release clumps of fur if grabbed, leaving a predator with a mouthful of fluff.",
+    "Chinchilla lungs are asymmetrical, having three lobes on the left and four lobes on the right.",
+    "Chinchillas need dust baths instead of water baths to help remove excess oil, dirt, and moisture from their dense coats."
   ],
   "deer": [
     "Deer grow and shed antlers annually; the velvet-covered antlers are among the fastest-growing tissues and can add about an inch per day at peak.",
@@ -168,6 +81,107 @@
     "During rut, bucks spar to establish dominance, clashing antlers and using scent marks and grunts; many leave rubs and scrapes to signal status.",
     "Deer stomachs have four chambers, letting them ferment and extract nutrients from fibrous plants."
   ],
+  "dog": [
+    "Dogs have an amazing sense of smell — much stronger than humans, which is why they are used in tracking and detection roles.",
+    "Dogs were one of the first animals domesticated by humans, living with people for thousands of years.",
+    "Dogs can hear sounds at frequencies far beyond human range, making their hearing extremely sensitive.",
+    "There are hundreds of dog breeds, each with unique traits and skills.",
+    "Some dogs can understand over 100 words and commands with proper training."
+  ],
+  "elephant": [
+    "Elephants trucks have 40,000 muscles and can delicately pick up a single blade of grass or rip branches off trees",
+    "Elephants are the largest land mammals on Earth.",
+    "Elephants are incredibly intelligent and can remember people, places, and experiences for many years.",
+    "Elephants drink over 200 liters of water a day and use their tusks to dig for water.",
+    "Elephants communicate with low-frequency sounds and vibrations that can travel miles."
+  ],
+  "fox": [
+    "Foxes can hear low-frequency sounds and pinpoint prey under snow from several feet away; their oversized ears also help regulate heat.",
+    "A fox’s tail, or brush, provides balance when running and doubles as a warm blanket; they also use tail signals to communicate.",
+    "Urban foxes have adapted to city life, navigating traffic and raiding bins at night, shifting territories seasonally to follow food.",
+    "Red foxes aren’t always red—silver, black, and cross-phase coats are common—but they’re all the same species (Vulpes vulpes).",
+    "Foxes cache surplus food in many small hiding spots, marking them with scent and relocating them later using memory and smell.",
+    "Foxes have partially retractable claws that stay sharp for climbing and gripping slippery prey; they can climb low branches to stash food or nap.",
+    "Foxes appear to use Earth’s magnetic field when pouncing, often aligning toward a consistent NNE heading and succeeding more when they do."
+  ],
+  "frog": [
+    "The Bornean flat-headed frog is known for lacking lungs and relying on skin respiration.",
+    "Concave-eared torrent frogs produce calls with ultrasonic frequencies which cut through waterfall noise.",
+    "Glass frogs are named because internal organs can be seen through their transparent skin and muscles.",
+    "Many frogs rehydrate by pressing their belly onto wet surfaces instead of drinking water.",
+    "Frogs can swallow with their eyes by retracting their eyeballs into their head to press food down their throat."
+  ],
+  "giraffe": [
+    "Giraffe sleep only a few minutes at a time (often totaling under 2 hours a day)",
+    "Giraffes are the tallest land animals in the world (14-19ft).",
+    "Giraffes spotted coat patterns are unique to each individual — like fingerprints.",
+    "Giraffes spots help with camouflage and act as thermal windows to help cool the body.",
+    "Giraffes use necking — neck-to-neck combat — to establish dominance."
+  ],
+  "goldfish": [
+    "Goldfish can see more colors than humans, including ultraviolet in many cases, which changes how they perceive decorations and other fish.",
+    "Goldfish don’t have a true stomach; food passes through a long intestine, so small frequent meals can suit them.",
+    "They have a lateral line system that senses vibrations in the water—like a built-in motion detector for currents and nearby movement.",
+    "Goldfish can be trained to do simple tasks like swimming through hoops using consistent cues and small rewards.",
+    "Their body color can shift with diet, lighting, and health; some varieties become paler in low light or when stressed."
+  ],
+  "hippo": [
+    "A hippo’s closest living relatives are whales, dolphins, and porpoises, sharing a semi-aquatic ancestor from ~55 million years ago.",
+    "Despite their bulk, hippos can sprint up to about 22 mph over short distances—faster than a human.",
+    "Adult hippos eat roughly 80–110 pounds of grass nightly, grazing for hours and traveling miles to feed.",
+    "Hippos can’t swim; they walk or run along riverbeds and can hold their breath for around five minutes.",
+    "Hippos secrete a reddish “blood sweat” that acts as sunscreen, antibiotic, and cooling layer."
+  ],
+  "hummingbird": [
+    "Hummingbirds can run blood-sugar levels so high it would seriously harm a human.",
+    "A hummingbird’s main flight muscles can be about 25–30% of its body mass.",
+    "Some hummingbirds trapline, revisiting flowers in a repeatable route instead of randomly.",
+    "Ruby-throated hummingbird nests are held together with spider silk.",
+    "When hummingbirds hover it can double as a heating strategy in cool conditions."
+  ],
+  "kangaroo": [
+    "Kangaroos are surprisingly strong swimmers, paddling with their hind legs and steering with their tail.",
+    "The red kangaroo is the largest, standing over 6 feet tall and weighing up to about 200 pounds.",
+    "Kangaroos generally cannot hop backward because their powerful hind legs and long tail are built for forward movement."
+  ],
+  "koala": [
+    "Koalas have fingerprints almost identical to humans, making them hard to tell apart even under a microscope.",
+    "Koalas have two opposable thumbs on each front paw for an incredibly strong grip on trees.",
+    "A koala’s thick, padded tail acts like a built-in cushion so they can sit in trees for hours.",
+    "The name “koala” comes from an Aboriginal word meaning “no drink,” since they get most moisture from eucalyptus leaves."
+  ],
+  "lion": [
+    "Lions are the only big cats that live in social groups, which are called prides.",
+    "A lion’s roar can be heard up to 5 miles (about 8 kilometers) away.",
+    "Female lions (lionesses) are the primary hunters in the pride.",
+    "Male lions’ manes vary in color and size, and darker manes are associated with stronger males.",
+    "Lions spend up to 20 hours a day resting."
+  ],
+  "monkey": [
+    "Vervet monkeys use different alarm calls for different predators, such as eagles versus leopards versus snakes.",
+    "Howler monkeys roar so loudly because an enlarged hyoid bone acts like a built-in sound resonator, carrying their calls for miles.",
+    "Some wild Japanese macaques learned to wash sweet potatoes before eating them, and the habit spread through the group like a tradition.",
+    "Certain capuchin monkeys rub toxic millipedes over their fur as DIY bug sprays.",
+    "Geladas are unusual primates because they are mostly grass-eaters, grazing in highland grasslands like fuzzy little livestock."
+  ],
+  "octopus": [
+    "Octopus have three hearts and blue blood",
+    "Under stress, octopuses sometimes detach an arm, which can keep moving for up to an hour."
+  ],
+  "panda": [
+    "Pandas munch bamboo for 12+ hours a day, using a pseudo-thumb to grip it, and poop frequently because digestion is inefficient.",
+    "About 99% of a panda’s diet is bamboo, so they eat roughly 26–83 pounds daily to get enough nutrients.",
+    "Despite their bulk, pandas are agile in trees and water, and can cross rivers in the wild.",
+    "Instead of hibernating, pandas move to lower elevations for warmer winter temperatures."
+  ],
+  "platypus": [
+    "Platypus front feet have extra webbing for paddling, but on land the webbing pulls back so the claws can dig.",
+    "Platypuses don't have teeth — they chew prey using keratin pads, as well as gravel and mud gathered when diving.",
+    "Platypuses hunt under water for roughly 30–140 seconds at a time, sometimes for many hours in one day.",
+    "Male platypuses have venomous spurs on their hind legs.",
+    "Female platypuses lactate without nipples.",
+    "Early Europeans suspected the platypus might be a hoax."
+  ],
   "porcupine": [
     "Porcupine quills have microscopic backward-facing barbs that help them slide in easily but make them harder to pull out.",
     "Porcupine quills carry a greasy coating that shows antibiotic activity in lab tests.",
@@ -177,11 +191,38 @@
     "A North American porcupine carries over 30,000 quills, with some areas packing around 150 quills per square inch.",
     "During courtship, a male may spray a receptive female with urine, and scent marking is a big part of their mating behavior."
   ],
-  "monkey": [
-    "Vervet monkeys use different alarm calls for different predators, such as eagles versus leopards versus snakes.",
-    "Howler monkeys roar so loudly because an enlarged hyoid bone acts like a built-in sound resonator, carrying their calls for miles.",
-    "Some wild Japanese macaques learned to wash sweet potatoes before eating them, and the habit spread through the group like a tradition.",
-    "Certain capuchin monkeys rub toxic millipedes over their fur as DIY bug sprays.",
-    "Geladas are unusual primates because they are mostly grass-eaters, grazing in highland grasslands like fuzzy little livestock."
+  "squirrel": [
+    "Squirrels can leap about six feet in a single bound and survive falls from roughly 100 feet by using their tail for balance and as a parachute.",
+    "Squirrels often fake-bury nuts to deceive thieves, digging and covering empty holes while keeping the nut to hide elsewhere.",
+    "They can sniff out food buried under a foot of snow, combining scent with memory of landmarks.",
+    "One squirrel may bury thousands of nuts each year across many spots (scatter-hoarding) to improve the odds of finding some later."
+  ],
+  "tiger": [
+    "Tigers are the largest members of the cat family.",
+    "Even if a tiger's fur is shaved, its skin retains the same striped pattern.",
+    "A tiger’s striped pattern is unique, like a human fingerprint.",
+    "Tigers mark territory using scent and scratch marks.",
+    "Tiger cubs learn to hunt by watching their mothers.",
+    "Tigers can swim well and often enjoy water — unlike many other cats."
+  ],
+  "turtle": [
+    "Sea turtles can drink seawater because they have large salt-excreting glands near the eyes.",
+    "Leatherback sea turtle salt glands can be more than twice the size of their brains.",
+    "Turtles are often more sensitive to sound underwater than in air.",
+    "Juvenile loggerhead sea turtles can learn and remember the magnetic signatures of different places."
+  ],
+  "wolf": [
+    "A wolf’s sense of smell is roughly 100 times stronger than a human’s, and they hear exceptionally well.",
+    "Wolves sit at the top of their food chain; humans are their primary predator.",
+    "Wolves typically hunt large prey like deer or moose using endurance and teamwork, but will also take smaller animals.",
+    "Wolf howls carry long distances of up to 10 miles to coordinate the pack and mark territory.",
+    "Wolves are the largest wild canids, capable of traveling 12+ miles in a day and sprinting around 37–43 mph."
+  ],
+  "zebra": [
+    "No two zebras share the same stripe pattern—like human fingerprints—which helps them recognize one another.",
+    "Their stripes can confuse predators and even deter biting flies, acting as natural pest control.",
+    "Zebras are actually black animals with white stripes, not the other way around.",
+    "They communicate with barks, brays, and expressive facial cues.",
+    "Zebras are fast and athletic, reaching 40+ mph to escape predators."
   ]
 }
