@@ -125,6 +125,14 @@
     "Goldfish can be trained to do simple tasks like swimming through hoops using consistent cues and small rewards.",
     "Their body color can shift with diet, lighting, and health; some varieties become paler in low light or when stressed."
   ],
+  "hamster": [
+    "When stuffed, hamster cheek pouches can more than double the width of the head-and-shoulders area.",
+    "Some hamsters can swim by filling their cheek pouches with air to increase buoyancy.",
+    "There are over 25 species of hamsters, but only a few are common pets such as Syrian or dwarf hamsters.",
+    "Completely cleaning a hamster’s cage removes all the carefully placed scent markers, causing the hamster to feel lost and anxious.",
+    "In group-housed hamsters, the removal of scent cues can lead to potentially fatal fighting as the social hierarchy is disrupted.",
+    "Since hamsters have poor eyesight and rely on scent, disorientation can cause them to pee on their food to deter invaders."
+  ],
   "hippo": [
     "A hippo’s closest living relatives are whales, dolphins, and porpoises, sharing a semi-aquatic ancestor from ~55 million years ago.",
     "Despite their bulk, hippos can sprint up to about 22 mph over short distances—faster than a human.",
@@ -210,6 +218,15 @@
     "Leatherback sea turtle salt glands can be more than twice the size of their brains.",
     "Turtles are often more sensitive to sound underwater than in air.",
     "Juvenile loggerhead sea turtles can learn and remember the magnetic signatures of different places."
+  ],
+  "whale": [
+    "Bowhead whales can smash through about 2 feet of solid ice to breathe.",
+    "Sperm whales can produce some of the loudest biological sounds ever measured, up to about 236 decibels.",
+    "Cuvier’s beaked whales have been recorded diving to 9,816 feet (nearly 2 miles) and staying down for about 222 minutes.",
+    "A blue whale's heart is around 400 pounds.",
+    "Grey whales can migrate 10,000 miles round-trip per year, and in some cases up to roughly 14,000 miles.",
+    "Killer whales have clan-specific vocal call patterns that function like recognizable dialects.",
+    "Humpback whale songs can spread across oceans, with populations adopting and copying new song patterns."
   ],
   "wolf": [
     "A wolf’s sense of smell is roughly 100 times stronger than a human’s, and they hear exceptionally well.",
