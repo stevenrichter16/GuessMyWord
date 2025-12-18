@@ -88,6 +88,13 @@
     "There are hundreds of dog breeds, each with unique traits and skills.",
     "Some dogs can understand over 100 words and commands with proper training."
   ],
+  "dolphin": [
+    "Some wild bottlenose dolphins wear sea sponges on their snouts to protect themselves while foraging on rough seafloors.",
+    "Bottlenose dolphins can detect weak electric fields from prey at short range.",
+    "Dolphins sometimes create and play with underwater bubble rings.",
+    "Dolphins don’t make echolocation clicks with vocal cords; they generate powerful clicks by forcing air through their nose.",
+    "When hearing a familiar, long-lost friend's whistle, dolphins often swim toward the sound and may respond with their own personalized whistle."
+  ],
   "elephant": [
     "Elephants trucks have 40,000 muscles and can delicately pick up a single blade of grass or rip branches off trees",
     "Elephants are the largest land mammals on Earth.",
@@ -198,6 +205,23 @@
     "Baby porcupines are born with soft quills that harden within hours, helping protect the mother during birth.",
     "A North American porcupine carries over 30,000 quills, with some areas packing around 150 quills per square inch.",
     "During courtship, a male may spray a receptive female with urine, and scent marking is a big part of their mating behavior."
+  ],
+  "raccoon": [
+    "The dark fur on a raccoon's bandit mask can reduce glare, helping them see better while foraging at night.",
+    "During the winter, raccoons can reach body masses made up of around 50% body fat, especially in northern areas.",
+    "In extreme cold and snow, raccoons may sleep for long periods while living off stored fat, yet aren’t considered true hibernators.",
+    "A raccoon's home territory can range from 7 to 10,000 acres, but typically ranges from 100 to 250 acres; in cities it may only be a few blocks.",
+    "Raccoons are opportunistic feeders and eat whatever is easiest to find, whether in the wild or in urban settings.",
+    "Raccoons can run up to about 15 mph and rotate their hind feet 180 degrees to run headfirst down trees."
+  ],
+  "seal": [
+    "Seal whiskers are underwater motion sensors; they can detect tiny water movements and follow small waves left by swimming prey.",
+    "Ringed seals use sharp claws to maintain breathing holes through ice up to about 6 feet thick and build snow lairs over the holes for shelter and pupping.",
+    "Weddell seals can dive beyond 900 meters (about 3,000 feet), with some dives lasting around 96 minutes.",
+    "Crabeater seals don’t eat crabs—their interlocking teeth form a sieve that filters krill from seawater into their mouths.",
+    "Hooded seals have a stretchy nasal hood they can inflate into a red, balloon-like sac on their head for intimidation and mating displays.",
+    "Seals can store extra oxygen in their muscles, which lets them dive for extended periods of time.",
+    "Researchers attach sensors to seals to collect temperature and salinity profiles in places and seasons ships can’t easily reach."
   ],
   "squirrel": [
     "Squirrels can leap about six feet in a single bound and survive falls from roughly 100 feet by using their tail for balance and as a parachute.",
