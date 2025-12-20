@@ -176,7 +176,6 @@ private struct ANNSession {
 
     mutating func nextQuestion() -> Question? {
         let topAnimals = Array(rankedAnimals.prefix(topK))
-        if topAnimals.count <= 1 { return nil }
 
         var bestQuestion: Question?
         var bestEntropy: Double = -Double.infinity
@@ -200,7 +199,11 @@ private struct ANNSession {
                 bestQuestion = q
             }
         }
-        return bestQuestion
+        // If no splitter was found (e.g., only one candidate left), fall back to the first unasked question.
+        if let bestQuestion {
+            return bestQuestion
+        }
+        return allQuestions.first(where: { !asked.contains($0.id) })
     }
 
     private mutating func rerankAnimals() {
