@@ -16,11 +16,56 @@ struct SimulationRun {
     let guess: String
     let wasCorrect: Bool
     let flippedTurns: [Int]
+    let log: SimulationRoundLog
 }
 
 struct SimulationStep {
     let entry: QAEntry
     let candidates: [String]
+}
+
+struct SimulationQuestionLog: Codable {
+    let questionId: String
+    let question: String
+    let userAnswer: String
+    let trueAnswer: String
+}
+
+struct SimulationRoundLog: Codable {
+    let target: String
+    let guess: String
+    let wasCorrect: Bool
+    let questions: [SimulationQuestionLog]
+
+    enum CodingKeys: String, CodingKey {
+        case target
+        case guess
+        case wasCorrect
+        case questions
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(target, forKey: .target)
+        try container.encode(guess, forKey: .guess)
+        try container.encode(wasCorrect, forKey: .wasCorrect)
+        try container.encode(questions, forKey: .questions)
+    }
+
+    init(target: String, guess: String, wasCorrect: Bool, questions: [SimulationQuestionLog]) {
+        self.target = target
+        self.guess = guess
+        self.wasCorrect = wasCorrect
+        self.questions = questions
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        target = try container.decode(String.self, forKey: .target)
+        guess = try container.decode(String.self, forKey: .guess)
+        wasCorrect = try container.decode(Bool.self, forKey: .wasCorrect)
+        questions = try container.decode([SimulationQuestionLog].self, forKey: .questions)
+    }
 }
 
 struct GameSimulator {
@@ -73,6 +118,7 @@ struct GameSimulator {
         let facts = AnimalFacts(animal: target)
         var transcript: [QAEntry] = []
         var steps: [SimulationStep] = []
+        var questionLogs: [SimulationQuestionLog] = []
         var turn = 1
         let plannedContradictions = Set((1...maxTurns).shuffled().prefix(contradictions))
         var appliedContradictions: [Int] = []
@@ -81,7 +127,8 @@ struct GameSimulator {
 
         while turn <= maxTurns {
             guard let nextQ = annSession.nextQuestion() else { break }
-            var answer = autoAnswer(to: nextQ.text, facts: facts)
+            let trueAnswer = autoAnswer(to: nextQ.text, facts: facts)
+            var answer = trueAnswer
             if plannedContradictions.contains(turn) {
                 switch answer {
                 case .yes:
@@ -96,15 +143,23 @@ struct GameSimulator {
             }
             let entry = QAEntry(turn: turn, question: nextQ.text, answer: answer)
             let snapshot = SimulationStep(entry: entry, candidates: annSession.currentCandidates())
+            let questionLog = SimulationQuestionLog(
+                questionId: nextQ.id,
+                question: nextQ.text,
+                userAnswer: answer.rawValue,
+                trueAnswer: trueAnswer.rawValue
+            )
             transcript.append(entry)
             steps.append(snapshot)
+            questionLogs.append(questionLog)
             annSession.recordAnswer(questionId: nextQ.id, answer: answer)
             turn += 1
         }
 
         let guessName = annSession.bestGuess() ?? "unknown"
         let success = matches(guessName, target: target)
-        return SimulationRun(target: target, transcript: transcript, steps: steps, guess: guessName, wasCorrect: success, flippedTurns: appliedContradictions.sorted())
+        let log = SimulationRoundLog(target: target, guess: guessName, wasCorrect: success, questions: questionLogs)
+        return SimulationRun(target: target, transcript: transcript, steps: steps, guess: guessName, wasCorrect: success, flippedTurns: appliedContradictions.sorted(), log: log)
     }
 
     private func autoAnswer(to question: String, facts: AnimalFacts) -> Answer {
@@ -148,6 +203,12 @@ private struct ANNSession {
     private let allAnimals: [Animal]
     private let allQuestions: [Question]
     private let topK: Int
+    private let specialQuestions: [QuestionId: [AnimalId]] = [
+        "flamingo_beak_curved": ["flamingo"],
+        "flamingo_one_leg": ["flamingo"],
+        "pelican_throat_pouch": ["pelican"],
+        "pigeon_city_flyer": ["pigeon"]
+    ]
     private var answers: [QuestionId: Answer] = [:]
     private var asked: Set<QuestionId> = []
     private var rankedAnimals: [Animal]
@@ -176,12 +237,18 @@ private struct ANNSession {
 
     mutating func nextQuestion() -> Question? {
         let topAnimals = Array(rankedAnimals.prefix(topK))
+        let topFiveIds = Set(rankedAnimals.prefix(5).map { $0.id })
 
         var bestQuestion: Question?
         var bestEntropy: Double = -Double.infinity
         var bestCoverage: Double = -Double.infinity
 
         for q in allQuestions where !asked.contains(q.id) {
+            if let targets = specialQuestions[q.id] {
+                if topFiveIds.isDisjoint(with: Set(targets)) {
+                    continue
+                }
+            }
             var yes = 0
             var no = 0
             for animal in topAnimals {

@@ -18,6 +18,7 @@ struct LlamaMascotContentView: View {
     @State private var simRunning = false
     @State private var noisySimReport: SimulationReport?
     @State private var noisySimRunning = false
+    @State private var latestSimLog: SimulationRoundLog?
     @State private var expandedRunIDs: Set<String> = []
     @State private var contextAwareFunFacts = false
     @State private var funFact: (animalName: String, text: String)?
@@ -59,6 +60,19 @@ struct LlamaMascotContentView: View {
                             guessButtons
                                 .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
+
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                showDeveloperTools.toggle()
+                            }
+                        } label: {
+                            Label(showDeveloperTools ? "Hide Dev Tools" : "Show Dev Tools", systemImage: "wrench.and.screwdriver")
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background(Capsule().fill(Color.primary.opacity(0.08)))
+                        }
+                        .buttonStyle(.plain)
 
                         //debugStrip
                         if showDeveloperTools {
@@ -697,6 +711,22 @@ struct LlamaMascotContentView: View {
                 .disabled(simRunning || noisySimRunning)
 
                 Button {
+                    Task { await runSims(contradictions: 0, runs: 1) }
+                } label: {
+                    Label("Run 1 sim", systemImage: "play.circle")
+                }
+                .buttonStyle(.bordered)
+                .disabled(simRunning || noisySimRunning)
+
+                Button {
+                    Task { await runSims(contradictions: 0, runs: 20) }
+                } label: {
+                    Label("Run 20 sims", systemImage: "forward.end.fill")
+                }
+                .buttonStyle(.bordered)
+                .disabled(simRunning || noisySimRunning)
+
+                Button {
                     Task { await runSims(contradictions: 2) }
                 } label: {
                     Label("Run noisy sims", systemImage: "waveform.path.ecg")
@@ -704,6 +734,20 @@ struct LlamaMascotContentView: View {
                 .buttonStyle(.bordered)
                 .disabled(simRunning || noisySimRunning)
             }
+            Button {
+                saveLatestSimLog()
+            } label: {
+                Label("Save last sim log", systemImage: "square.and.arrow.down")
+            }
+            .buttonStyle(.bordered)
+            .disabled(latestSimLog == nil)
+            Button {
+                saveReport(simReport)
+            } label: {
+                Label("Save clean sim report", systemImage: "square.and.arrow.up.on.square")
+            }
+            .buttonStyle(.bordered)
+            .disabled(simReport == nil || (simReport?.runs.isEmpty ?? true))
             if simRunning || noisySimRunning {
                 HStack {
                     ProgressView()
@@ -734,19 +778,55 @@ struct LlamaMascotContentView: View {
         )
     }
 
-    private func runSims(contradictions: Int) async {
+    private func runSims(contradictions: Int, runs: Int = 10) async {
         if contradictions > 0 { noisySimRunning = true } else { simRunning = true }
         let simulator = GameSimulator(maxTurns: 20)
         let report: SimulationReport
         if contradictions > 0 {
-            report = await simulator.runSimulationsWithContradictions(10, contradictions: contradictions)
+            report = await simulator.runSimulationsWithContradictions(runs, contradictions: contradictions)
             noisySimReport = report
         } else {
-            report = await simulator.runSimulations(10)
+            report = await simulator.runSimulations(runs)
             simReport = report
         }
+        latestSimLog = report.lastRun?.log
         simRunning = false
         noisySimRunning = false
+    }
+
+    private func saveLatestSimLog() {
+        guard let log = latestSimLog else { return }
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .withoutEscapingSlashes]
+        let formatter = ISO8601DateFormatter()
+        let filename = "sim-log-\(formatter.string(from: Date())).json"
+        do {
+            let data = try encoder.encode(log)
+            let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let url = docs.appendingPathComponent(filename)
+            try data.write(to: url, options: .atomic)
+            print("Saved simulation log to \(url.path)")
+        } catch {
+            print("Failed to save simulation log:", error)
+        }
+    }
+
+    private func saveReport(_ report: SimulationReport?) {
+        guard let report else { return }
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .withoutEscapingSlashes]
+        let formatter = ISO8601DateFormatter()
+        let filename = "sim-report-\(report.totalRuns)-runs-\(formatter.string(from: Date())).json"
+        do {
+            let runs = report.runs.map { $0.log }
+            let data = try encoder.encode(runs)
+            let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let url = docs.appendingPathComponent(filename)
+            try data.write(to: url, options: .atomic)
+            print("Saved simulation report to \(url.path)")
+        } catch {
+            print("Failed to save simulation report:", error)
+        }
     }
 
     @ViewBuilder
