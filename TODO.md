@@ -12,3 +12,4 @@
   - If prior top candidates drop out, their avatars get pulled back into the All Animals circle; new top candidates emerge.
   - Repeat for all questions; each question segment lasts ~3 seconds from appearance to candidate updates.
 - TODO: Remove carp, clownfish, moth, wasp, ant, beetle; add polar bear.
+- TODO: Take out falcon.

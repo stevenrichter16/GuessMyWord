@@ -692,6 +692,70 @@
     {
       "id": "pigeon_city_flyer",
       "text": "Is it a strong flyer that commonly lives in cities?"
+    },
+    {
+      "id": "shrimp_thin_antennae",
+      "text": "Does it have long, thin antennae without large claws?"
+    },
+    {
+      "id": "lobster_big_claws",
+      "text": "Does it have oversized front claws/pincers?"
+    },
+    {
+      "id": "shrimp_small_size",
+      "text": "Is it typically only a few inches long?"
+    },
+    {
+      "id": "penguin_flipper_wings",
+      "text": "Does it have flipper-like wings and cannot fly?"
+    },
+    {
+      "id": "penguin_waddle",
+      "text": "Does it waddle upright on land?"
+    },
+    {
+      "id": "walrus_tusks",
+      "text": "Does it have long tusks?"
+    },
+    {
+      "id": "jellyfish_soft_body",
+      "text": "Is its body soft with stinging tentacles?"
+    },
+    {
+      "id": "jellyfish_drifts",
+      "text": "Does it move by drifting in the water rather than crawling on the seafloor?"
+    },
+    {
+      "id": "falcon_sickle_wings",
+      "text": "Are the wings slim and sickle-shaped rather than broad and rounded?"
+    },
+    {
+      "id": "falcon_bird_prey",
+      "text": "Is its prey mainly other birds caught in flight?"
+    },
+    {
+      "id": "moose_long_legs",
+      "text": "Are the legs very long and gangly compared to the body?"
+    },
+    {
+      "id": "moose_dark_coat",
+      "text": "Is its coat usually dark brown vs. tan/reddish?"
+    },
+    {
+      "id": "chinchilla_big_ears",
+      "text": "Are the ears large and rounded on top of the head?"
+    },
+    {
+      "id": "hamster_wheel_habitat",
+      "text": "Is it commonly kept in a cage with a wheel and short tunnels?"
+    },
+    {
+      "id": "alligator_broad_snout",
+      "text": "Is the snout broad and U-shaped rather than long and V-shaped?"
+    },
+    {
+      "id": "leopard_tree_kills",
+      "text": "Is it known for hauling kills into tree branches to eat them?"
     }
   ],
   "weights": {
@@ -766,7 +830,10 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "shrimp_thin_antennae": 5,
+      "lobster_big_claws": -5,
+      "shrimp_small_size": 5
     },
     "cat": {
       "is_mammal": 10,
@@ -839,7 +906,10 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "lobster_big_claws": 5,
+      "shrimp_thin_antennae": -5,
+      "shrimp_small_size": -5
     },
     "elephant": {
       "is_mammal": 10,
@@ -912,7 +982,9 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "moose_long_legs": 8,
+      "moose_dark_coat": 8
     },
     "lion": {
       "is_mammal": 10,
@@ -985,7 +1057,8 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "walrus_tusks": 5
     },
     "tiger": {
       "is_mammal": 10,
@@ -1058,7 +1131,10 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "jellyfish_soft_body": -8,
+      "jellyfish_drifts": -8,
+      "leopard_tree_kills": -8
     },
     "giraffe": {
       "is_mammal": 10,
@@ -1204,7 +1280,9 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "jellyfish_soft_body": 8,
+      "jellyfish_drifts": 8
     },
     "kangaroo": {
       "is_mammal": 10,
@@ -1277,7 +1355,9 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "hamster_wheel_habitat": 8,
+      "chinchilla_big_ears": -8
     },
     "panda": {
       "is_mammal": 10,
@@ -1350,7 +1430,9 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "hamster_wheel_habitat": -8,
+      "chinchilla_big_ears": 8
     },
     "koala": {
       "is_mammal": 10,
@@ -1423,7 +1505,8 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "alligator_broad_snout": 8
     },
     "bear": {
       "is_mammal": 10,
@@ -1496,7 +1579,8 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "alligator_broad_snout": -8
     },
     "wolf": {
       "is_mammal": 10,
@@ -1569,7 +1653,8 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "leopard_tree_kills": 8
     },
     "fox": {
       "is_mammal": 10,
@@ -2664,7 +2749,9 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "moose_long_legs": -8,
+      "moose_dark_coat": -8
     },
     "whale": {
       "is_mammal": 10,
@@ -3029,7 +3116,8 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "walrus_tusks": -5
     },
     "walrus": {
       "is_mammal": 10,
@@ -3175,7 +3263,9 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "hamster_wheel_habitat": 8,
+      "chinchilla_big_ears": -8
     },
     "raccoon": {
       "is_mammal": 10,
@@ -4197,7 +4287,9 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "penguin_flipper_wings": 5,
+      "penguin_waddle": 5
     },
     "duck": {
       "is_mammal": -10,
@@ -4270,7 +4362,9 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "penguin_flipper_wings": -5,
+      "penguin_waddle": -5
     },
     "goose": {
       "is_mammal": -10,
@@ -4343,7 +4437,9 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "penguin_flipper_wings": -5,
+      "penguin_waddle": -5
     },
     "turkey": {
       "is_mammal": -10,
@@ -4416,7 +4512,9 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "falcon_sickle_wings": -8,
+      "falcon_bird_prey": -8
     },
     "eagle": {
       "is_mammal": -10,
@@ -4489,7 +4587,9 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": -5,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "falcon_sickle_wings": 8,
+      "falcon_bird_prey": 8
     },
     "owl": {
       "is_mammal": -10,
@@ -4927,7 +5027,9 @@
       "flamingo_beak_curved": -5,
       "flamingo_one_leg": -5,
       "pelican_throat_pouch": 20,
-      "pigeon_city_flyer": -5
+      "pigeon_city_flyer": -5,
+      "penguin_flipper_wings": -5,
+      "penguin_waddle": -5
     },
     "penguin": {
       "is_mammal": -10,

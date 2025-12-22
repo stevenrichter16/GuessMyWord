@@ -29,6 +29,20 @@ struct SimulationQuestionLog: Codable {
     let question: String
     let userAnswer: String
     let trueAnswer: String
+    let persona: String?
+    let usedUnknown: Bool
+    let usedMistake: Bool
+    let effectiveUnknownProb: Double?
+    let effectiveMistakeProb: Double?
+    let guessedFromUnknown: Bool?
+    let wasContradiction: Bool?
+    let answerOrigin: String?
+    let topCandidates: [CandidateScore]?
+}
+
+struct CandidateScore: Codable {
+    let name: String
+    let score: Int
 }
 
 struct SimulationRoundLog: Codable {
@@ -72,10 +86,21 @@ struct GameSimulator {
     private let maxTurns: Int
     private let annStore: ANNDataStore?
     private let topKForQuestionSelection = 8
+    private let personaConfig: SimPersonaConfig? = SimPersonaConfig.load()
+    private let usePersonaSim: Bool
+    private struct PersonaSample {
+        let answer: Answer
+        let usedUnknown: Bool
+        let usedMistake: Bool
+        let effectiveUnknown: Double
+        let effectiveMistake: Double
+        let guessedFromUnknown: Bool
+    }
 
-    init(maxTurns: Int = 20) {
+    init(maxTurns: Int = 20, usePersonaSim: Bool = false) {
         self.maxTurns = maxTurns
         self.annStore = LLMScaffolding.annStore
+        self.usePersonaSim = usePersonaSim
     }
 
     func runSimulations(_ runs: Int = 20) async -> SimulationReport {
@@ -123,13 +148,22 @@ struct GameSimulator {
         let plannedContradictions = Set((1...maxTurns).shuffled().prefix(contradictions))
         var appliedContradictions: [Int] = []
 
+        let personaContext = usePersonaSim ? pickPersona() : nil
+
         var annSession = ANNSession(store: annStore, topK: topKForQuestionSelection)
 
         while turn <= maxTurns {
             guard let nextQ = annSession.nextQuestion() else { break }
             let trueAnswer = autoAnswer(to: nextQ.text, facts: facts)
-            var answer = trueAnswer
-            if plannedContradictions.contains(turn) {
+            let sampled = personaAnswer(
+                questionId: nextQ.id,
+                trueAnswer: trueAnswer,
+                target: target,
+                personaContext: personaContext
+            )
+            var answer = sampled.answer
+            let contradictionApplied = plannedContradictions.contains(turn)
+            if contradictionApplied {
                 switch answer {
                 case .yes:
                     answer = .no
@@ -141,18 +175,48 @@ struct GameSimulator {
                     break
                 }
             }
+            var usedUnknown = sampled.usedUnknown && answer == .notSure
+            var usedMistake = sampled.usedMistake
+            if contradictionApplied {
+                usedMistake = true
+            }
+            if sampled.guessedFromUnknown && answer != trueAnswer && answer != .notSure {
+                usedMistake = true
+            }
+            let origin: String
+            if contradictionApplied {
+                origin = "contradiction"
+            } else if sampled.usedMistake {
+                origin = "mistake"
+            } else if sampled.guessedFromUnknown {
+                origin = "unknown_guess"
+            } else if usedUnknown {
+                origin = "unknown"
+            } else {
+                origin = "truth"
+            }
             let entry = QAEntry(turn: turn, question: nextQ.text, answer: answer)
             let snapshot = SimulationStep(entry: entry, candidates: annSession.currentCandidates())
+            transcript.append(entry)
+            steps.append(snapshot)
+            annSession.recordAnswer(questionId: nextQ.id, answer: answer)
+            let topCandidates = annSession.currentCandidatesWithScores(limit: 8)
             let questionLog = SimulationQuestionLog(
                 questionId: nextQ.id,
                 question: nextQ.text,
                 userAnswer: answer.rawValue,
-                trueAnswer: trueAnswer.rawValue
+                trueAnswer: trueAnswer.rawValue,
+                persona: personaContext?.name,
+                usedUnknown: usedUnknown,
+                usedMistake: usedMistake,
+                effectiveUnknownProb: sampled.effectiveUnknown,
+                effectiveMistakeProb: sampled.effectiveMistake,
+                guessedFromUnknown: sampled.guessedFromUnknown,
+                wasContradiction: contradictionApplied ? true : nil,
+                answerOrigin: origin,
+                topCandidates: topCandidates
             )
-            transcript.append(entry)
-            steps.append(snapshot)
             questionLogs.append(questionLog)
-            annSession.recordAnswer(questionId: nextQ.id, answer: answer)
             turn += 1
         }
 
@@ -164,6 +228,92 @@ struct GameSimulator {
 
     private func autoAnswer(to question: String, facts: AnimalFacts) -> Answer {
         return facts.answer(for: question)
+    }
+
+    private func pickPersona() -> (name: String, persona: SimPersonaConfig.Persona)? {
+        guard let config = personaConfig, let entry = config.personas.randomElement() else { return nil }
+        return (entry.key, entry.value)
+    }
+
+    private func personaAnswer(questionId: String, trueAnswer: Answer, target: String, personaContext: (name: String, persona: SimPersonaConfig.Persona)?) -> PersonaSample {
+        guard let config = personaConfig, let personaContext = personaContext else {
+            return PersonaSample(answer: trueAnswer, usedUnknown: false, usedMistake: false, effectiveUnknown: 0, effectiveMistake: 0, guessedFromUnknown: false)
+        }
+        let persona = personaContext.persona
+        let lowerTarget = target.lowercased()
+        // Determine familiarity tier multiplier
+        let tier: String = config.familiarityTiers.first(where: { $0.value.contains(lowerTarget) })?.key ?? "medium"
+        let tierMult = persona.tierMultiplier[tier] ?? 1.0
+        // Determine question tags
+        let tags = config.questionTags[questionId] ?? []
+        let confidences = tags.compactMap { persona.questionTagConfidence[$0] }
+        let avgConfidence = confidences.isEmpty ? 0.6 : confidences.reduce(0, +) / Double(confidences.count)
+
+        let effectiveUnknown = max(0, min(1, persona.baseUnknown * tierMult * (1 - avgConfidence)))
+        let effectiveMistake = max(0, min(1, persona.baseMistake * tierMult * (1 - avgConfidence)))
+
+        // Sample unknown
+        if Double.random(in: 0...1) < effectiveUnknown {
+            // Riskiness/yesBias: occasionally turn uncertainty into a yes/no guess
+            let risk = persona.riskiness
+            if Double.random(in: 0...1) < risk {
+                let yesTilt = 0.5 + persona.yesBias
+                let guessedYes = Double.random(in: 0...1) < yesTilt
+                return PersonaSample(
+                    answer: guessedYes ? .yes : .no,
+                    usedUnknown: false,
+                    usedMistake: false,
+                    effectiveUnknown: effectiveUnknown,
+                    effectiveMistake: effectiveMistake,
+                    guessedFromUnknown: true
+                )
+            }
+            return PersonaSample(
+                answer: .notSure,
+                usedUnknown: true,
+                usedMistake: false,
+                effectiveUnknown: effectiveUnknown,
+                effectiveMistake: effectiveMistake,
+                guessedFromUnknown: false
+            )
+        }
+
+        // Sample mistake
+        if Double.random(in: 0...1) < effectiveMistake {
+            // Bias mistakes toward confusion clusters
+            if let cluster = config.confusionClusters.first(where: { $0.members.contains(lowerTarget) }),
+               !cluster.biasWrongToward.isEmpty {
+                // If bias exists and true answer is yes, flip to no; else flip to yes.
+                let wrong: Answer = (trueAnswer == .yes) ? .no : .yes
+                return PersonaSample(
+                    answer: wrong,
+                    usedUnknown: false,
+                    usedMistake: true,
+                    effectiveUnknown: effectiveUnknown,
+                    effectiveMistake: effectiveMistake,
+                    guessedFromUnknown: false
+                )
+            } else {
+                let wrong: Answer = (trueAnswer == .yes) ? .no : .yes
+                return PersonaSample(
+                    answer: wrong,
+                    usedUnknown: false,
+                    usedMistake: true,
+                    effectiveUnknown: effectiveUnknown,
+                    effectiveMistake: effectiveMistake,
+                    guessedFromUnknown: false
+                )
+            }
+        }
+
+        return PersonaSample(
+            answer: trueAnswer,
+            usedUnknown: false,
+            usedMistake: false,
+            effectiveUnknown: effectiveUnknown,
+            effectiveMistake: effectiveMistake,
+            guessedFromUnknown: false
+        )
     }
 
     private func matches(_ guess: String, target: String) -> Bool {
@@ -203,11 +353,28 @@ private struct ANNSession {
     private let allAnimals: [Animal]
     private let allQuestions: [Question]
     private let topK: Int
+    private var scores: [AnimalId: Int] = [:]
     private let specialQuestions: [QuestionId: [AnimalId]] = [
         "flamingo_beak_curved": ["flamingo"],
         "flamingo_one_leg": ["flamingo"],
         "pelican_throat_pouch": ["pelican"],
-        "pigeon_city_flyer": ["pigeon"]
+        "pigeon_city_flyer": ["pigeon"],
+        "shrimp_thin_antennae": ["shrimp", "lobster"],
+        "lobster_big_claws": ["lobster", "shrimp"],
+        "shrimp_small_size": ["shrimp", "lobster"],
+        "penguin_flipper_wings": ["penguin", "duck", "goose", "pelican"],
+        "penguin_waddle": ["penguin", "duck", "goose", "pelican"],
+        "walrus_tusks": ["walrus", "seal"],
+        "jellyfish_soft_body": ["jellyfish", "starfish"],
+        "jellyfish_drifts": ["jellyfish", "starfish"],
+        "falcon_sickle_wings": ["falcon", "hawk"],
+        "falcon_bird_prey": ["falcon", "hawk"],
+        "moose_long_legs": ["moose", "deer"],
+        "moose_dark_coat": ["moose", "deer"],
+        "hamster_wheel_habitat": ["hamster", "chinchilla"],
+        "chinchilla_big_ears": ["chinchilla", "hamster"],
+        "alligator_broad_snout": ["alligator", "crocodile"],
+        "has_shell": ["armadillo"]
     ]
     private var answers: [QuestionId: Answer] = [:]
     private var asked: Set<QuestionId> = []
@@ -219,6 +386,9 @@ private struct ANNSession {
         self.allQuestions = store?.config.questions.map { Question(id: $0.id, text: $0.text) } ?? []
         self.topK = topK
         self.rankedAnimals = allAnimals
+        for animal in allAnimals {
+            scores[animal.id] = 0
+        }
     }
 
     mutating func recordAnswer(questionId: QuestionId, answer: Answer) {
@@ -229,6 +399,11 @@ private struct ANNSession {
 
     func currentCandidates() -> [String] {
         Array(rankedAnimals.prefix(topK)).map { $0.name }
+    }
+
+    func currentCandidatesWithScores(limit: Int) -> [CandidateScore] {
+        let slice = rankedAnimals.prefix(limit)
+        return slice.map { CandidateScore(name: $0.name, score: scores[$0.id] ?? 0) }
     }
 
     func bestGuess() -> String? {
@@ -275,7 +450,6 @@ private struct ANNSession {
 
     private mutating func rerankAnimals() {
         guard let store = annStore else { return }
-        var scores: [AnimalId: Int] = [:]
         for animal in allAnimals { scores[animal.id] = 0 }
 
         for (qid, ans) in answers {

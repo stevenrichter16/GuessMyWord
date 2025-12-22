@@ -1,0 +1,110 @@
+{
+  "questionTags": {
+    "is_mammal": ["taxonomy"],
+    "is_pet": ["domestic", "behavior"],
+    "is_wild": ["habitat"],
+    "is_large": ["size"],
+    "is_carnivore": ["diet"],
+    "is_herbivore": ["diet"],
+    "has_webbed_feet": ["anatomy", "appearance"],
+    "lives_in_water": ["habitat"],
+    "can_fly": ["ability"],
+    "is_bird": ["taxonomy"],
+    "is_reptile": ["taxonomy"],
+    "lays_eggs": ["reproduction"],
+    "has_tail": ["anatomy"],
+    "has_horns_or_antlers": ["anatomy", "appearance"],
+    "has_shell": ["anatomy", "appearance"],
+    "migrates_seasonally": ["behavior", "habitat"],
+    "is_nocturnal": ["behavior"],
+    "is_venomous": ["anatomy"],
+    "flamingo_beak_curved": ["appearance", "special"],
+    "flamingo_one_leg": ["behavior", "special"],
+    "pelican_throat_pouch": ["anatomy", "special"],
+    "pigeon_city_flyer": ["behavior", "habitat", "special"]
+  },
+  "confusionClusters": [
+    {
+      "name": "water_birds",
+      "members": ["pelican", "flamingo", "duck", "pigeon", "penguin", "swan"],
+      "biasWrongToward": ["duck", "pigeon"]
+    },
+    {
+      "name": "big_cats",
+      "members": ["lion", "tiger", "leopard", "cheetah"],
+      "biasWrongToward": ["leopard", "cheetah"]
+    },
+    {
+      "name": "turtles",
+      "members": ["turtle", "tortoise"],
+      "biasWrongToward": ["turtle", "tortoise"]
+    }
+  ],
+  "familiarityTiers": {
+    "high": ["dog", "cat", "lion", "elephant", "penguin", "duck"],
+    "medium": ["pelican", "flamingo", "kangaroo", "giraffe", "pigeon"],
+    "low": ["pangolin", "newt", "warthog"]
+  },
+  "personas": {
+    "kid": {
+      "baseUnknown": 0.25,
+      "baseMistake": 0.05,
+      "yesBias": 0.05,
+      "riskiness": 0.3,
+      "questionTagConfidence": {
+        "appearance": 0.8,
+        "anatomy": 0.6,
+        "behavior": 0.4,
+        "diet": 0.35,
+        "habitat": 0.5,
+        "taxonomy": 0.5,
+        "special": 0.5,
+        "ability": 0.6,
+        "size": 0.6,
+        "reproduction": 0.4
+      },
+      "tierMultiplier": { "high": 0.5, "medium": 1.0, "low": 1.5 },
+      "clusterBias": true
+    },
+    "casual": {
+      "baseUnknown": 0.18,
+      "baseMistake": 0.07,
+      "yesBias": 0.0,
+      "riskiness": 0.5,
+      "questionTagConfidence": {
+        "appearance": 0.85,
+        "anatomy": 0.65,
+        "behavior": 0.5,
+        "diet": 0.45,
+        "habitat": 0.55,
+        "taxonomy": 0.6,
+        "special": 0.6,
+        "ability": 0.65,
+        "size": 0.65,
+        "reproduction": 0.45
+      },
+      "tierMultiplier": { "high": 0.7, "medium": 1.0, "low": 1.3 },
+      "clusterBias": true
+    },
+    "nature_nerd": {
+      "baseUnknown": 0.1,
+      "baseMistake": 0.03,
+      "yesBias": -0.05,
+      "riskiness": 0.7,
+      "questionTagConfidence": {
+        "appearance": 0.9,
+        "anatomy": 0.8,
+        "behavior": 0.7,
+        "diet": 0.7,
+        "habitat": 0.75,
+        "taxonomy": 0.8,
+        "special": 0.8,
+        "ability": 0.8,
+        "size": 0.75,
+        "reproduction": 0.7
+      },
+      "tierMultiplier": { "high": 0.8, "medium": 1.0, "low": 1.1 },
+      "clusterBias": true
+    }
+  }
+}

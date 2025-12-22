@@ -19,6 +19,8 @@ struct LlamaMascotContentView: View {
     @State private var noisySimReport: SimulationReport?
     @State private var noisySimRunning = false
     @State private var latestSimLog: SimulationRoundLog?
+    @State private var personaSimReport: SimulationReport?
+    @State private var latestPersonaSimLog: SimulationRoundLog?
     @State private var expandedRunIDs: Set<String> = []
     @State private var contextAwareFunFacts = false
     @State private var funFact: (animalName: String, text: String)?
@@ -734,6 +736,22 @@ struct LlamaMascotContentView: View {
                 .buttonStyle(.bordered)
                 .disabled(simRunning || noisySimRunning)
             }
+            HStack(spacing: 12) {
+                Button {
+                    Task { await runSims(contradictions: 0, runs: 10, usePersona: true) }
+                } label: {
+                    Label("Run 10 persona sims", systemImage: "person.3")
+                }
+                .buttonStyle(.bordered)
+                .disabled(simRunning || noisySimRunning)
+                Button {
+                    saveReport(personaSimReport)
+                } label: {
+                    Label("Save persona report", systemImage: "square.and.arrow.up.on.square")
+                }
+                .buttonStyle(.bordered)
+                .disabled(personaSimReport == nil || (personaSimReport?.runs.isEmpty ?? true))
+            }
             Button {
                 saveLatestSimLog()
             } label: {
@@ -748,6 +766,22 @@ struct LlamaMascotContentView: View {
             }
             .buttonStyle(.bordered)
             .disabled(simReport == nil || (simReport?.runs.isEmpty ?? true))
+            if let summary = summary(for: personaSimReport) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Persona summary: \(summary.totalRuns) runs, \(Int(summary.accuracy * 100))% accuracy, avg turns: \(String(format: "%.1f", summary.avgTurns))")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    if !summary.topConfusions.isEmpty {
+                        Text("Top confusions:")
+                            .font(.caption.weight(.semibold))
+                        ForEach(Array(summary.topConfusions.prefix(3)).enumerated(), id: \.offset) { _, item in
+                            Text("\(item.pair.target) → \(item.pair.guess) (\(item.count))")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+            }
             if simRunning || noisySimRunning {
                 HStack {
                     ProgressView()
@@ -778,18 +812,26 @@ struct LlamaMascotContentView: View {
         )
     }
 
-    private func runSims(contradictions: Int, runs: Int = 10) async {
+    private func runSims(contradictions: Int, runs: Int = 10, usePersona: Bool = false) async {
         if contradictions > 0 { noisySimRunning = true } else { simRunning = true }
-        let simulator = GameSimulator(maxTurns: 20)
+        let simulator = GameSimulator(maxTurns: 20, usePersonaSim: usePersona)
         let report: SimulationReport
         if contradictions > 0 {
             report = await simulator.runSimulationsWithContradictions(runs, contradictions: contradictions)
             noisySimReport = report
         } else {
             report = await simulator.runSimulations(runs)
-            simReport = report
+            if usePersona {
+                personaSimReport = report
+            } else {
+                simReport = report
+            }
         }
-        latestSimLog = report.lastRun?.log
+        if usePersona {
+            latestPersonaSimLog = report.lastRun?.log
+        } else {
+            latestSimLog = report.lastRun?.log
+        }
         simRunning = false
         noisySimRunning = false
     }
@@ -819,7 +861,43 @@ struct LlamaMascotContentView: View {
         let filename = "sim-report-\(report.totalRuns)-runs-\(formatter.string(from: Date())).json"
         do {
             let runs = report.runs.map { $0.log }
-            let data = try encoder.encode(runs)
+            let summary = summary(for: report)
+            struct ExportSummary: Codable {
+                let totalRuns: Int
+                let correct: Int
+                let accuracy: Double
+                let avgTurns: Double
+                let topConfusions: [Confusion]
+                struct Confusion: Codable {
+                    let target: String
+                    let guess: String
+                    let count: Int
+                }
+            }
+            struct ReportExport: Codable {
+                let summary: ExportSummary
+                let runs: [SimulationRoundLog]
+
+                enum CodingKeys: String, CodingKey {
+                    case summary
+                    case runs
+                }
+
+                func encode(to encoder: Encoder) throws {
+                    var container = encoder.container(keyedBy: CodingKeys.self)
+                    try container.encode(summary, forKey: .summary)
+                    try container.encode(runs, forKey: .runs)
+                }
+            }
+            let exportSummary = ExportSummary(
+                totalRuns: summary?.totalRuns ?? report.totalRuns,
+                correct: summary?.correct ?? report.correct,
+                accuracy: summary?.accuracy ?? report.accuracy,
+                avgTurns: summary?.avgTurns ?? 0,
+                topConfusions: (summary?.topConfusions ?? []).map { ExportSummary.Confusion(target: $0.pair.target, guess: $0.pair.guess, count: $0.count) }
+            )
+            let payload = ReportExport(summary: exportSummary, runs: runs)
+            let data = try encoder.encode(payload)
             let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
             let url = docs.appendingPathComponent(filename)
             try data.write(to: url, options: .atomic)
@@ -827,6 +905,28 @@ struct LlamaMascotContentView: View {
         } catch {
             print("Failed to save simulation report:", error)
         }
+    }
+
+    private func summary(for report: SimulationReport?) -> (totalRuns: Int, correct: Int, accuracy: Double, avgTurns: Double, topConfusions: [(pair: (target: String, guess: String), count: Int)])? {
+        guard let report else { return nil }
+        guard !report.runs.isEmpty else { return nil }
+        let total = report.runs.count
+        let correct = report.runs.filter { $0.wasCorrect }.count
+        let accuracy = Double(correct) / Double(max(1, total))
+        let turns = report.runs.map { Double($0.transcript.count) }
+        let avgTurns = turns.reduce(0, +) / Double(max(1, turns.count))
+        var confusion: [String: Int] = [:]
+        for run in report.runs where !run.wasCorrect {
+            let key = "\(run.target)->\(run.guess)"
+            confusion[key, default: 0] += 1
+        }
+        let top = confusion.sorted { $0.value > $1.value }.map { entry -> ((target: String, guess: String), Int) in
+            let parts = entry.key.split(separator: "->", maxSplits: 1).map(String.init)
+            let target = parts.first ?? "unknown"
+            let guess = parts.count > 1 ? parts[1] : "unknown"
+            return ((target: target, guess: guess), entry.value)
+        }
+        return (totalRuns: total, correct: correct, accuracy: accuracy, avgTurns: avgTurns, topConfusions: top)
     }
 
     @ViewBuilder
