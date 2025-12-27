@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import CoreML
+import OSLog
 #if canImport(FoundationModels)
 import FoundationModels
 #endif
@@ -8,6 +9,35 @@ import FoundationModels
 // ANN config models for the local weights matrix.
 typealias AnimalId = String
 typealias QuestionId = String
+
+enum SpecialQuestionConfig {
+    static let targets: [QuestionId: [AnimalId]] = [
+        "flamingo_beak_curved": ["flamingo"],
+        "flamingo_one_leg": ["flamingo"],
+        "pelican_throat_pouch": ["pelican"],
+        "pigeon_city_flyer": ["pigeon"],
+        "shrimp_thin_antennae": ["shrimp", "lobster"],
+        "lobster_big_claws": ["lobster", "shrimp"],
+        "shrimp_small_size": ["shrimp", "lobster"],
+        "penguin_flipper_wings": ["penguin", "duck", "goose", "pelican", "swan"],
+        "penguin_waddle": ["penguin", "duck", "goose", "pelican", "swan"],
+        "walrus_tusks": ["walrus", "seal"],
+        "jellyfish_soft_body": ["jellyfish", "starfish"],
+        "jellyfish_drifts": ["jellyfish", "starfish"],
+        "falcon_sickle_wings": ["falcon", "hawk"],
+        "falcon_bird_prey": ["falcon", "hawk"],
+        "moose_long_legs": ["moose", "deer"],
+        "moose_dark_coat": ["moose", "deer"],
+        "hamster_wheel_habitat": ["hamster", "chinchilla"],
+        "chinchilla_big_ears": ["chinchilla", "hamster"],
+        "alligator_broad_snout": ["alligator", "crocodile"],
+        "has_shell": ["armadillo", "turtle", "tortoise"],
+        "hummingbird_hover_feed": ["hummingbird"],
+        "leopard_tree_kills": ["leopard"]
+    ]
+
+    static let ids: Set<QuestionId> = Set(targets.keys)
+}
 
 struct AnimalsANNConfig: Codable {
     let version: Int
@@ -638,6 +668,14 @@ private final class AnimalModelWrapper {
 }
 
 struct AnimalQuestionEngine {
+    private let specialLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "20Questions", category: "SpecialGate")
+    private func logSpecial(_ message: String) {
+        specialLogger.info("\(message, privacy: .public)")
+    }
+
+    /// Special/discriminator feature keys that we expect to be gated late.
+    /// Mirrors the discriminator set used in the simulator.
+    private let specialFeatureKeys: Set<String> = SpecialQuestionConfig.ids
     struct AnswerIndex {
         let yes: Set<String>
         let no: Set<String>
@@ -692,6 +730,7 @@ struct AnimalQuestionEngine {
         var bestSpecificity: Double = -Double.infinity
 
         for feature in dataset.features where !askedKeys.contains(feature.key) {
+            let isSpecial = specialFeatureKeys.contains(feature.key)
             let counts = counts(for: feature.key, candidates: candidates, candidateSet: candidateSet)
             let yes = counts.yes
             let no = counts.no
@@ -700,6 +739,9 @@ struct AnimalQuestionEngine {
             if total == 0 || yes == 0 || no == 0 { continue }
             let splitScore = abs(yes - no)
             let specificity = variance(of: [Double(yes), Double(no), Double(counts.unknown)])
+            if isSpecial {
+                logSpecial("consider \(feature.key): yes=\(yes) no=\(no) unk=\(counts.unknown) splitScore=\(splitScore) candidates=\(candidates.count)")
+            }
             if splitScore < bestScore || (splitScore == bestScore && specificity > bestSpecificity) {
                 bestScore = splitScore
                 bestFeature = feature
@@ -708,6 +750,9 @@ struct AnimalQuestionEngine {
         }
 
         if let feature = bestFeature {
+            if specialFeatureKeys.contains(feature.key) {
+                logSpecial("selected \(feature.key) with splitScore=\(bestScore) specificity=\(bestSpecificity)")
+            }
             return feature.question
         }
         return dataset.features.first(where: { !askedKeys.contains($0.key) })?.question ?? "Out of questions."

@@ -353,32 +353,31 @@ private struct ANNSession {
     private let allAnimals: [Animal]
     private let allQuestions: [Question]
     private let topK: Int
+    private let tieBreakGap = 4
+    private let tieBreakCandidateCount = 3
     private var scores: [AnimalId: Int] = [:]
-    private let specialQuestions: [QuestionId: [AnimalId]] = [
-        "flamingo_beak_curved": ["flamingo"],
-        "flamingo_one_leg": ["flamingo"],
-        "pelican_throat_pouch": ["pelican"],
-        "pigeon_city_flyer": ["pigeon"],
-        "shrimp_thin_antennae": ["shrimp", "lobster"],
-        "lobster_big_claws": ["lobster", "shrimp"],
-        "shrimp_small_size": ["shrimp", "lobster"],
-        "penguin_flipper_wings": ["penguin", "duck", "goose", "pelican"],
-        "penguin_waddle": ["penguin", "duck", "goose", "pelican"],
-        "walrus_tusks": ["walrus", "seal"],
-        "jellyfish_soft_body": ["jellyfish", "starfish"],
-        "jellyfish_drifts": ["jellyfish", "starfish"],
-        "falcon_sickle_wings": ["falcon", "hawk"],
-        "falcon_bird_prey": ["falcon", "hawk"],
-        "moose_long_legs": ["moose", "deer"],
-        "moose_dark_coat": ["moose", "deer"],
-        "hamster_wheel_habitat": ["hamster", "chinchilla"],
-        "chinchilla_big_ears": ["chinchilla", "hamster"],
-        "alligator_broad_snout": ["alligator", "crocodile"],
-        "has_shell": ["armadillo"]
+    private var heuristicBoosts: [AnimalId: Int] = [:]
+    private var gateBoostLedger: [QuestionId: (animals: Set<AnimalId>, value: Int, ttl: Int)] = [:]
+    private var confirmQueue: [QuestionId] = []
+    private var pendingGateBoosts: [QuestionId: Answer] = [:]
+    private let gateConfirmers: [QuestionId: [QuestionId]] = [
+        "is_bird": ["has_feathers", "can_fly"],
+        "lives_in_water": ["has_gills", "has_fins_or_flippers"],
+        "is_mammal": ["has_fur_or_hair"],
+        "is_reptile": [],
+        "is_amphibian": ["has_gills"],
+        "is_fish": ["has_gills", "has_fins_or_flippers"]
     ]
+    private let specialQuestions = SpecialQuestionConfig.targets
     private var answers: [QuestionId: Answer] = [:]
     private var asked: Set<QuestionId> = []
     private var rankedAnimals: [Animal]
+    private var lastTop: AnimalId?
+    private func logSpecial(_ message: String) {
+        #if DEBUG
+        print("[SpecialGate] \(message)")
+        #endif
+    }
 
     init(store: ANNDataStore?, topK: Int) {
         self.annStore = store
@@ -388,13 +387,20 @@ private struct ANNSession {
         self.rankedAnimals = allAnimals
         for animal in allAnimals {
             scores[animal.id] = 0
+            heuristicBoosts[animal.id] = 0
         }
+        self.lastTop = rankedAnimals.first?.id
     }
 
     mutating func recordAnswer(questionId: QuestionId, answer: Answer) {
+        let previousTop = rankedAnimals.first?.id
+        decayGateBoosts()
         answers[questionId] = answer
         asked.insert(questionId)
+        applyHeuristicBoost(for: questionId, answer: answer)
+        resolvePendingGateBoosts()
         rerankAnimals()
+        applyFamilyConfirmIfNeeded(previousTop: previousTop)
     }
 
     func currentCandidates() -> [String] {
@@ -406,13 +412,117 @@ private struct ANNSession {
         return slice.map { CandidateScore(name: $0.name, score: scores[$0.id] ?? 0) }
     }
 
+    private func shouldAskSpecial(_ questionId: QuestionId) -> Bool {
+        let top3 = rankedAnimals.prefix(3).map { "\($0.id):\(scores[$0.id] ?? 0)" }.joined(separator: ",")
+        let gates = [
+            "is_bird": answers["is_bird"]?.rawValue ?? "nil",
+            "lives_in_water": answers["lives_in_water"]?.rawValue ?? "nil",
+            "is_mammal": answers["is_mammal"]?.rawValue ?? "nil",
+            "is_reptile": answers["is_reptile"]?.rawValue ?? "nil"
+        ]
+        logSpecial("check \(questionId) top3=\(top3) gates=\(gates)")
+        // Gate shrimp/lobster discriminators until those two are the clear leaders.
+        if questionId == "shrimp_thin_antennae" || questionId == "lobster_big_claws" || questionId == "shrimp_small_size" {
+            // Only consider these after we've confirmed an aquatic path and not a mammal.
+            if answers["lives_in_water"] != .yes {
+                logSpecial("block \(questionId): lives_in_water != yes")
+                return false
+            }
+            if answers["is_mammal"] == .yes {
+                logSpecial("block \(questionId): is_mammal == yes")
+                return false
+            }
+            let topTwo = rankedAnimals.prefix(2).map { $0.id }
+            guard Set(topTwo) == Set(["shrimp", "lobster"]) else {
+                logSpecial("block \(questionId): topTwo \(topTwo) not shrimp+lobster")
+                return false
+            }
+            let topScores = topTwo.compactMap { scores[$0] }
+            let othersMax = rankedAnimals.dropFirst(2).compactMap { scores[$0.id] }.max() ?? Int.min
+            let pass = topScores.allSatisfy { $0 > othersMax }
+            logSpecial("shrimp/lobster gate pass=\(pass) topScores=\(topScores) othersMax=\(othersMax)")
+            return pass
+        }
+        // General rule: only ask a special if it is clearly relevant to the top candidates.
+        guard let targets = specialQuestions[questionId] else { return true }
+        let topThree = rankedAnimals.prefix(3)
+        let targetTop = topThree.filter { targets.contains($0.id) }
+        if targets.count == 1 {
+            guard let targetId = targets.first else {
+                logSpecial("block \(questionId): missing single target")
+                return false
+            }
+            guard let targetScore = scores[targetId] else {
+                logSpecial("block \(questionId): missing target score")
+                return false
+            }
+            let topTwo = rankedAnimals.prefix(2).map { $0.id }
+            guard topTwo.contains(targetId), let topScore = scores[rankedAnimals[0].id] else {
+                logSpecial("block \(questionId): single target not in top2")
+                return false
+            }
+            let closenessThreshold = 5
+            if (topScore - targetScore) > closenessThreshold {
+                logSpecial("block \(questionId): single target not close to top (diff \(topScore - targetScore))")
+                return false
+            }
+            let othersMax = rankedAnimals.dropFirst(2).compactMap { scores[$0.id] }.max() ?? Int.min
+            let pass = targetScore > othersMax
+            logSpecial("single-target gate \(questionId) pass=\(pass) targetScore=\(targetScore) othersMax=\(othersMax)")
+            return pass
+        }
+
+        guard targetTop.count >= 2 else {
+            logSpecial("block \(questionId): fewer than two targets in top3")
+            return false
+        }
+
+        let targetScores = targetTop.compactMap { scores[$0.id] }
+        guard let minTarget = targetScores.min(), let maxTarget = targetScores.max() else {
+            logSpecial("block \(questionId): missing target scores")
+            return false
+        }
+        let closenessThreshold = 5
+        if (maxTarget - minTarget) > closenessThreshold {
+            logSpecial("block \(questionId): targets not close (range \(maxTarget - minTarget))")
+            return false
+        }
+
+        let maxNonTarget = rankedAnimals.filter { !targets.contains($0.id) }.compactMap { scores[$0.id] }.max() ?? Int.min
+        let pass = minTarget > maxNonTarget
+        logSpecial("general gate \(questionId) pass=\(pass) minTarget=\(minTarget) maxNonTarget=\(maxNonTarget)")
+        return pass
+    }
+
     func bestGuess() -> String? {
         rankedAnimals.first?.name
     }
 
     mutating func nextQuestion() -> Question? {
-        let topAnimals = Array(rankedAnimals.prefix(topK))
+        if let confirmId = confirmQueue.first(where: { !asked.contains($0) }),
+           let confirm = allQuestions.first(where: { $0.id == confirmId }) {
+            confirmQueue.removeAll(where: { $0 == confirmId })
+            return confirm
+        }
+        let topAnimals = entropyCandidates()
         let topFiveIds = Set(rankedAnimals.prefix(5).map { $0.id })
+
+        if let mandatory = specialQuestions.first(where: { key, value in
+            !asked.contains(key) && Set(value).intersection(topFiveIds).count >= 2
+        })?.key {
+            let allowed = shouldAskSpecial(mandatory)
+            logSpecial("mandatory candidate \(mandatory) allowed=\(allowed)")
+            if allowed, let q = allQuestions.first(where: { $0.id == mandatory }) {
+                return q
+            }
+        }
+
+        if shouldUseTieBreak() {
+            let topCandidates = Array(rankedAnimals.prefix(tieBreakCandidateCount))
+            if let tieBreak = tieBreakQuestion(topCandidates: topCandidates, topAnimals: topAnimals, topFiveIds: topFiveIds) {
+                return tieBreak
+            }
+        }
 
         var bestQuestion: Question?
         var bestEntropy: Double = -Double.infinity
@@ -421,6 +531,9 @@ private struct ANNSession {
         for q in allQuestions where !asked.contains(q.id) {
             if let targets = specialQuestions[q.id] {
                 if topFiveIds.isDisjoint(with: Set(targets)) {
+                    continue
+                }
+                if !shouldAskSpecial(q.id) {
                     continue
                 }
             }
@@ -448,6 +561,103 @@ private struct ANNSession {
         return allQuestions.first(where: { !asked.contains($0.id) })
     }
 
+    private func entropyCandidates() -> [Animal] {
+        guard !rankedAnimals.isEmpty else { return [] }
+        let baseCount = min(topK, rankedAnimals.count)
+        let base = Array(rankedAnimals.prefix(baseCount))
+        guard let cutoffId = base.last?.id else { return base }
+        let cutoffScore = scores[cutoffId] ?? 0
+        let expanded = rankedAnimals.filter { (scores[$0.id] ?? 0) >= cutoffScore }
+        return expanded.count > base.count ? expanded : base
+    }
+
+    private func shouldUseTieBreak() -> Bool {
+        guard rankedAnimals.count >= 2,
+              let topScore = scores[rankedAnimals[0].id],
+              let secondScore = scores[rankedAnimals[1].id] else {
+            return false
+        }
+        return (topScore - secondScore) <= tieBreakGap
+    }
+
+    private func tieBreakQuestion(
+        topCandidates: [Animal],
+        topAnimals: [Animal],
+        topFiveIds: Set<AnimalId>
+    ) -> Question? {
+        guard topCandidates.count >= 2 else { return nil }
+        var bestQuestion: Question?
+        var bestDisagreement = 0
+        var bestCoverage: Double = -Double.infinity
+        var bestEntropy: Double = -Double.infinity
+
+        for q in allQuestions where !asked.contains(q.id) {
+            if let targets = specialQuestions[q.id] {
+                if topFiveIds.isDisjoint(with: Set(targets)) {
+                    continue
+                }
+                if !shouldAskSpecial(q.id) {
+                    continue
+                }
+            }
+
+            let disagreement = disagreementScore(qid: q.id, candidates: topCandidates)
+            if disagreement == 0 { continue }
+
+            var yes = 0
+            var no = 0
+            for animal in topAnimals {
+                let w = weight(for: animal.id, qid: q.id)
+                if w > 0 { yes += 1 }
+                else if w < 0 { no += 1 }
+            }
+            let coverage = Double(yes + no) / Double(max(1, topAnimals.count))
+            if (yes + no) < 2 || coverage < 0.1 { continue }
+
+            let unknown = max(0, topAnimals.count - (yes + no))
+            let ent = entropy([yes, no, unknown])
+
+            if disagreement > bestDisagreement ||
+                (disagreement == bestDisagreement && coverage > bestCoverage) ||
+                (disagreement == bestDisagreement && coverage == bestCoverage && ent > bestEntropy) {
+                bestDisagreement = disagreement
+                bestCoverage = coverage
+                bestEntropy = ent
+                bestQuestion = q
+            }
+        }
+
+        return bestQuestion
+    }
+
+    private func disagreementScore(qid: QuestionId, candidates: [Animal]) -> Int {
+        var signs: [Int] = []
+        signs.reserveCapacity(candidates.count)
+        for animal in candidates {
+            let w = weight(for: animal.id, qid: qid)
+            if w == 0 {
+                signs.append(0)
+            } else {
+                signs.append(w > 0 ? 1 : -1)
+            }
+        }
+
+        var score = 0
+        for i in 0..<signs.count {
+            for j in (i + 1)..<signs.count {
+                let a = signs[i]
+                let b = signs[j]
+                if a == b { continue }
+                if a == 0 || b == 0 {
+                    score += 1
+                } else {
+                    score += 2
+                }
+            }
+        }
+        return score
+    }
+
     private mutating func rerankAnimals() {
         guard let store = annStore else { return }
         for animal in allAnimals { scores[animal.id] = 0 }
@@ -464,7 +674,10 @@ private struct ANNSession {
                     scores[animal.id, default: 0] += agree ? delta : -delta
                 }
             } else if ans == .maybe || ans == .notSure {
-                // Weak nudge
+                let gateIds: Set<QuestionId> = ["is_bird", "lives_in_water", "is_mammal", "is_reptile", "is_amphibian", "is_fish"]
+                if gateIds.contains(qid) || specialQuestions.keys.contains(qid) {
+                    continue
+                }
                 for animal in allAnimals {
                     let cell = weight(for: animal.id, qid: qid)
                     if cell > 0 { scores[animal.id, default: 0] += 1 }
@@ -472,7 +685,131 @@ private struct ANNSession {
                 }
             }
         }
+        for (aid, boost) in heuristicBoosts {
+            scores[aid, default: 0] += boost
+        }
         rankedAnimals = allAnimals.sorted { (scores[$0.id] ?? 0) > (scores[$1.id] ?? 0) }
+    }
+
+    private mutating func applyHeuristicBoost(for questionId: QuestionId, answer: Answer) {
+        guard answer == .yes || answer == .no else { return }
+        let relevant = ["is_bird", "lives_in_water", "is_mammal", "is_reptile", "is_amphibian", "is_fish"]
+        guard relevant.contains(questionId) else { return }
+        guard let topCandidate = rankedAnimals.first else { return }
+        let targets = Set(allAnimals.compactMap { animal -> AnimalId? in
+            let w = weight(for: animal.id, qid: questionId)
+            return w > 0 ? animal.id : nil
+        })
+        let topWeight = weight(for: topCandidate.id, qid: questionId)
+        let wantsPositive = answer == .yes
+        let conflict = (wantsPositive && topWeight < 0) || (!wantsPositive && topWeight > 0)
+
+        if conflict {
+            pendingGateBoosts[questionId] = answer
+            if let confirm = gateConfirmers[questionId]?.first(where: { !asked.contains($0) && !confirmQueue.contains($0) }) {
+                confirmQueue.append(confirm)
+            }
+            return
+        }
+
+        enqueueForcedDiscriminatorIfNeeded(for: questionId, answer: answer)
+        applyGateBoost(for: questionId, answer: answer, targets: targets)
+    }
+
+    private mutating func applyGateBoost(for questionId: QuestionId, answer: Answer, targets: Set<AnimalId>) {
+        let boostValue = 10
+        let cap = 20
+        if let existing = gateBoostLedger[questionId] {
+            for id in existing.animals {
+                heuristicBoosts[id, default: 0] -= existing.value
+            }
+        }
+        let consistent: Set<AnimalId> = Set(allAnimals.compactMap { animal in
+            let w = weight(for: animal.id, qid: questionId)
+            if answer == .yes && w > 0 { return animal.id }
+            if answer == .no && w < 0 { return animal.id }
+            return nil
+        })
+        for id in consistent {
+            let current = heuristicBoosts[id, default: 0]
+            let clamped = max(-cap, min(cap, current + boostValue))
+            heuristicBoosts[id] = clamped
+        }
+        gateBoostLedger[questionId] = (animals: consistent, value: boostValue, ttl: 3)
+    }
+
+    private mutating func resolvePendingGateBoosts() {
+        guard let top = rankedAnimals.first else { return }
+        var toRemove: [QuestionId] = []
+        for (gate, ans) in pendingGateBoosts {
+            let topWeight = weight(for: top.id, qid: gate)
+            let wantsPositive = ans == .yes
+            let conflict = (wantsPositive && topWeight < 0) || (!wantsPositive && topWeight > 0)
+            if conflict { continue }
+            let targets = Set(allAnimals.compactMap { animal -> AnimalId? in
+                let w = weight(for: animal.id, qid: gate)
+                return w > 0 ? animal.id : nil
+            })
+            applyGateBoost(for: gate, answer: ans, targets: targets)
+            toRemove.append(gate)
+        }
+        toRemove.forEach { pendingGateBoosts.removeValue(forKey: $0) }
+    }
+
+    private mutating func decayGateBoosts() {
+        var expired: [QuestionId] = []
+        for (qid, entry) in gateBoostLedger {
+            let newTTL = entry.ttl - 1
+            if newTTL <= 0 {
+                for id in entry.animals {
+                    heuristicBoosts[id, default: 0] -= entry.value
+                }
+                expired.append(qid)
+            } else {
+                gateBoostLedger[qid] = (entry.animals, entry.value, newTTL)
+            }
+        }
+        expired.forEach { gateBoostLedger.removeValue(forKey: $0) }
+    }
+
+    private mutating func enqueueForcedDiscriminatorIfNeeded(for gateId: QuestionId, answer: Answer) {
+        guard answer == .yes else { return }
+        let topThree = Set(rankedAnimals.prefix(3).map { $0.id })
+        func enqueue(_ qid: QuestionId) {
+            if !asked.contains(qid) && !confirmQueue.contains(qid) {
+                confirmQueue.append(qid)
+            }
+        }
+        if topThree.contains("penguin") && (topThree.contains("pelican") || topThree.contains("flamingo") || topThree.contains("goose") || topThree.contains("duck") || topThree.contains("swan")) {
+            enqueue("penguin_flipper_wings")
+            enqueue("pelican_throat_pouch")
+        }
+        if topThree.contains("shrimp") && topThree.contains("lobster") {
+            enqueue("lobster_big_claws")
+        }
+        if topThree.contains("hamster") && topThree.contains("chinchilla") {
+            enqueue("chinchilla_big_ears")
+            enqueue("hamster_wheel_habitat")
+        }
+        let hoofed: Set<AnimalId> = ["cow", "horse", "goat", "sheep", "bison", "zebra", "camel", "donkey", "alpaca", "llama", "deer", "moose"]
+        if topThree.contains("porcupine") && !hoofed.intersection(topThree).isEmpty {
+            enqueue("has_hooves")
+        }
+    }
+
+    private mutating func applyFamilyConfirmIfNeeded(previousTop: AnimalId?) {
+        defer { lastTop = rankedAnimals.first?.id }
+        guard let old = previousTop, let newTop = rankedAnimals.first?.id, old != newTop else { return }
+        let mammalWeightOld = weight(for: old, qid: "is_mammal")
+        let mammalWeightNew = weight(for: newTop, qid: "is_mammal")
+        let mismatch = (mammalWeightOld > 0) != (mammalWeightNew > 0)
+        if mismatch {
+            if !asked.contains("has_tail") && !confirmQueue.contains("has_tail") {
+                confirmQueue.append("has_tail")
+            } else if !asked.contains("has_hooves") && !confirmQueue.contains("has_hooves") {
+                confirmQueue.append("has_hooves")
+            }
+        }
     }
 
     private func weight(for animal: AnimalId, qid: QuestionId) -> Int {
