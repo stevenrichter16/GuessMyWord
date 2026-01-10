@@ -31,7 +31,7 @@ enum SpecialQuestionConfig {
         "hamster_wheel_habitat": ["hamster", "chinchilla"],
         "chinchilla_big_ears": ["chinchilla", "hamster"],
         "alligator_broad_snout": ["alligator", "crocodile"],
-        "has_shell": ["armadillo", "turtle", "tortoise"],
+        "has_shell": ["armadillo", "turtle"],
         "hummingbird_hover_feed": ["hummingbird"],
         "leopard_tree_kills": ["leopard"]
     ]
@@ -246,7 +246,7 @@ final class LLMScaffolding {
         "Does it have hooves instead of paws or claws?",
         "Has it been domesticated by humans (kept or bred by people)? Set this to 1 only for species that are fully domesticated; leave it 0 for wild species that are merely kept as pets or in captivity.",
         "Is it mostly active at night?",
-        "Is it an amphibian (like a frog, toad or salamander)?",
+        "Is it an amphibian (like a frog or salamander)?",
         "Is it a fish?",
         "Does it usually lay eggs?",
         "Does it have a tail?",
@@ -515,7 +515,7 @@ struct AnimalDataset {
         "has_hooves": "Does it have hooves instead of paws or claws?",
         "is_domesticated": "Has it been domesticated by humans (kept or bred by people)? Set this to 1 only for species that are fully domesticated; leave it 0 for wild species that are merely kept as pets or in captivity.",
         "is_nocturnal": "Is it mostly active at night?",
-        "is_amphibian": "Is it an amphibian (like a frog, toad or salamander)?",
+        "is_amphibian": "Is it an amphibian (like a frog or salamander)?",
         "is_fish": "Is it a fish?",
         "lays_eggs": "Does it usually lay eggs?",
         "has_tail": "Does it have a tail?",

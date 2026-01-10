@@ -40,6 +40,7 @@ final class ANNGameViewModel: ObservableObject {
     private let topKForQuestionSelection = 8
     private let tieBreakGap = 4
     private let tieBreakCandidateCount = 3
+    private let topTwoDiscriminatorBoost = 0.5
     private let specialQuestions = SpecialQuestionConfig.targets
     private let questionImportance: [QuestionId: Int] = [
         // Reliability-heavy signal: if true, should swing the ranking harder.
@@ -99,11 +100,11 @@ final class ANNGameViewModel: ObservableObject {
     func finalizeGame(correct: Bool) {
         guard let guessed = currentGuess else { return }
         if correct {
-            learnFromGame(correctAnimalId: guessed.id)
-            statusMessage = "Updated weights for \(guessed.name)."
+            //learnFromGame(correctAnimalId: guessed.id)
+            //statusMessage = "Updated weights for \(guessed.name)."
             lastGuessWasWrong = false
         } else {
-            statusMessage = "No weight changes applied."
+            //statusMessage = "No weight changes applied."
             lastGuessWasWrong = true
         }
         isFinished = true
@@ -112,7 +113,7 @@ final class ANNGameViewModel: ObservableObject {
     func topCandidatesIfWrong() -> [String]? {
         guard let guessName = currentGuess?.name else { return nil }
         let filtered = topCandidateNames.filter { $0 != guessName }
-        let slice = filtered.prefix(5)
+        let slice = filtered.prefix(6)
         return slice.isEmpty ? nil : Array(slice)
     }
 
@@ -229,8 +230,11 @@ final class ANNGameViewModel: ObservableObject {
             }
         }
 
+        let turn = answers.count + 1
+        let unknownRate = currentUnknownRate()
+
         var bestQuestion: Question?
-        var bestEntropy: Double = -Double.infinity
+        var bestScore: Double = -Double.infinity
         var bestCoverage: Double = -Double.infinity
 
         for q in allQuestions {
@@ -267,14 +271,28 @@ final class ANNGameViewModel: ObservableObject {
             let sig = splitSignature(questionId: q.id, animals: topAnimals)
             if seenSignatures.contains(sig) { continue }
 
-            if entropyVal > bestEntropy || (entropyVal == bestEntropy && coverage > bestCoverage) {
-                bestEntropy = entropyVal
+            let reliability = QuestionReliability.weight(
+                questionId: q.id,
+                turn: turn,
+                unknownRate: unknownRate,
+                persona: nil
+            )
+            let discriminatorBonus = topTwoDiscriminatorBonus(questionId: q.id)
+            let score = entropyVal * reliability * discriminatorBonus
+            if score > bestScore || (score == bestScore && coverage > bestCoverage) {
+                bestScore = score
                 bestCoverage = coverage
                 bestQuestion = q
             }
         }
 
         return bestQuestion
+    }
+
+    private func currentUnknownRate() -> Double {
+        guard !answers.isEmpty else { return 0 }
+        let unknownCount = answers.values.filter { $0 == .maybe || $0 == .notSure }.count
+        return Double(unknownCount) / Double(answers.count)
     }
 
     private func shouldUseTieBreak() -> Bool {
@@ -293,8 +311,10 @@ final class ANNGameViewModel: ObservableObject {
         seenSignatures: Set<String>
     ) -> Question? {
         guard topCandidates.count >= 2 else { return nil }
+        let turn = answers.count + 1
+        let unknownRate = currentUnknownRate()
         var bestQuestion: Question?
-        var bestDisagreement = 0
+        var bestDisagreement = -Double.infinity
         var bestCoverage: Double = -Double.infinity
         var bestEntropy: Double = -Double.infinity
 
@@ -328,11 +348,18 @@ final class ANNGameViewModel: ObservableObject {
 
             let unknownCount = max(0, topAnimals.count - (yesCount + noCount))
             let entropyVal = entropy([yesCount, noCount, unknownCount])
+            let reliability = QuestionReliability.weight(
+                questionId: q.id,
+                turn: turn,
+                unknownRate: unknownRate,
+                persona: nil
+            )
+            let weightedDisagreement = Double(disagreement) * reliability * topTwoDiscriminatorBonus(questionId: q.id)
 
-            if disagreement > bestDisagreement ||
-                (disagreement == bestDisagreement && coverage > bestCoverage) ||
-                (disagreement == bestDisagreement && coverage == bestCoverage && entropyVal > bestEntropy) {
-                bestDisagreement = disagreement
+            if weightedDisagreement > bestDisagreement ||
+                (weightedDisagreement == bestDisagreement && coverage > bestCoverage) ||
+                (weightedDisagreement == bestDisagreement && coverage == bestCoverage && entropyVal > bestEntropy) {
+                bestDisagreement = weightedDisagreement
                 bestCoverage = coverage
                 bestEntropy = entropyVal
                 bestQuestion = q
@@ -368,6 +395,32 @@ final class ANNGameViewModel: ObservableObject {
             }
         }
         return score
+    }
+
+    private func topTwoDiscriminatorBonus(questionId: QuestionId) -> Double {
+        let strength = topTwoDiscriminatorStrength(questionId: questionId)
+        return 1.0 + (topTwoDiscriminatorBoost * strength)
+    }
+
+    private func topTwoDiscriminatorStrength(questionId: QuestionId) -> Double {
+        guard rankedAnimals.count >= 2 else { return 0 }
+        let topOne = rankedAnimals[0].id
+        let topTwo = rankedAnimals[1].id
+        if questionId == "has_spots", Set([topOne, topTwo]) == Set(["bison", "giraffe"]) {
+            return 1.0
+        }
+        let w1 = annStore.weight(for: topOne, questionId: questionId)
+        let w2 = annStore.weight(for: topTwo, questionId: questionId)
+        if w1 == 0 && w2 == 0 { return 0 }
+        let signDiff = (w1 > 0 && w2 < 0) || (w1 < 0 && w2 > 0)
+        let magnitude = min(1.0, Double(abs(w1) + abs(w2)) / 20.0)
+        if signDiff {
+            return 0.5 + (0.5 * magnitude)
+        }
+        if w1 == 0 || w2 == 0 {
+            return 0.2 * magnitude
+        }
+        return 0
     }
 
     private func entropyCandidates() -> [Animal] {

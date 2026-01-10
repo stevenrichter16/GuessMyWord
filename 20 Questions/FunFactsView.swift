@@ -185,16 +185,11 @@ struct FunFactsView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 54, height: 54)
-                .clipShape(Circle())
-                .overlay(
-                    Circle()
-                        .stroke(Color.primary.opacity(0.08), lineWidth: 1)
-                )
                 .shadow(color: shadowColor.opacity(0.2), radius: 6, x: 0, y: 3)
                 .accessibilityHidden(true)
         } else {
             ZStack {
-                Circle()
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .fill(Color.white.opacity(colorScheme == .dark ? 0.08 : 0.15))
                     .frame(width: 54, height: 54)
                 Image(systemName: "sparkles")

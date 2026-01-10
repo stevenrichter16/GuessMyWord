@@ -61,12 +61,9 @@ Penguin
 Swan
 Crow
 Pigeon
-Sparrow
 Hummingbird
 Turtle
-Tortoise
 Frog
-Toad
 Snake
 Lizard
 Crocodile
@@ -86,7 +83,6 @@ Jellyfish
 Starfish
 Seahorse
 Clownfish
-Tuna
 Goldfish
 Carp
 Hyena
@@ -141,9 +137,6 @@ Penguin
 Swan
 Crow
 Pigeon
-Sparrow
-Tortoise
-Toad
 Snake
 Lizard
 Crocodile
@@ -161,7 +154,6 @@ Jellyfish
 Starfish
 Seahorse
 Clownfish
-Tuna
 Carp
 Hyena
 Meerkat
@@ -171,27 +163,16 @@ Hamster
 Guinea pig
 
 Animals missing avatars:
-Squid
 Seal
-Walrus
 Raccoon
 Skunk
 Sheep
 Goat
 Pig
-Turkey
-Swan
 Pigeon
-Sparrow
-Turtle
-Tortoise
-Toad
 Snake
 Newt
 Wasp
-Shrimp
 Jellyfish
 Starfish
 Seahorse
-Tuna
-Platypus

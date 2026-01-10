@@ -119,10 +119,6 @@ struct GalleryView: View {
                 .resizable()
                 .scaledToFit()
                 .clipShape(Circle())
-                .overlay(
-                    Circle()
-                        .stroke(Color.primary.opacity(0.08), lineWidth: 1)
-                )
                 .shadow(color: shadowColor.opacity(0.2), radius: 6, x: 0, y: 3)
         } else {
             ZStack {

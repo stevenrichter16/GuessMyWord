@@ -46,7 +46,6 @@ struct LlamaMascotContentView: View {
                 ScrollView {
                     VStack(spacing: 16) {
                         header
-                        progressBar
                         bearVideo
 
                         // Main mascot area
@@ -63,25 +62,22 @@ struct LlamaMascotContentView: View {
                                 .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
 
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                showDeveloperTools.toggle()
-                            }
-                        } label: {
-                            Label(showDeveloperTools ? "Hide Dev Tools" : "Show Dev Tools", systemImage: "wrench.and.screwdriver")
-                                .font(.caption.weight(.semibold))
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 8)
-                                .background(Capsule().fill(Color.primary.opacity(0.08)))
-                        }
-                        .buttonStyle(.plain)
+                        // Button {
+                        //     withAnimation(.easeInOut(duration: 0.2)) {
+                        //         showDeveloperTools.toggle()
+                        //     }
+                        // } label: {
+                        //     Label(showDeveloperTools ? "Hide Dev Tools" : "Show Dev Tools", systemImage: "wrench.and.screwdriver")
+                        //         .font(.caption.weight(.semibold))
+                        //         .padding(.horizontal, 12)
+                        //         .padding(.vertical, 8)
+                        //         .background(Capsule().fill(Color.primary.opacity(0.08)))
+                        // }
+                        // .buttonStyle(.plain)
 
                         //debugStrip
                         if showDeveloperTools {
                             debugSimulator
-                        }
-                        if shouldShowRestartButton {
-                            restartButton
                         }
                         if viewModel.currentQuestion != nil && !viewModel.isFinished, let fact = funFact {
                             funFactCard(fact)
@@ -169,12 +165,10 @@ struct LlamaMascotContentView: View {
     }
 
     private var dialogueBubble: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: 4) {
             if let question = viewModel.currentQuestion, !viewModel.isFinished {
                 // Question mode
-                Text("Question \(viewModel.currentTurn)")
-                    .font(.caption.weight(.semibold))
-                    .foregroundColor(.secondary)
+                progressBar
                 Text(question.text)
                     .font(.title.weight(.semibold))
                     .multilineTextAlignment(.center)
@@ -186,9 +180,9 @@ struct LlamaMascotContentView: View {
                         Image(systemName: "questionmark.circle")
                             .font(.caption.weight(.semibold))
                         Text("Need Help?")
-                            .font(.footnote.weight(.semibold))
+                            .font(.caption2.weight(.semibold))
                     }
-                    .padding(.horizontal, 10)
+                    .padding(.horizontal, 8)
                     .padding(.vertical, 5)
                     .foregroundColor(Color.blue.opacity(0.9))
                     .background(
@@ -209,10 +203,7 @@ struct LlamaMascotContentView: View {
                     Text("Was it one of these?")
                         .font(.title3.weight(.semibold))
                     if let candidates = viewModel.topCandidatesIfWrong() {
-                        Text(candidates.joined(separator: ", "))
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
+                        candidateAvatarGrid(candidates)
                     }
                 } else if viewModel.isFinished{
                     Text("Yay! I knew it!")
@@ -240,8 +231,8 @@ struct LlamaMascotContentView: View {
         }
         .padding(.horizontal, 20)
         // Balance top/bottom space by compensating for the bubble pointer (16pt tall).
-        .padding(.top, 28)
-        .padding(.bottom, 44)
+        .padding(.top, 20)
+        .padding(.bottom, 36)
         .frame(maxWidth: .infinity)
         .background(
             BubbleShape()
@@ -249,6 +240,34 @@ struct LlamaMascotContentView: View {
                 .shadow(color: shadowColor, radius: 8, x: 0, y: 4)
         )
         .overlay(confettiLayer)
+    }
+
+    private func candidateAvatarGrid(_ candidates: [String]) -> some View {
+        let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 3)
+        return LazyVGrid(columns: columns, spacing: 10) {
+            ForEach(candidates, id: \.self) { candidate in
+                VStack(spacing: 6) {
+                    if let asset = funFactAssetName(for: candidate) {
+                        Image(asset)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 68, height: 68)
+                    } else {
+                        Image(systemName: "questionmark.circle")
+                            .font(.title2)
+                            .foregroundColor(.secondary)
+                            .frame(width: 68, height: 68)
+                    }
+                    Text(candidate)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(2)
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .padding(.top, 6)
     }
 
     private var llamaMascot: some View {
@@ -311,21 +330,17 @@ struct LlamaMascotContentView: View {
         let active = colorScheme == .dark
             ? LinearGradient(colors: [Color.teal, Color.purple], startPoint: .leading, endPoint: .trailing)
             : LinearGradient(colors: [Color.orange, Color.pink, Color.purple], startPoint: .leading, endPoint: .trailing)
-        return VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Progress")
-                    .font(.subheadline.weight(.semibold))
-                Spacer()
-                Text("Q\(viewModel.currentTurn) / \(viewModel.maxTurnCount)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
+        return VStack(alignment: .leading, spacing: 4) {
+            Text("\(viewModel.currentTurn) / \(viewModel.maxTurnCount)")
+                .font(.caption.weight(.semibold))
+                .foregroundColor(.secondary)
+                .frame(maxWidth: .infinity, alignment: .center)
             GeometryReader { proxy in
                 let radius: CGFloat = 16
                 let fillWidth = max(24, fraction * proxy.size.width)
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: radius)
-                        .fill(track)
+                        .fill(track)	
                         .overlay(
                             RoundedRectangle(cornerRadius: radius)
                                 .stroke(Color.primary.opacity(0.1), lineWidth: 1)
@@ -337,14 +352,8 @@ struct LlamaMascotContentView: View {
                         .shadow(color: shadowColor.opacity(0.25), radius: 6, x: 0, y: 3)
                 }
             }
-            .frame(height: 12)
+            .frame(height: 24)
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(cardFill)
-                .shadow(color: shadowColor, radius: 10, x: 0, y: 6)
-        )
     }
 
     private var bearVideo: some View {
@@ -391,13 +400,15 @@ struct LlamaMascotContentView: View {
     private var answerButtons: some View {
         HStack(spacing: 12) {
             Button {
-                launchReplayWithTest = true
-                showReplay = true
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    showRestartConfirm = true
+                }
             } label: {
-                Image(systemName: "wand.and.stars")
+                Image(systemName: "arrow.counterclockwise")
                     .padding(8)
             }
             .buttonStyle(.bordered)
+            .accessibilityLabel("Restart game")
 
             LlamaAnswerButton(title: "Yes", color: .green, scheme: colorScheme) {
                 viewModel.answerCurrentQuestion(.yes)
@@ -465,21 +476,6 @@ struct LlamaMascotContentView: View {
         )
     }
 
-    private var restartButton: some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.25)) {
-                showRestartConfirm = true
-            }
-        } label: {
-            HStack {
-                Image(systemName: "arrow.counterclockwise")
-                Text("Restart")
-            }
-            .frame(maxWidth: .infinity)
-        }
-        .buttonStyle(.bordered)
-    }
-
     private var replayButton: some View {
         Button {
             showReplay = true
@@ -491,10 +487,6 @@ struct LlamaMascotContentView: View {
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(.borderedProminent)
-    }
-
-    private var shouldShowRestartButton: Bool {
-        viewModel.currentGuess == nil && !viewModel.isFinished
     }
 
     // MARK: - Options Button + Side Menu
@@ -674,16 +666,11 @@ struct LlamaMascotContentView: View {
         )
         .overlay(alignment: .topTrailing) {
             if let imageName = funFactAssetName(for: fact.animalName) {
-                Circle()
-                    .fill(Color.white.opacity(0.0))
+                Image(imageName)
+                    .renderingMode(.original)
+                    .resizable()
+                    .scaledToFit()
                     .frame(width: 61, height: 61)
-                    .overlay(
-                        Image(imageName)
-                            .renderingMode(.original)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 61, height: 61)
-                    )
                     .padding(8)
             }
         }
@@ -1058,9 +1045,9 @@ struct LlamaMascotContentView: View {
                         //.font(.body.weight(.semibold))
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 25, height: 25)
+                        .frame(width: 20, height: 20)
                         
-                    Text("Fun Facts")
+                    Text("Fun Facts")   
                         .font(.caption2.weight(.bold))
                 }
                 .frame(maxWidth: .infinity)
@@ -1074,7 +1061,7 @@ struct LlamaMascotContentView: View {
                     Image(systemName: "photo.on.rectangle.angled")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 25, height: 25)
+                        .frame(width: 20, height: 20)
                     Text("Gallery")
                         .font(.caption2.weight(.bold))
                 }
@@ -1402,7 +1389,7 @@ private struct LlamaAnswerButton: View {
             Text(title)
                 .font(.headline)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
+                .padding(.vertical, 18)
                 .background(
                     RoundedRectangle(cornerRadius: 16)
                         .fill(buttonBackground)

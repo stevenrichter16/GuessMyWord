@@ -1,0 +1,929 @@
+{
+  "target" : "Platypus",
+  "questions" : [
+    {
+      "userAnswer" : "No",
+      "answerOrigin" : "truth",
+      "question" : "Is it in the cat family (a type of feline)?",
+      "usedMistake" : false,
+      "usedUnknown" : false,
+      "guessedFromUnknown" : false,
+      "effectiveUnknownProb" : 0,
+      "questionId" : "is_feline",
+      "effectiveMistakeProb" : 0,
+      "trueAnswer" : "No",
+      "topCandidates" : [
+        {
+          "name" : "Dog",
+          "score" : 4
+        },
+        {
+          "name" : "Elephant",
+          "score" : 4
+        },
+        {
+          "name" : "Giraffe",
+          "score" : 4
+        },
+        {
+          "name" : "Zebra",
+          "score" : 4
+        },
+        {
+          "name" : "Kangaroo",
+          "score" : 4
+        },
+        {
+          "name" : "Panda",
+          "score" : 4
+        },
+        {
+          "name" : "Koala",
+          "score" : 4
+        },
+        {
+          "name" : "Bear",
+          "score" : 4
+        }
+      ]
+    },
+    {
+      "userAnswer" : "No",
+      "answerOrigin" : "truth",
+      "question" : "Does it have short fur?",
+      "usedMistake" : false,
+      "usedUnknown" : false,
+      "guessedFromUnknown" : false,
+      "effectiveUnknownProb" : 0,
+      "questionId" : "has_short_fur",
+      "effectiveMistakeProb" : 0,
+      "trueAnswer" : "No",
+      "topCandidates" : [
+        {
+          "name" : "Dog",
+          "score" : 8
+        },
+        {
+          "name" : "Giraffe",
+          "score" : 8
+        },
+        {
+          "name" : "Zebra",
+          "score" : 8
+        },
+        {
+          "name" : "Kangaroo",
+          "score" : 8
+        },
+        {
+          "name" : "Panda",
+          "score" : 8
+        },
+        {
+          "name" : "Koala",
+          "score" : 8
+        },
+        {
+          "name" : "Bear",
+          "score" : 8
+        },
+        {
+          "name" : "Wolf",
+          "score" : 8
+        }
+      ]
+    },
+    {
+      "userAnswer" : "No",
+      "answerOrigin" : "truth",
+      "question" : "Does it have a noticeably long neck compared to most animals?",
+      "usedMistake" : false,
+      "usedUnknown" : false,
+      "guessedFromUnknown" : false,
+      "effectiveUnknownProb" : 0,
+      "questionId" : "has_long_neck",
+      "effectiveMistakeProb" : 0,
+      "trueAnswer" : "No",
+      "topCandidates" : [
+        {
+          "name" : "Dog",
+          "score" : 12
+        },
+        {
+          "name" : "Zebra",
+          "score" : 12
+        },
+        {
+          "name" : "Kangaroo",
+          "score" : 12
+        },
+        {
+          "name" : "Panda",
+          "score" : 12
+        },
+        {
+          "name" : "Koala",
+          "score" : 12
+        },
+        {
+          "name" : "Bear",
+          "score" : 12
+        },
+        {
+          "name" : "Wolf",
+          "score" : 12
+        },
+        {
+          "name" : "Fox",
+          "score" : 12
+        }
+      ]
+    },
+    {
+      "userAnswer" : "Yes",
+      "answerOrigin" : "contradiction",
+      "question" : "Does it have obvious stripes on its body?",
+      "usedMistake" : true,
+      "usedUnknown" : false,
+      "guessedFromUnknown" : false,
+      "wasContradiction" : true,
+      "effectiveUnknownProb" : 0,
+      "questionId" : "has_stripes",
+      "effectiveMistakeProb" : 0,
+      "trueAnswer" : "No",
+      "topCandidates" : [
+        {
+          "name" : "Zebra",
+          "score" : 16
+        },
+        {
+          "name" : "Dog",
+          "score" : 8
+        },
+        {
+          "name" : "Tiger",
+          "score" : 8
+        },
+        {
+          "name" : "Kangaroo",
+          "score" : 8
+        },
+        {
+          "name" : "Panda",
+          "score" : 8
+        },
+        {
+          "name" : "Koala",
+          "score" : 8
+        },
+        {
+          "name" : "Bear",
+          "score" : 8
+        },
+        {
+          "name" : "Wolf",
+          "score" : 8
+        }
+      ]
+    },
+    {
+      "userAnswer" : "Yes",
+      "answerOrigin" : "truth",
+      "question" : "Is it a predator that hunts other animals?",
+      "usedMistake" : false,
+      "usedUnknown" : false,
+      "guessedFromUnknown" : false,
+      "effectiveUnknownProb" : 0,
+      "questionId" : "is_predator",
+      "effectiveMistakeProb" : 0,
+      "trueAnswer" : "Yes",
+      "topCandidates" : [
+        {
+          "name" : "Dog",
+          "score" : 12
+        },
+        {
+          "name" : "Tiger",
+          "score" : 12
+        },
+        {
+          "name" : "Zebra",
+          "score" : 12
+        },
+        {
+          "name" : "Bear",
+          "score" : 12
+        },
+        {
+          "name" : "Wolf",
+          "score" : 12
+        },
+        {
+          "name" : "Fox",
+          "score" : 12
+        },
+        {
+          "name" : "Baboon",
+          "score" : 12
+        },
+        {
+          "name" : "Bat",
+          "score" : 12
+        }
+      ]
+    },
+    {
+      "userAnswer" : "No",
+      "answerOrigin" : "truth",
+      "question" : "Is it roughly dog/cat sized?",
+      "usedMistake" : false,
+      "usedUnknown" : false,
+      "guessedFromUnknown" : false,
+      "effectiveUnknownProb" : 0,
+      "questionId" : "is_medium_sized",
+      "effectiveMistakeProb" : 0,
+      "trueAnswer" : "No",
+      "topCandidates" : [
+        {
+          "name" : "Tiger",
+          "score" : 16
+        },
+        {
+          "name" : "Zebra",
+          "score" : 16
+        },
+        {
+          "name" : "Bear",
+          "score" : 16
+        },
+        {
+          "name" : "Wolf",
+          "score" : 16
+        },
+        {
+          "name" : "Bat",
+          "score" : 16
+        },
+        {
+          "name" : "Octopus",
+          "score" : 16
+        },
+        {
+          "name" : "Squid",
+          "score" : 16
+        },
+        {
+          "name" : "Eagle",
+          "score" : 16
+        }
+      ]
+    },
+    {
+      "userAnswer" : "Yes",
+      "answerOrigin" : "truth",
+      "question" : "Is it mostly active at night?",
+      "usedMistake" : false,
+      "usedUnknown" : false,
+      "guessedFromUnknown" : false,
+      "effectiveUnknownProb" : 0,
+      "questionId" : "is_nocturnal",
+      "effectiveMistakeProb" : 0,
+      "trueAnswer" : "Yes",
+      "topCandidates" : [
+        {
+          "name" : "Tiger",
+          "score" : 20
+        },
+        {
+          "name" : "Bear",
+          "score" : 20
+        },
+        {
+          "name" : "Wolf",
+          "score" : 20
+        },
+        {
+          "name" : "Bat",
+          "score" : 20
+        },
+        {
+          "name" : "Octopus",
+          "score" : 20
+        },
+        {
+          "name" : "Owl",
+          "score" : 20
+        },
+        {
+          "name" : "Hyena",
+          "score" : 20
+        },
+        {
+          "name" : "Platypus",
+          "score" : 20
+        }
+      ]
+    },
+    {
+      "userAnswer" : "No",
+      "answerOrigin" : "truth",
+      "question" : "Does it often eat animals that are already dead (scavenge)?",
+      "usedMistake" : false,
+      "usedUnknown" : false,
+      "guessedFromUnknown" : false,
+      "effectiveUnknownProb" : 0,
+      "questionId" : "is_scavenger",
+      "effectiveMistakeProb" : 0,
+      "trueAnswer" : "No",
+      "topCandidates" : [
+        {
+          "name" : "Tiger",
+          "score" : 24
+        },
+        {
+          "name" : "Bat",
+          "score" : 24
+        },
+        {
+          "name" : "Owl",
+          "score" : 24
+        },
+        {
+          "name" : "Platypus",
+          "score" : 24
+        },
+        {
+          "name" : "Armadillo",
+          "score" : 24
+        },
+        {
+          "name" : "Lion",
+          "score" : 16
+        },
+        {
+          "name" : "Zebra",
+          "score" : 16
+        },
+        {
+          "name" : "Koala",
+          "score" : 16
+        }
+      ]
+    },
+    {
+      "userAnswer" : "No",
+      "answerOrigin" : "truth",
+      "question" : "Is it mainly found in forests or jungles?",
+      "usedMistake" : false,
+      "usedUnknown" : false,
+      "guessedFromUnknown" : false,
+      "effectiveUnknownProb" : 0,
+      "questionId" : "lives_in_forest_or_jungle",
+      "effectiveMistakeProb" : 0,
+      "trueAnswer" : "No",
+      "topCandidates" : [
+        {
+          "name" : "Bat",
+          "score" : 28
+        },
+        {
+          "name" : "Platypus",
+          "score" : 28
+        },
+        {
+          "name" : "Armadillo",
+          "score" : 28
+        },
+        {
+          "name" : "Lion",
+          "score" : 20
+        },
+        {
+          "name" : "Tiger",
+          "score" : 20
+        },
+        {
+          "name" : "Zebra",
+          "score" : 20
+        },
+        {
+          "name" : "Octopus",
+          "score" : 20
+        },
+        {
+          "name" : "Squid",
+          "score" : 20
+        }
+      ]
+    },
+    {
+      "userAnswer" : "Yes",
+      "answerOrigin" : "truth",
+      "question" : "Does it live mostly in water?",
+      "usedMistake" : false,
+      "usedUnknown" : false,
+      "guessedFromUnknown" : false,
+      "effectiveUnknownProb" : 0,
+      "questionId" : "lives_in_water",
+      "effectiveMistakeProb" : 0,
+      "trueAnswer" : "Yes",
+      "topCandidates" : [
+        {
+          "name" : "Platypus",
+          "score" : 32
+        },
+        {
+          "name" : "Bat",
+          "score" : 24
+        },
+        {
+          "name" : "Octopus",
+          "score" : 24
+        },
+        {
+          "name" : "Squid",
+          "score" : 24
+        },
+        {
+          "name" : "Pelican",
+          "score" : 24
+        },
+        {
+          "name" : "Penguin",
+          "score" : 24
+        },
+        {
+          "name" : "Alligator",
+          "score" : 24
+        },
+        {
+          "name" : "Jellyfish",
+          "score" : 24
+        }
+      ]
+    },
+    {
+      "userAnswer" : "No",
+      "answerOrigin" : "truth",
+      "question" : "Does it breathe through gills as an adult?",
+      "usedMistake" : false,
+      "usedUnknown" : false,
+      "guessedFromUnknown" : false,
+      "effectiveUnknownProb" : 0,
+      "questionId" : "has_gills",
+      "effectiveMistakeProb" : 0,
+      "trueAnswer" : "No",
+      "topCandidates" : [
+        {
+          "name" : "Platypus",
+          "score" : 46
+        },
+        {
+          "name" : "Pelican",
+          "score" : 38
+        },
+        {
+          "name" : "Penguin",
+          "score" : 38
+        },
+        {
+          "name" : "Alligator",
+          "score" : 38
+        },
+        {
+          "name" : "Jellyfish",
+          "score" : 38
+        },
+        {
+          "name" : "Starfish",
+          "score" : 38
+        },
+        {
+          "name" : "Hippopotamus",
+          "score" : 30
+        },
+        {
+          "name" : "Dolphin",
+          "score" : 30
+        }
+      ]
+    },
+    {
+      "trueAnswer" : "No",
+      "effectiveMistakeProb" : 0,
+      "usedMistake" : true,
+      "topCandidates" : [
+        {
+          "name" : "Pelican",
+          "score" : 42
+        },
+        {
+          "name" : "Penguin",
+          "score" : 42
+        },
+        {
+          "name" : "Platypus",
+          "score" : 42
+        },
+        {
+          "name" : "Hippopotamus",
+          "score" : 34
+        },
+        {
+          "name" : "Dolphin",
+          "score" : 34
+        },
+        {
+          "name" : "Whale",
+          "score" : 34
+        },
+        {
+          "name" : "Seal",
+          "score" : 34
+        },
+        {
+          "name" : "Walrus",
+          "score" : 34
+        }
+      ],
+      "effectiveUnknownProb" : 0,
+      "usedUnknown" : false,
+      "questionId" : "lives_in_groups",
+      "question" : "Does it usually live in groups, herds, packs or flocks?",
+      "wasContradiction" : true,
+      "answerOrigin" : "contradiction",
+      "userAnswer" : "Yes",
+      "guessedFromUnknown" : false
+    },
+    {
+      "trueAnswer" : "Yes",
+      "effectiveMistakeProb" : 0,
+      "usedMistake" : false,
+      "topCandidates" : [
+        {
+          "name" : "Pelican",
+          "score" : 46
+        },
+        {
+          "name" : "Penguin",
+          "score" : 46
+        },
+        {
+          "name" : "Platypus",
+          "score" : 46
+        },
+        {
+          "name" : "Hippopotamus",
+          "score" : 38
+        },
+        {
+          "name" : "Dolphin",
+          "score" : 38
+        },
+        {
+          "name" : "Whale",
+          "score" : 38
+        },
+        {
+          "name" : "Seal",
+          "score" : 38
+        },
+        {
+          "name" : "Walrus",
+          "score" : 38
+        }
+      ],
+      "effectiveUnknownProb" : 0,
+      "usedUnknown" : false,
+      "questionId" : "has_tail",
+      "question" : "Does it have a tail?",
+      "answerOrigin" : "truth",
+      "userAnswer" : "Yes",
+      "guessedFromUnknown" : false
+    },
+    {
+      "trueAnswer" : "Yes",
+      "effectiveMistakeProb" : 0,
+      "usedMistake" : false,
+      "topCandidates" : [
+        {
+          "name" : "Penguin",
+          "score" : 40
+        },
+        {
+          "name" : "Platypus",
+          "score" : 40
+        },
+        {
+          "name" : "Bat",
+          "score" : 32
+        },
+        {
+          "name" : "Dolphin",
+          "score" : 32
+        },
+        {
+          "name" : "Whale",
+          "score" : 32
+        },
+        {
+          "name" : "Seal",
+          "score" : 32
+        },
+        {
+          "name" : "Walrus",
+          "score" : 32
+        },
+        {
+          "name" : "Pelican",
+          "score" : 32
+        }
+      ],
+      "effectiveUnknownProb" : 0,
+      "usedUnknown" : false,
+      "questionId" : "has_fins_or_flippers",
+      "question" : "Does it have fins or flippers instead of legs?",
+      "answerOrigin" : "truth",
+      "userAnswer" : "Yes",
+      "guessedFromUnknown" : false
+    },
+    {
+      "trueAnswer" : "No",
+      "effectiveMistakeProb" : 0,
+      "usedMistake" : false,
+      "topCandidates" : [
+        {
+          "name" : "Platypus",
+          "score" : 44
+        },
+        {
+          "name" : "Bat",
+          "score" : 36
+        },
+        {
+          "name" : "Dolphin",
+          "score" : 36
+        },
+        {
+          "name" : "Seal",
+          "score" : 36
+        },
+        {
+          "name" : "Walrus",
+          "score" : 36
+        },
+        {
+          "name" : "Penguin",
+          "score" : 36
+        },
+        {
+          "name" : "Lion",
+          "score" : 28
+        },
+        {
+          "name" : "Zebra",
+          "score" : 28
+        }
+      ],
+      "effectiveUnknownProb" : 0,
+      "usedUnknown" : false,
+      "questionId" : "migrates_seasonally",
+      "question" : "Does it migrate long distances during certain seasons?",
+      "answerOrigin" : "truth",
+      "userAnswer" : "No",
+      "guessedFromUnknown" : false
+    },
+    {
+      "trueAnswer" : "No",
+      "effectiveMistakeProb" : 0,
+      "usedMistake" : false,
+      "topCandidates" : [
+        {
+          "name" : "Platypus",
+          "score" : 48
+        },
+        {
+          "name" : "Bat",
+          "score" : 40
+        },
+        {
+          "name" : "Dolphin",
+          "score" : 40
+        },
+        {
+          "name" : "Seal",
+          "score" : 40
+        },
+        {
+          "name" : "Walrus",
+          "score" : 40
+        },
+        {
+          "name" : "Penguin",
+          "score" : 40
+        },
+        {
+          "name" : "Lion",
+          "score" : 32
+        },
+        {
+          "name" : "Hippopotamus",
+          "score" : 32
+        }
+      ],
+      "effectiveUnknownProb" : 0,
+      "usedUnknown" : false,
+      "questionId" : "has_hooves",
+      "question" : "Does it have hooves instead of paws or claws?",
+      "answerOrigin" : "truth",
+      "userAnswer" : "No",
+      "guessedFromUnknown" : false
+    },
+    {
+      "trueAnswer" : "Yes",
+      "effectiveMistakeProb" : 0,
+      "usedMistake" : false,
+      "topCandidates" : [
+        {
+          "name" : "Platypus",
+          "score" : 52
+        },
+        {
+          "name" : "Penguin",
+          "score" : 44
+        },
+        {
+          "name" : "Bat",
+          "score" : 36
+        },
+        {
+          "name" : "Dolphin",
+          "score" : 36
+        },
+        {
+          "name" : "Seal",
+          "score" : 36
+        },
+        {
+          "name" : "Walrus",
+          "score" : 36
+        },
+        {
+          "name" : "Duck",
+          "score" : 36
+        },
+        {
+          "name" : "Goose",
+          "score" : 36
+        }
+      ],
+      "effectiveUnknownProb" : 0,
+      "usedUnknown" : false,
+      "questionId" : "lays_eggs",
+      "question" : "Does it usually lay eggs?",
+      "answerOrigin" : "truth",
+      "userAnswer" : "Yes",
+      "guessedFromUnknown" : false
+    },
+    {
+      "trueAnswer" : "No",
+      "effectiveMistakeProb" : 0,
+      "usedMistake" : false,
+      "topCandidates" : [
+        {
+          "name" : "Platypus",
+          "score" : 56
+        },
+        {
+          "name" : "Bat",
+          "score" : 40
+        },
+        {
+          "name" : "Dolphin",
+          "score" : 40
+        },
+        {
+          "name" : "Pelican",
+          "score" : 40
+        },
+        {
+          "name" : "Penguin",
+          "score" : 40
+        },
+        {
+          "name" : "Seahorse",
+          "score" : 40
+        },
+        {
+          "name" : "Tuna",
+          "score" : 40
+        },
+        {
+          "name" : "Goldfish",
+          "score" : 40
+        }
+      ],
+      "effectiveUnknownProb" : 0,
+      "usedUnknown" : false,
+      "questionId" : "has_short_legs",
+      "question" : "Does it have short legs compared to its body length?",
+      "answerOrigin" : "truth",
+      "userAnswer" : "No",
+      "guessedFromUnknown" : false
+    },
+    {
+      "trueAnswer" : "Yes",
+      "effectiveMistakeProb" : 0,
+      "usedMistake" : false,
+      "topCandidates" : [
+        {
+          "name" : "Platypus",
+          "score" : 60
+        },
+        {
+          "name" : "Pelican",
+          "score" : 44
+        },
+        {
+          "name" : "Penguin",
+          "score" : 44
+        },
+        {
+          "name" : "Bat",
+          "score" : 36
+        },
+        {
+          "name" : "Dolphin",
+          "score" : 36
+        },
+        {
+          "name" : "Seal",
+          "score" : 36
+        },
+        {
+          "name" : "Walrus",
+          "score" : 36
+        },
+        {
+          "name" : "Duck",
+          "score" : 36
+        }
+      ],
+      "effectiveUnknownProb" : 0,
+      "usedUnknown" : false,
+      "questionId" : "has_webbed_feet",
+      "question" : "Does it have webbed feet?",
+      "answerOrigin" : "truth",
+      "userAnswer" : "Yes",
+      "guessedFromUnknown" : false
+    },
+    {
+      "trueAnswer" : "No",
+      "effectiveMistakeProb" : 0,
+      "usedMistake" : false,
+      "topCandidates" : [
+        {
+          "name" : "Platypus",
+          "score" : 64
+        },
+        {
+          "name" : "Penguin",
+          "score" : 48
+        },
+        {
+          "name" : "Dolphin",
+          "score" : 40
+        },
+        {
+          "name" : "Seal",
+          "score" : 40
+        },
+        {
+          "name" : "Walrus",
+          "score" : 40
+        },
+        {
+          "name" : "Pelican",
+          "score" : 40
+        },
+        {
+          "name" : "Turtle",
+          "score" : 40
+        },
+        {
+          "name" : "Alligator",
+          "score" : 40
+        }
+      ],
+      "effectiveUnknownProb" : 0,
+      "usedUnknown" : false,
+      "questionId" : "can_fly",
+      "question" : "Can it naturally fly?",
+      "answerOrigin" : "truth",
+      "userAnswer" : "No",
+      "guessedFromUnknown" : false
+    }
+  ],
+  "guess" : "Platypus",
+  "wasCorrect" : true
+}
